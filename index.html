@@ -264,6 +264,38 @@
   .hstep>div:last-child{flex:1;min-width:0}
   .quote{background:var(--bg);border-left:4px solid var(--F);border-radius:8px;padding:8px 10px;font-size:14px;margin:6px 0}
   .otext{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.otext span{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px 8px;font-size:13px}
+  .lstbox{margin-top:12px}
+  .pastezone{margin-top:12px;border:3px dashed color-mix(in srgb,var(--C) 50%,var(--line));border-radius:14px;padding:16px;text-align:center;cursor:pointer;background:var(--card);outline:none}
+  .pastezone:focus{border-color:var(--C);background:color-mix(in srgb,var(--C) 8%,var(--card))}
+  .pastezone.ok{border-color:var(--good);background:color-mix(in srgb,var(--good) 14%,var(--card))}
+  .folder{margin-top:14px;border:2px solid color-mix(in srgb,var(--T) 55%,var(--line));border-radius:4px 14px 14px 14px;background:color-mix(in srgb,var(--T) 7%,var(--card));padding:12px;position:relative;transition:box-shadow .3s}
+  .folder.pulse{box-shadow:0 0 0 4px color-mix(in srgb,var(--F) 45%,transparent)}
+  .folder-tab{position:absolute;top:-16px;left:-2px;background:color-mix(in srgb,var(--T) 35%,var(--card));border:2px solid color-mix(in srgb,var(--T) 55%,var(--line));border-bottom:none;border-radius:10px 10px 0 0;padding:2px 12px;font-family:Fredoka;font-weight:600;font-size:14px}
+  .fcount{display:inline-block;min-width:22px;text-align:center;background:var(--ink);color:var(--bg);border-radius:999px;padding:0 7px;margin-left:4px;font-size:12px}
+  .fempty{text-align:center;color:var(--muted);padding:18px 8px 8px;font-size:14px}
+  .th img{cursor:zoom-in}
+  .th.fresh{animation:pop .4s ease-out;border-color:var(--F)}
+  .newtag{position:absolute;top:10px;right:10px;background:var(--F);color:#fff;font-size:11px;font-weight:700;border-radius:6px;padding:1px 6px}
+  .xbanner{margin:0 0 12px;padding:10px 14px;border-radius:12px;font-size:14px;background:var(--card);border:2px dashed var(--line)}
+  .xbanner.on{background:linear-gradient(135deg,color-mix(in srgb,var(--T) 20%,var(--card)),color-mix(in srgb,var(--F) 16%,var(--card)));border:2px solid color-mix(in srgb,var(--T) 60%,var(--line))}
+  .xchip{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.5px;color:#7a4b00;background:#ffd166;border-radius:6px;padding:1px 6px}
+  .pl.xpro{background:color-mix(in srgb,var(--T) 9%,transparent);border-radius:8px;padding-left:6px;padding-right:6px}
+  .xchip.plus{color:#fff;background:var(--F)}
+  .pl.xplus{background:color-mix(in srgb,var(--F) 8%,transparent);border-radius:8px;padding-left:6px;padding-right:6px}
+  .xbanner.mid{background:color-mix(in srgb,var(--F) 10%,var(--card));border:2px solid color-mix(in srgb,var(--F) 45%,var(--line))}
+  .lvlnote{margin-top:12px;padding:10px 12px;border-radius:12px;font-size:14px;line-height:1.5;border:2px solid var(--line);background:var(--bg)}
+  .lvlnote.lv-new{border-color:color-mix(in srgb,var(--F) 40%,var(--line));background:color-mix(in srgb,var(--F) 7%,var(--card))}
+  .lvlnote.lv-some{border-color:color-mix(in srgb,var(--C) 40%,var(--line));background:color-mix(in srgb,var(--C) 6%,var(--card))}
+  .lvlnote.lv-adv{border-color:color-mix(in srgb,var(--T) 60%,var(--line));background:color-mix(in srgb,var(--T) 10%,var(--card))}
+  .lvlhint{margin-top:12px;font-size:13px;background:var(--bg);border-radius:10px;padding:8px 10px;line-height:1.6}
+  .levelup{max-width:680px;margin:12px auto 0;background:var(--card);border:2px dashed color-mix(in srgb,var(--T) 55%,var(--line));border-radius:14px;padding:12px 14px}
+  .levelup.lv-some{border-color:color-mix(in srgb,var(--F) 50%,var(--line))}
+  .vdgrid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px;margin-top:14px;align-items:start}
+  .vdgrid video{width:100%;max-height:420px;background:#000;border-radius:12px}
+  @media (max-width:720px){ .vdgrid{grid-template-columns:1fr} }
+  .vdframes{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
+  .vdframes figure{margin:0}.vdframes img{width:100%;border-radius:8px;display:block}.vdframes figcaption{font-size:12px;color:var(--muted);text-align:center}
+  .vdres .stat b{word-break:break-word}
   .steps li{margin-bottom:6px}
   .keeps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px}
   .keep{display:flex;gap:8px;align-items:center;background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:8px 10px;font-size:14px;cursor:pointer}
@@ -325,7 +357,7 @@ const GAMES = [
   ];
 function setNav(id){ window._rerender=null; document.querySelectorAll('.nav .tab').forEach(b=>b.classList.toggle('on',b.id==='nav-'+id)); }
 function home(){
-  setNav('home');
+  setNav('home'); window._rerender=home;
   $('#app').innerHTML = `
     <div class="card pop">
       <h1>Learn to write great AI prompts</h1>
@@ -349,6 +381,9 @@ function home(){
         <p>${CRAFT.map(x=>`<mark style="--c:${COLOR[x.L]}" title="${x.w}">${esc(x.ex.replace(/"/g,'').replace(/^…|…$/g,''))}</mark>`).join(' ')}</p>
         <div class="fp-legend">${CRAFT.map(x=>`<span><i style="background:${COLOR[x.L]}"></i>${x.L} = ${x.w}</span>`).join('')}</div>
       </div>
+      ${LEVEL==='new'?`<div class="lvlnote lv-new" style="max-width:680px;margin:12px auto 0">🌱 <b>Just starting:</b> this prompt is all you need. Copy it into Claude, change the words in it to match your business, and press Enter.</div>`
+        :`<div class="levelup lv-${LEVEL}"><div class="fp-head" style="font-size:15px">${LEVEL==='adv'?'🌳 Expert upgrade — add these lines for professional results':'🌿 Level up — add these lines for even better results'}</div>
+          ${(LEVEL==='adv'?['C','R','A','F','T','E']:['C','A','F']).map(L=>{ const t=(LEVEL==='adv'?EXPERT_COMMON:PLUS_COMMON)[L]; return t?`<div class="pl ${LEVEL==='adv'?'xpro':'xplus'}"><span class="chip" style="background:${COLOR[L]}">${L}</span><div><small style="color:${COLOR[L]};font-weight:700">${WORD[L]}</small> <span class="xchip ${LEVEL==='adv'?'':'plus'}">${LEVEL==='adv'?'PRO':'PLUS'}</span><br>${esc(t)}</div></div>`:''; }).join('')}</div>`}
       <div class="sarrow becomes">⬇ can become this ⬇</div>
       <div class="result win">
         <div class="win-bar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span>Claude — your result</span></div>
@@ -388,11 +423,12 @@ function home(){
   window.scrollTo(0,0);
 }
 function gamesView(){
-  setNav('games');
+  setNav('games'); window._rerender=gamesView;
   $('#app').innerHTML = `
     <div class="card pop">
       <h1>🎮 Pick a game</h1>
       <p class="muted" style="margin:0">Play them in order — each one gets a little harder. Your best score is saved for each game.</p>
+      ${lvlNote(GAME_LVL)}
     </div>
     <div class="games">
       ${GAMES.map(g=>{const b=store('best_'+g.id); return `<button class="gbtn pop" onclick="start('${g.id}')"><span class="em">${g.em}</span><span class="n">${g.n}</span><span class="muted">${g.d}</span>${b?`<div class="best">Your best: ${b}%</div>`:''}</button>`}).join('')}
@@ -420,12 +456,64 @@ function results(game, got, max, lesson){
 }
 
 /* ---------- Game 1: Letter Match ---------- */
+/* ---------- Site-wide skill levels ---------- */
+const LVL_NAME = ()=>({new:'🌱 Just starting',some:'🌿 Not completely lost',adv:'🌳 Almost there'})[LEVEL];
+function lvlNote(map){ const t=map[LEVEL]; return t?`<div class="lvlnote lv-${LEVEL}"><b>${LVL_NAME()}:</b> ${t}</div>`:''; }
+const PLUS_Q = [
+  {q:'Adding “If anything is unclear, ask me 1–2 questions first” helps because…', a:'The AI fills in missing info before it starts', o:['The AI fills in missing info before it starts','It makes the answer longer','It changes the tone','The AI requires it'], why:'Missing details are the #1 reason for so-so answers. Letting the AI ask first fixes that.'},
+  {q:'“Who it’s for: busy first-time home buyers” belongs to which CRAFT letter?', a:'Context', o:['Context','Role','Format','Tone'], why:'Who the result is for is background information — that’s Context.'}
+];
+const ADV_Q = [
+  {q:'Which add-on makes the AI check and improve its own work?', a:'Ask it to critique its draft and give a revised version', o:['Ask it to critique its draft and give a revised version','Ask it to use more emojis','Tell it the task is urgent','Ask it to write faster'], why:'A built-in self-review step catches weak spots before you ever see them.'},
+  {q:'What is a “few-shot” prompt?', a:'A prompt that includes examples of the output you want', o:['A prompt that includes examples of the output you want','A very short prompt','A prompt you send a few times','A prompt with no context'], why:'Showing 1–3 examples is one of the most reliable ways to get the exact style and quality you want.'},
+  {q:'Why add “Success looks like…” to your Context?', a:'So the AI knows exactly what a great result is', o:['So the AI knows exactly what a great result is','To make the prompt longer','Because the AI needs a password','So it answers in another language'], why:'Clear success criteria give the AI a target — and something to check its work against.'},
+  {q:'What should you do with numbers the AI isn’t sure about?', a:'Ask it to label them as estimates so you can verify them', o:['Ask it to label them as estimates so you can verify them','Trust them completely','Delete the whole answer','Ask for more numbers'], why:'Professionals always verify. Labelled estimates show you exactly what to double-check.'},
+  {q:'Best way to handle a big, complex task with AI?', a:'Break it into steps: outline → draft → review → final', o:['Break it into steps: outline → draft → review → final','Ask for everything in one huge message','Never give feedback','Start a new chat for every sentence'], why:'“Chaining” steps keeps quality high and lets you steer at each stage.'}
+];
+const ADV_PHRASES = [
+  ['Write it for first-time home buyers who feel overwhelmed by the process.','C'],
+  ['Respond like a skeptical CFO reviewing this budget.','R'],
+  ['Before answering, list the three biggest assumptions you are making.','A'],
+  ['Use a two-column table — Risk | Fix — and end with a one-line summary.','F'],
+  ['Confident but warm, like a trusted advisor — never salesy.','T'],
+  ['Our clinic opened last month and already has 40 five-star reviews.','C'],
+  ['Critique your first draft, then give me an improved final version.','A'],
+  ['Limit each bullet to 12 words and bold the key number.','F']
+];
+const ADV_WORDS = [
+  ['CRITERIA','What success is measured against — add it to Context in expert prompts.'],
+  ['ASSUMPTION','Something the AI takes for granted — ask it to list these.'],
+  ['BENCHMARK','A standard number to compare against, like an industry average.'],
+  ['CONSTRAINT','A limit such as budget, deadline or word count.'],
+  ['PERSONA','A detailed character for the AI to play — a richer version of Role.'],
+  ['CRITIQUE','Asking the AI to review and improve its own draft.'],
+  ['AUDIENCE','The people who will read the final result.'],
+  ['ITERATE','To try again and improve — great prompts are refined, not perfect the first time.']
+];
+const BUILD_ADV = [
+  ['I am an account manager. A client has not replied to my email in a while.','Act as a sales expert.','Write a follow-up email to the client.','Keep it short with a subject line.','Friendly and professional.'],
+  ['We are running a customer testimonial campaign for our supplement brand.','Act as a social media manager.','Write some posts asking customers for testimonials.','Make them short with hashtags.','Upbeat and positive.'],
+  ['My manager needs a summary of a long sales report.','Act as an analyst.','Summarize the report.','Use bullet points.','Professional.']
+];
+const BUILD_HINT = {C:'Pick the one with real facts: who, what, when.',R:'Look for “Act as…” with a specific expert.',A:'Look for a clear doing word and a specific task.',F:'Look for numbers: length, list, sections.',T:'Look for describing words about how it sounds.'};
+const SORT_HINT = `<div class="lvlhint"><b>💡 Hints:</b> <span style="color:var(--C)">C</span> = facts about you/the situation · <span style="color:var(--R)">R</span> = “Act as…” / “You are…” · <span style="color:var(--A)">A</span> = a doing word (write, list, summarize) · <span style="color:var(--F)">F</span> = how it looks (list, table, length) · <span style="color:var(--T)">T</span> = how it sounds (friendly, calm, fun)</div>`;
+const GAME_LVL = {new:'Easier questions with hints, and free first-letter help in Word Scramble.', some:'Standard questions plus a couple of “PLUS” prompting tips.', adv:'Harder, expert-level questions, trickier phrases, tougher words, “almost right” answers in Prompt Builder, and a no-hints Memory Test.'};
+const TOOL_TIPS = {
+  calc:{new:'Tap the numbers and signs, then the green <b>=</b> button. Made a mistake? Tap <b>⌫ Delete last</b> or <b>C</b> to start over.', some:'Type with your keyboard for speed. Use parentheses for order: (100 − 20) ÷ 4. Tap a history line to reuse an answer.', adv:'Keyboard: Enter =, Esc clear, Backspace delete. % divides by 100 (so “200 × 15%” = 30). Chain results by tapping history lines.'},
+  receipt:{new:'Type what you bought, how many, and the price for one, then tap <b>➕ Add</b>. The total updates by itself. Tax: find your local sales tax % (for example 7.25) and type it in the Sales tax box.', some:'Edit quantities and prices right in the list. Use Discount % for coupons and Tip % for restaurants. 📋 Copy receipt gives you a clean text version.', adv:'Discount is applied before tax; tip is calculated on the discounted, pre-tax amount. Use the receipt name for expense reports, then paste the copied text into an email or spreadsheet.'},
+  mortgage:{new:'<b>What the words mean:</b> <i>Principal</i> = the money you borrowed. <i>Interest</i> = what the bank charges you to borrow. <i>PMI</i> = extra insurance if you put down less than 20%. <i>HOA</i> = monthly fees some neighborhoods charge. The big number is about what you’d pay every month.', some:'Tip: compare a 15-year loan (higher monthly payment, far less total interest) with a 30-year loan using the Loan term menu. Lenders like your total housing cost to stay under about 28% of your monthly income before taxes.', adv:''},
+  auto:{new:'<b>What the words mean:</b> <i>APR</i> = the yearly interest rate. <i>Amount financed</i> = what you borrow after your down payment and trade-in. <i>Trade-in</i> = the value of the car you give the dealer. If you owe more on your old car than it’s worth, that difference gets added to the new loan.', some:'A common guideline is the 20/4/10 rule: put about 20% down, borrow for no more than 4 years (48 months), and keep total car costs under about 10% of your monthly income.', adv:''},
+};
+const PLANNER_TIPS = {new:'Tap any day on the calendar, then tap <b>➕ Add an event</b>. Type what it is and the time, then tap the green button. To add a to-do, type it in the <b>New task</b> box and tap ➕.', some:'Use categories (Work, Client, Personal…) to color-code your days, 🔥 for high-priority tasks, and <b>📋 Next 7 days</b> to see your week at a glance.', adv:'Turn on Google sync (🔄 tab) so events flow to Google and Apple Calendar automatically. Use <b>📋 Next 7 days → Copy agenda</b> for weekly planning, and “Move unfinished tasks to today” to roll over to-dos.'};
+function payoffWithExtra(loan,rate,n,pay,extra){ const r=rate/100/12; let bal=loan, m=0, interest=0; while(bal>0.01&&m<n*2){ const i=bal*r; interest+=i; bal=bal+i-(pay+extra); m++; } return {months:m, interest}; }
+
 function matchGame(){
-  const qs = shuffle([
+  const base = shuffle([
     ...CRAFT.map(x=>({q:`In CRAFT, what does the letter <b style="color:${COLOR[x.L]}">${x.L}</b> stand for?`, a:x.w, o:shuffle([x.w, ...shuffle(CRAFT.filter(y=>y.L!==x.L).map(y=>y.w).concat(['Clarity','Rules','Answer','Feeling','Topic'].filter(w=>w[0]===x.L))).slice(0,3)]), why:x.d})),
     ...shuffle(CRAFT).slice(0,3).map(x=>({q:`Which CRAFT word matches this?<br><span class="muted">"${x.d}"</span>`, a:x.w, o:shuffle(CRAFT.map(y=>y.w)).slice(0,5), why:`Example: ${x.ex}`})),
     {q:'Why use an acronym like CRAFT?', a:'So you never forget a key part of a good prompt', o:shuffle(['So you never forget a key part of a good prompt','Because AI only understands acronyms','To make prompts shorter','It is required by the AI']), why:'CRAFT is a checklist for you, not a secret code for the AI. You write normal sentences — CRAFT just helps you remember all 5 parts.'},
-  ]).slice(0,10);
+  ]);
+  const qs = LEVEL==='new' ? base.slice(0,8) : LEVEL==='some' ? shuffle([...base.slice(0,8),...PLUS_Q]) : shuffle([...base.slice(0,7),...ADV_Q]);
   let i=0, got=0;
   function show(){
     if(i>=qs.length) return results('match',got,qs.length*10,'C = Context, R = Role, A = Action, F = Format, T = Tone..');
@@ -466,7 +554,7 @@ const PHRASES = [
   ['Use a calm, caring voice.','T'],
 ];
 function sortGame(){
-  const qs = shuffle(PHRASES).slice(0,10);
+  const qs = LEVEL==='new' ? shuffle(PHRASES).slice(0,8) : LEVEL==='some' ? shuffle(PHRASES).slice(0,10) : shuffle([...shuffle(PHRASES).slice(0,4),...ADV_PHRASES]);
   let i=0, got=0;
   function show(){
     if(i>=qs.length) return results('sort',got,qs.length*10,'Each sentence in your prompt should do one job. If a letter is missing, your answer will be weaker in that area.');
@@ -476,6 +564,7 @@ function sortGame(){
       <p class="muted">This is one piece of a prompt. Which CRAFT part is it?</p>
       <div class="phrase">"${p}"</div>
       <div class="row5">${CRAFT.map(x=>`<button class="lbtn" style="background:${COLOR[x.L]}" data-l="${x.L}">${x.L}<small>${x.w}</small></button>`).join('')}</div>
+      ${LEVEL==='new'?SORT_HINT:''}
       <div id="fb"></div></div>`;
     document.querySelectorAll('.lbtn').forEach(b=>b.onclick=()=>{
       const ok=b.dataset.l===ans;
@@ -503,14 +592,15 @@ const WORDS = [
   ['LIMIT','A rule like "under 100 words" or "only 3 ideas".'],
 ];
 function scrambleGame(){
-  const qs = shuffle(WORDS).slice(0,6);
+  const qs = LEVEL==='new' ? shuffle(WORDS.filter(w=>w[0].length<=7)).slice(0,5) : LEVEL==='some' ? shuffle(WORDS).slice(0,6) : shuffle(ADV_WORDS).slice(0,6);
   let i=0, got=0;
   function show(){
     if(i>=qs.length) return results('scramble',got,qs.length*15,'Prompting has its own vocabulary. Being SPECIFIC about your AUDIENCE and giving an EXAMPLE are the fastest ways to improve any prompt. And if it is not right the first time — ITERATE!');
     const [word,hint]=qs[i];
     let letters; do{ letters=shuffle(word.split('')); }while(letters.join('')===word && word.length>1);
     const tiles = letters.map((c,k)=>({c,k,used:false}));
-    let picked=[], hinted=false, done=false;
+    let picked=[], hinted=false, done=false, freeHint=LEVEL==='new';
+    if(freeHint){ const t0=tiles.find(t=>t.c===word[0]); t0.used=true; picked.push(t0.k); hinted=true; }
     function draw(){
       $('#app').innerHTML = `<div class="card pop">
         <div class="top"><h3>🧩 Word Scramble</h3><span class="muted">${i+1} of ${qs.length}</span></div>${bar(i,qs.length)}
@@ -519,14 +609,14 @@ function scrambleGame(){
         <div class="answer">${word.split('').map((_,k)=>picked[k]!==undefined?`<div class="slot f" data-s="${k}">${tiles[picked[k]].c}</div>`:`<div class="slot"></div>`).join('')}</div>
         <div class="tiles">${tiles.map(t=>`<div class="tile ${t.used?'used':''}" data-t="${t.k}">${t.c}</div>`).join('')}</div>
         <div class="actions" style="justify-content:center">
-          <button class="btn ghost" id="hint" ${hinted||done?'disabled':''}>💡 Hint (first letter)</button>
+          ${freeHint?'<span class="muted" style="font-size:13px;align-self:center">🌱 First letter given for free</span>':`<button class="btn ghost" id="hint" ${hinted||done?'disabled':''}>💡 Hint (first letter)</button>`}
           <button class="btn ghost" id="skip" ${done?'disabled':''}>Give up</button>
         </div>
         <div id="fb"></div></div>`;
       if(done) return;
       document.querySelectorAll('.tile').forEach(el=>el.onclick=()=>{const t=tiles[+el.dataset.t]; if(t.used) return; t.used=true; picked.push(t.k); check();});
       document.querySelectorAll('.slot.f').forEach(el=>el.onclick=()=>{const s=+el.dataset.s; if(hinted && s===0) return; const k=picked.splice(s,1)[0]; tiles[k].used=false; draw();});
-      $('#hint').onclick=()=>{ hinted=true; picked.forEach(k=>tiles[k].used=false); picked=[]; const t=tiles.find(t=>t.c===word[0]); t.used=true; picked.push(t.k); draw(); };
+      if($('#hint')) $('#hint').onclick=()=>{ hinted=true; picked.forEach(k=>tiles[k].used=false); picked=[]; const t=tiles.find(t=>t.c===word[0]); t.used=true; picked.push(t.k); draw(); };
       $('#skip').onclick=()=>finish(false);
     }
     function check(){
@@ -535,7 +625,7 @@ function scrambleGame(){
       if(guess===word) finish(true); else { draw(); $('#fb').innerHTML=`<div class="fb bad pop">Not quite — tap letters in the top row to take them back out.</div>`; }
     }
     function finish(ok){
-      done=true; const pts= ok?(hinted?5:15):0; got+=pts; if(pts) addPoints(pts);
+      done=true; const pts= ok?((hinted&&!freeHint)?5:15):0; got+=pts; if(pts) addPoints(pts);
       picked = word.split('').map((c,k)=>k); tiles.forEach((t,k)=>{t.c=word[k];t.used=true;});
       draw();
       $('#fb').innerHTML = `<div class="fb ${ok?'good':'bad'} pop"><b>${ok?`✅ ${word}! +${pts}`:`The word was ${word}.`}</b><br>${hint}</div><div class="actions"><button class="btn">Next →</button></div>`;
@@ -573,12 +663,14 @@ function buildGame(){
   function show(){
     if(si>=list.length) return results('build',got,list.length*50,'A strong piece is SPECIFIC and does its own job. Vague words like "nice" or "good" do not tell the AI anything. And a sentence in the wrong spot (like a tone word where the task should be) leaves that letter empty.');
     const sc=list[si]; const choice={};
-    const opts={}; CRAFT.forEach(x=>opts[x.L]=shuffle(sc[x.L]));
+    const adv=LEVEL==='adv'?BUILD_ADV[SCENARIOS.indexOf(sc)]:null;
+    const opts={}; CRAFT.forEach((x,k)=>opts[x.L]=shuffle(adv?[...sc[x.L],[adv[k],'d']]:sc[x.L]));
     $('#app').innerHTML = `<div class="card pop">
       <div class="top"><h3>🛠️ Prompt Builder</h3><span class="muted">Challenge ${si+1} of ${list.length}</span></div>${bar(si,list.length)}
       <p style="font-size:18px"><b>Your task:</b> ${sc.task}</p>
       <p class="muted">For each letter, pick the sentence that does that job the BEST. Watch out — some are vague, and some belong to a different letter!</p>
-      ${CRAFT.map(x=>`<div class="bgroup"><div class="lab"><span class="chip" style="background:${COLOR[x.L]}">${x.L}</span>${x.w}</div>
+      ${LEVEL==='adv'?'<p class="lvlnote lv-adv" style="margin-top:0">🌳 <b>Expert round:</b> each letter now has an “almost right” option too. Only the most specific one earns full points.</p>':''}
+      ${CRAFT.map(x=>`<div class="bgroup"><div class="lab"><span class="chip" style="background:${COLOR[x.L]}">${x.L}</span>${x.w}${LEVEL==='new'?`<span class="muted" style="font-size:13px;font-family:Inter;font-weight:400;margin-left:6px">— 💡 ${BUILD_HINT[x.L]}</span>`:''}</div>
         <div class="opts" style="margin-top:0">${opts[x.L].map((o,k)=>`<button class="opt" data-l="${x.L}" data-k="${k}">${o[0]}</button>`).join('')}</div></div>`).join('')}
       <div class="actions"><button class="btn" id="go" disabled>Build my prompt →</button></div>
       <div id="out"></div></div>`;
@@ -594,6 +686,7 @@ function buildGame(){
         const [txt,kind]=opts[x.L][choice[x.L]];
         const best=opts[x.L].find(o=>o[1]==='s')[0];
         if(kind==='s'){pts+=10; rev.push(`<div class="s">✅ <b>${x.w}:</b> Strong and specific. +10</div>`);}
+        else if(kind==='d'){pts+=6; rev.push(`<div class="v">👍 <b>${x.w}:</b> “${txt}” is decent, but missing specifics. +6<br><span class="muted">Better: “${best}”</span></div>`);}
         else if(kind==='v'){pts+=3; rev.push(`<div class="v">⚠️ <b>${x.w}:</b> "${txt}" is too vague. +3<br><span class="muted">Better: "${best}"</span></div>`);}
         else { rev.push(`<div class="o">❌ <b>${x.w}:</b> "${txt}" belongs to a different letter, so ${x.w} was left empty. +0<br><span class="muted">Better: "${best}"</span></div>`);}
       });
@@ -618,12 +711,12 @@ function recallGame(){
   const L=CRAFT;
   $('#app').innerHTML = `<div class="card pop">
     <h3>🧠 Memory Test</h3>
-    <p>No hints this time. Type the word each letter stands for. (Spelling counts, but capitals don't.)</p>
+    <p>${LEVEL==='new'?'Type the word each letter stands for. The gray hint shows the first letter and how many letters. (Capitals don’t matter.)':LEVEL==='adv'?'🌳 Expert mode: no letters shown. Type all 5 CRAFT words <b>in order</b>, from memory. (Capitals don’t matter.)':'No hints this time. Type the word each letter stands for. (Spelling counts, but capitals don’t.)'}</p>
     <div style="display:grid;gap:10px;margin-top:12px">
-      ${L.map(x=>`<label style="display:flex;align-items:center;gap:10px"><span class="chip" style="background:${COLOR[x.L]};width:40px;height:40px;font-size:22px">${x.L}</span>
-        <input data-l="${x.L}" autocomplete="off" placeholder="Type the word…" style="flex:1;font:inherit;font-size:18px;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink)"></label>`).join('')}
+      ${L.map((x,k)=>`<label style="display:flex;align-items:center;gap:10px"><span class="chip" style="background:${LEVEL==='adv'?'var(--ink)':COLOR[x.L]};width:40px;height:40px;font-size:22px">${LEVEL==='adv'?k+1:x.L}</span>
+        <input data-l="${x.L}" autocomplete="off" placeholder="${LEVEL==='new'?x.w[0]+' _ '.repeat(x.w.length-1).trim()+` (${x.w.length} letters)`:LEVEL==='adv'?'Word #'+(k+1)+' of CRAFT…':'Type the word…'}" style="flex:1;font:inherit;font-size:18px;padding:10px 12px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink)"></label>`).join('')}
     </div>
-    <p style="margin-top:16px"><b>Bonus:</b> Put the 5 letters in the right order (type them, e.g. ABCDE):</p>
+    <p style="margin-top:16px"><b>Bonus:</b> Put the 5 letters in the right order (type them, e.g. ABCDE)${LEVEL==='new'?' — 💡 it spells a word that means “to make something with skill”':''}:</p>
     <input id="order" maxlength="5" autocomplete="off" style="font:inherit;font-family:Fredoka;font-size:24px;letter-spacing:6px;text-transform:uppercase;padding:8px 12px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink);width:180px">
     <div class="actions"><button class="btn" id="chk">Check my answers</button></div>
     <div id="fb"></div></div>`;
@@ -1244,7 +1337,51 @@ const KEEP = [
   ['notext','No text, logos or watermarks','text, logos, watermarks'],
   ['stable','Stable camera — no shake, warping or morphing','camera shake, warping, morphing, melting, flicker'],
 ];
-const ST = { light:'auto', motion:'auto', amount:10, energy:'calm', keep:Object.fromEntries(KEEP.map(k=>[k[0],true])), photos:[], tool:'Runway', ar:'16:9', len:5, look:'warm', trans:'dissolve', area:'', price:'', beds:'', feature:'', agent:'', phone:'' };
+
+/* ---- Professional options ---- */
+Object.assign(LOOKS,{
+  editorial:{n:'Luxury editorial — neutral & high-end', grade:'Neutral, true-to-life whites with rich blacks, subtle contrast, a high-end magazine look', tone:'Sophisticated, elegant, understated luxury', fx:'rgba(255,240,225,0.10)', pro:true},
+  tealorange:{n:'Cinematic teal & orange', grade:'Cinematic teal-and-orange grade: warm highlights, cool teal shadows, filmic contrast', tone:'Bold and cinematic, with movie-trailer energy', fx:'rgba(255,140,60,0.22)', pro:true},
+  film:{n:'Golden film — warm analog look', grade:'Warm analog film emulation: golden highlights, soft halation, gentle grain, slightly faded blacks', tone:'Nostalgic, warm and emotional', fx:'rgba(255,170,80,0.28)', pro:true},
+  mls:{n:'True-to-life MLS — accurate color', grade:'Accurate, neutral color with balanced exposure and HDR-balanced windows; no stylized grading', tone:'Clean, honest and inviting', fx:'rgba(255,255,255,0.04)', pro:true},
+  moody:{n:'Moody architectural — high contrast', grade:'Deep shadows, crisp highlights and a desaturated cool palette that emphasizes lines and materials', tone:'Dramatic, architectural and design-forward', fx:'rgba(40,60,90,0.25)', pro:true},
+  nordic:{n:'Scandinavian bright & minimal', grade:'Bright airy whites, soft pastel neutrals, low contrast, clean minimal look', tone:'Calm, fresh and minimal', fx:'rgba(255,255,255,0.14)', pro:true}
+});
+Object.assign(MOTIONS,{
+  orbit:{n:'Small orbit (about 15°)', p:a=>`a small, slow orbit around the room’s center of about ${Math.round(a*1.5)} degrees, keeping the main feature centered`, anim:'right', pro:true},
+  parallax:{n:'Parallax push (foreground depth)', p:a=>`a slow push forward of about ${a} percent with gentle parallax — foreground objects drift past slightly faster than the background`, anim:'push', pro:true},
+  reveal:{n:'Low-slide reveal from behind an object', p:a=>`a low, slow sideways slide out from behind a foreground edge (counter, doorway or plant) that reveals the room, about ${a} percent of the frame width`, anim:'right', pro:true},
+  crane:{n:'Crane down into the room', p:a=>`a slow crane down of about ${a} percent of the frame height, settling at eye level`, anim:'rise', pro:true},
+  tiltdown:{n:'Tilt-down reveal (ceiling → room)', p:a=>`a slow tilt down from the ceiling details to the full room, about ${a} percent of the frame height`, anim:'rise', pro:true},
+  topdown:{n:'Drone top-down rise (bird’s-eye)', p:a=>`a straight-down bird’s-eye drone view rising slowly, revealing about ${a} percent more of the property`, anim:'pull', pro:true},
+  rack:{n:'Rack focus (foreground → room)', p:()=>`a locked-off shot with a slow rack focus from a foreground detail to the full room — no camera movement`, anim:'push', pro:true}
+});
+Object.assign(ENERGY,{
+  slowcine:{n:'Luxury slow-cinema (slow-motion feel)', s:'luxury slow-cinema energy — extremely slow and deliberate, like footage shot at 60 fps and played back at 24 fps', pro:true},
+  glide:{n:'Steadicam glide (continuous walkthrough)', s:'continuous Steadicam-style glide — buttery smooth, constant velocity, no starts or stops', pro:true},
+  beat:{n:'Beat-synced (moves land on the music)', s:'beat-synced energy — the move starts and settles in time with a steady 90–110 BPM music beat', pro:true},
+  hyper:{n:'Hyperlapse walkthrough (fast but smooth)', s:'hyperlapse walkthrough energy — faster forward travel with perfectly stabilized, smooth motion', pro:true}
+});
+Object.assign(LIGHTS,{
+  flare:{n:'Golden-hour sun flare through windows', p:'low golden-hour sun with a soft, gentle lens flare through the windows', pro:true},
+  bluehour:{n:'Blue hour + glowing interior lights', p:'deep blue-hour sky outside while warm interior lamps and pendants glow', pro:true},
+  overcast:{n:'Soft overcast, diffused daylight', p:'soft, even overcast daylight with no harsh shadows', pro:true},
+  windowpull:{n:'HDR window pull (view stays visible)', p:'balanced HDR exposure so the view outside the windows stays visible while the interior stays bright', pro:true},
+  fire:{n:'Fireplace flicker glow', p:'a gentle, warm fireplace flicker glowing softly in the room', pro:true},
+  night:{n:'Night: landscape & pool lights', p:'night-time scene with landscape uplights and glowing pool lights', pro:true}
+});
+const TRANS_OPTS=[['dissolve','Seamless soft dissolves'],['light','Warm light-leak glows'],['match','Match cuts on motion (editor’s choice)',1],['whip','Whip-pan transitions (energetic)',1],['beat','Hard cuts on the music beat',1],['dip','Dip to black between rooms',1],['zoom','Zoom-through push transitions',1],['lightsweep','Light-sweep / luma fade (luxury)',1]];
+const TRANS_TXT={match:'Match cut: cut where both clips move in the same direction and speed (0–2 frame overlap) so it feels like one continuous move',whip:'Whip pan: a fast 6–8 frame directional blur matching the next clip’s motion direction',beat:'Hard cut exactly on the next music beat',dip:'Dip to black: 8 frames out, 8 frames in',zoom:'Zoom-through: 10-frame push-in with motion blur into the next clip',lightsweep:'Luma fade / soft light sweep, 12–15 frames'};
+const TRANS_CAPCUT={dissolve:'“Mix” / “Dissolve”',light:'“Light leak” or “Flash” (warm)',match:'no transition (a straight cut) — trim each clip so the motion carries straight into the next',whip:'“Whip” or “Swipe” (match the direction of the camera move)',beat:'no transition — use <b>Beats → Auto-generate</b> and cut on the beat marks',dip:'“Black fade” / “Fade to black”',zoom:'“Zoom in” or “Pull in”',lightsweep:'“Light sweep” or “Flash”'};
+const LENS={auto:['Auto — by room',null],'16':['16mm ultra-wide (small rooms)','16mm ultra-wide rectilinear lens — keep verticals straight, no fisheye',1],'24':['24mm wide (recommended)','wide 24mm cinema lens, no fisheye'],'35':['35mm natural perspective','35mm natural-perspective lens, true-to-life proportions',1],'50':['50mm detail / vignette shots','50mm lens for detail and vignette shots',1],'85':['85mm telephoto compression','85mm telephoto lens with flattering compression and soft background',1],'100':['100mm macro (finishes & textures)','100mm macro lens for close-up finishes and textures',1]};
+const FPS={'24':['24 fps — cinematic (recommended)','24 fps with a 180° shutter for natural cinematic motion blur'],'30':['30 fps — standard video','30 fps standard video'],'60':['60 fps — smooth slow motion',`60 fps, conformed to 24 fps for a smooth 40% slow-motion feel`,1],'120':['120 fps — super slow motion','120 fps for super-slow-motion details (water, fire, fabric)',1]};
+const DOF={f8:['Deep focus f/8 (everything sharp)','deep focus around f/8 — the whole room sharp, as buyers expect'],f4:['Balanced f/4','balanced depth of field around f/4',1],f2:['Shallow f/2 (cinematic background blur)','shallow depth of field around f/2 with soft background blur — best for detail shots',1]};
+const MUSIC={piano:['Ambient piano (~70 BPM)','soft ambient piano, about 70 BPM'],strings:['Cinematic strings (~80 BPM)','cinematic strings that slowly build, about 80 BPM'],acoustic:['Upbeat acoustic (~100 BPM)','bright upbeat acoustic, about 100 BPM'],lofi:['Lo-fi chill (~85 BPM)','warm lo-fi chill beat, about 85 BPM',1],house:['Modern luxury house (~110 BPM)','sleek modern deep-house groove, about 110 BPM',1],orch:['Orchestral swell (~90 BPM)','orchestral piece with a big emotional swell at the finale, about 90 BPM',1]};
+const EXPORT={hd:['1080p · 30 fps · H.264 (social media)','1080p, 30 fps, H.264, about 16 Mbps'],k4:['4K · 24 fps · H.264 (MLS & YouTube)','4K (3840×2160), 24 fps, H.264, about 45 Mbps',1],prores:['4K · ProRes 422 HQ (master/archive)','4K ProRes 422 HQ master file for archiving and re-editing',1]};
+const AR_SIZES={'16:9':[960,540],'9:16':[540,960],'1:1':[720,720],'4:5':[640,800],'21:9':[1050,450]};
+const proList=obj=>Object.entries(obj).map(([k,v])=>[k,v.n,v.pro?1:0]);
+const proList2=obj=>Object.entries(obj).map(([k,v])=>[k,v[0],v[2]?1:0]);
+const ST = { lens:'auto', fps:'24', dof:'f8', music:'piano', export:'k4', light:'auto', motion:'auto', amount:10, energy:'calm', keep:Object.fromEntries(KEEP.map(k=>[k[0],true])), photos:[], tool:'Runway', ar:'16:9', len:5, look:'warm', trans:'dissolve', area:'', price:'', beds:'', feature:'', agent:'', phone:'' };
 let PREV = null;
 
 function guessRoom(name, i){
@@ -1264,27 +1401,48 @@ function studioView(){
     <div class="card">
       <h2>Step 1 · Add your photos</h2>
       <label class="drop" id="drop">
-        <input type="file" id="files" accept="image/*" multiple hidden>
-        <span style="font-size:40px">📷</span><br><b>Drag & drop listing photos here</b><br><span class="muted">or tap to choose · 4–15 photos works best · your photos stay on your device</span>
+        <input type="file" id="files" accept="image/*,.zip,application/zip" multiple hidden>
+        <span style="font-size:40px">📷</span><br><b>Drag & drop listing photos — or a .ZIP of photos — here</b><br><span class="muted">or tap to choose · you can also paste a copied photo with Ctrl + V · your photos stay on your device</span>
       </label>
-      <div id="thumbs"></div>
+      <div class="folder" id="folder">
+        <div class="folder-tab">📁 My uploaded photos <span class="fcount" id="fcount">0</span></div>
+        <div id="thumbs"></div>
+      </div>
+      <details class="presetbox lstbox" id="lstBox">
+        <summary>🔗 Import photos from a listing website (Zillow, Redfin, Realtor.com, MLS…)</summary>
+        <label class="fld" style="display:block;margin-top:10px"><span>Paste the listing’s web address</span>
+          <input id="lstUrl" type="url" placeholder="e.g. https://www.zillow.com/homedetails/…" autocomplete="off"></label>
+        <div class="actions" style="margin-top:8px"><a class="btn" id="lstOpen" href="#" target="_blank" rel="noopener" style="text-decoration:none;pointer-events:none;opacity:.45">↗ Open the listing</a></div>
+        <div id="lstSteps"></div>
+        <div class="pastezone" id="pasteZone" tabindex="0">📋 <b>Click here, then press Ctrl + V</b> to paste a photo you copied<br><span class="muted" style="font-size:13px">(on a Mac: ⌘ + V) · paste as many as you like, one after another</span></div>
+        <p class="warnnote" style="margin-top:10px">⚠️ Only use photos you have permission to use — for example your own listing, or photos the listing agent or photographer gave you. Listing photos are usually owned by the photographer.</p>
+      </details>
     </div>
     <div class="card">
       <h2>Step 2 · Choose your style</h2>
       <div class="formgrid">
-        ${sel('look','Look & tone',Object.entries(LOOKS).map(([k,v])=>[k,v.n]))}
+        ${sel('look','Look & tone',proList(LOOKS))}
         ${sel('tool','AI video tool',['Runway','Kling','Luma Dream Machine','Google Veo','Pika','Other'].map(x=>[x,x]))}
-        ${sel('ar','Video shape',[['16:9','Horizontal 16:9 (YouTube, MLS, website)'],['9:16','Vertical 9:16 (Reels, TikTok, Shorts)']])}
-        ${sel('len','Seconds per photo',[[4,'4 seconds (fast-paced)'],[5,'5 seconds (recommended)'],[6,'6 seconds (slow & elegant)']])}
-        ${sel('trans','Transitions',[['dissolve','Seamless soft dissolves'],['light','Warm light-leak glows']])}
+        ${sel('ar','Video shape',[['16:9','Horizontal 16:9 (YouTube, MLS, website)'],['9:16','Vertical 9:16 (Reels, TikTok, Shorts)'],['4:5','Portrait 4:5 (Instagram & Facebook feed)',1],['1:1','Square 1:1 (social feeds, ads)',1],['21:9','Cinematic widescreen 21:9 (luxury trailer)',1]])}
+        ${sel('len','Seconds per photo',[[4,'4 seconds (fast-paced)'],[5,'5 seconds (recommended)'],[6,'6 seconds (slow & elegant)'],[3,'3 seconds (snappy social cut)',1],[8,'8 seconds (luxury slow-cinema)',1],[10,'10 seconds (long hero shots)',1]])}
+        ${sel('trans','Transitions',TRANS_OPTS)}
       </div>
       <h3 style="margin-top:18px">🎥 Camera motion (one single motion per clip)</h3>
       <div class="formgrid">
-        ${sel('motion','Camera motion',[['auto','Auto — best single motion for each room'],['presets','✨ Detailed room presets (auto by room)'],...Object.entries(MOTIONS).filter(([k,v])=>!v.preset).map(([k,v])=>[k,v.n+' (all clips)'])])}
-        ${sel('amount','Pan & scale amount',[[5,'Subtle — about 5%'],[10,'Standard — about 10% (recommended)'],[15,'Noticeable — about 15%'],[20,'Bold — about 20%']])}
-        ${sel('energy','Pace & energy',Object.entries(ENERGY).map(([k,v])=>[k,v.n]))}
+        ${sel('motion','Camera motion',[['auto','Auto — best single motion for each room'],['presets','✨ Detailed room presets (auto by room)'],...Object.entries(MOTIONS).filter(([k,v])=>!v.preset).map(([k,v])=>[k,v.n+' (all clips)',v.pro?1:0])])}
+        ${sel('amount','Pan & scale amount',[[5,'Subtle — about 5%'],[10,'Standard — about 10% (recommended)'],[15,'Noticeable — about 15%'],[20,'Bold — about 20%'],[3,'Micro — about 3% (barely moving, ultra-luxury)',1],[25,'Dramatic — about 25%',1]])}
+        ${sel('energy','Pace & energy',proList(ENERGY))}
       </div>
-      <div class="formgrid" style="margin-top:10px">${sel('light','💡 Environmental lighting',Object.entries(LIGHTS).map(([k,v])=>[k,v.n]))}</div>
+      <div class="formgrid" style="margin-top:10px">${sel('light','💡 Environmental lighting',proList(LIGHTS))}</div>
+      <h3 style="margin-top:18px">🎬 Pro camera & delivery</h3>
+      <div class="formgrid">
+        ${sel('lens','Lens / focal length',proList2(LENS))}
+        ${sel('fps','Frame rate',proList2(FPS))}
+        ${sel('dof','Depth of field',proList2(DOF))}
+        ${sel('music','Music style & tempo',proList2(MUSIC))}
+        ${sel('export','Export quality',proList2(EXPORT))}
+      </div>
+      <p class="muted" style="font-size:13px;margin:6px 0 0">Options under <b>⭐ Professional</b> in each menu are what high-end real estate videographers use.</p>
       <p class="muted" style="font-size:13px;margin:6px 0 0">Example: “a slow push forward of about 10 percent” with “gentle, calm walkthrough energy” and “soft natural light shifting gently.” You can also change the motion for a single photo in Step 1.</p>
       <details class="presetbox">
         <summary>✨ Detailed room presets — view & edit the wording</summary>
@@ -1307,7 +1465,8 @@ function studioView(){
       <div class="actions"><button class="btn" id="makeplan">🎬 Create my video prompts & plan</button></div>
     </div>
     <div id="studioOut"></div>`;
-  function sel(k,l,opts){ return `<label class="fld"><span>${l}</span><select data-k="${k}">${opts.map(o=>`<option value="${o[0]}" ${String(ST[k])===String(o[0])?'selected':''}>${o[1]}</option>`).join('')}</select></label>`; }
+  function sel(k,l,opts){ const op=o=>`<option value="${o[0]}" ${String(ST[k])===String(o[0])?'selected':''}>${o[1]}</option>`; const std=opts.filter(o=>!o[2]), pro=opts.filter(o=>o[2]);
+    return `<label class="fld"><span>${l}</span><select data-k="${k}">${std.map(op).join('')}${pro.length?`<optgroup label="⭐ Professional">${pro.map(op).join('')}</optgroup>`:''}</select></label>`; }
   function inp(k,l,ph){ return `<label class="fld"><span>${l}</span><input data-k="${k}" value="${esc(ST[k])}" placeholder="${ph}"></label>`; }
   document.querySelectorAll('[data-k]').forEach(el=>el.oninput=el.onchange=()=>{ ST[el.dataset.k]= (el.dataset.k==='len'||el.dataset.k==='amount')? +el.value : el.value; if(el.dataset.k==='motion') renderThumbs(); });
   document.querySelectorAll('[data-keep]').forEach(c=>c.onchange=()=>{ ST.keep[c.dataset.keep]=c.checked; });
@@ -1317,30 +1476,81 @@ function studioView(){
   files.onchange=()=>addFiles(files.files);
   drop.ondragover=e=>{e.preventDefault();drop.classList.add('over');};
   drop.ondragleave=()=>drop.classList.remove('over');
-  drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over');addFiles(e.dataTransfer.files);};
+  drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over'); const fl=e.dataTransfer.files; if(fl&&fl.length) addFiles(fl); else if(e.dataTransfer.getData('text/uri-list')||e.dataTransfer.getData('text/plain')) toast('That came in as a web link, not a photo. Right-click the photo → “Copy image”, then press Ctrl + V here.'); };
   $('#makeplan').onclick=makePlan;
+  const lu=$('#lstUrl'), lo=$('#lstOpen');
+  lu.oninput=()=>{ const v=lu.value.trim(); const ok=/^https?:\/\/\S+\.\S+/i.test(v)||/^[\w-]+\.[\w.-]+\/?/.test(v);
+    const href=ok?(/^https?:/i.test(v)?v:'https://'+v):'#';
+    lo.href=href; lo.style.pointerEvents=ok?'auto':'none'; lo.style.opacity=ok?1:.45; $('#lstSteps').innerHTML=ok?listingSteps(v):''; };
+  $('#pasteZone').onclick=()=>$('#pasteZone').focus();
+  document.onpaste=e=>{ if(!$('#drop')){ document.onpaste=null; return; }
+    if(e.target&&/INPUT|TEXTAREA/.test(e.target.tagName)&&e.target.id!=='pasteZone') return;
+    const items=[...(e.clipboardData&&e.clipboardData.items||[])].filter(i=>i.kind==='file'&&i.type.startsWith('image/'));
+    if(items.length){ e.preventDefault(); addFiles(items.map((i,k)=>{ const f=i.getAsFile(); return new File([f],`pasted-photo-${ST.photos.length+k+1}.${(f.type.split('/')[1]||'png').replace('jpeg','jpg')}`,{type:f.type}); }));
+      const pz=$('#pasteZone'); if(pz){ pz.classList.add('ok'); setTimeout(()=>pz.classList.remove('ok'),700); } toast('✅ Photo pasted'); }
+    else { const t=e.clipboardData&&e.clipboardData.getData('text'); if(t&&/^https?:/i.test(t.trim())) toast('That’s a link, not a photo. Right-click the photo → “Copy image”, then press Ctrl + V.'); } };
   renderThumbs();
   window.scrollTo(0,0);
 }
-function addFiles(list){
-  [...list].filter(f=>f.type.startsWith('image/')).forEach(f=>{
-    const url=URL.createObjectURL(f); const img=new Image(); img.src=url;
-    ST.photos.push({url,img,name:f.name,room:guessRoom(f.name,ST.photos.length)});
-  });
+function addImageFile(f){ const url=URL.createObjectURL(f); const img=new Image(); img.src=url; ST.photos.push({url,img,name:f.name||('photo-'+(ST.photos.length+1)+'.jpg'),room:guessRoom(f.name||'',ST.photos.length)}); }
+let _jszipP=null;
+function loadJSZip(){ if(window.JSZip) return Promise.resolve(window.JSZip); if(_jszipP) return _jszipP;
+  _jszipP=new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'; s.onload=()=>res(window.JSZip); s.onerror=()=>{ _jszipP=null; rej(); }; document.head.appendChild(s); }); return _jszipP; }
+async function addFiles(list){
+  const files=[...list]; let added=0, skipped=0;
+  for(const f of files){
+    const isZip=/\.zip$/i.test(f.name)||/zip/.test(f.type);
+    if(isZip){
+      toast('📦 Opening ZIP…');
+      try{ const JSZip=await loadJSZip(); const zip=await JSZip.loadAsync(f);
+        const entries=Object.values(zip.files).filter(e=>!e.dir&&/\.(jpe?g|png|webp|gif)$/i.test(e.name)&&!/(^|\/)(__MACOSX|\.)/.test(e.name)).sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));
+        for(const e of entries){ const blob=await e.async('blob'); const ext=e.name.split('.').pop().toLowerCase(); const type=ext==='png'?'image/png':ext==='webp'?'image/webp':ext==='gif'?'image/gif':'image/jpeg';
+          addImageFile(new File([blob],e.name.split('/').pop(),{type})); added++; }
+        if(!entries.length) toast('⚠️ No JPG or PNG photos were found in that ZIP');
+      }catch(err){ toast('⚠️ Couldn’t open that ZIP. Unzip it first (right-click → Extract All), then drag the photos in.'); }
+    } else if(f.type.startsWith('image/')){
+      if(/heic|heif/i.test(f.type)||/\.hei[cf]$/i.test(f.name)){ skipped++; continue; }
+      addImageFile(f); added++;
+    }
+  }
+  if(skipped) toast(`⚠️ ${skipped} iPhone HEIC photo${skipped>1?'s':''} skipped — save them as JPG first`);
+  else if(added>1) toast(`✅ Added ${added} photos`);
   renderThumbs();
+}
+const LISTING_SITES=[
+  [/zillow\./i,'Zillow'],[/redfin\./i,'Redfin'],[/realtor\.com/i,'Realtor.com'],[/trulia\./i,'Trulia'],[/homes\.com/i,'Homes.com'],[/compass\.com/i,'Compass'],[/coldwellbanker|cbhomes/i,'Coldwell Banker'],[/kw\.com|kwrealty/i,'Keller Williams'],[/sothebys/i,'Sotheby’s'],[/remax|re\/max/i,'RE/MAX'],[/century21/i,'Century 21'],[/matrix|flexmls|paragon|mlslistings|crmls|mls/i,'your MLS']];
+function listingSteps(url){
+  let site='the listing website'; for(const [re,n] of LISTING_SITES) if(re.test(url)){ site=n; break; }
+  const mls=site==='your MLS';
+  return `<div class="lsteps">
+    <div class="fp-head" style="font-size:15px;margin:12px 0 6px">How to bring the photos in from ${esc(site)}</div>
+    <p style="margin:0 0 6px"><b>⚡ Fastest — get all photos at once:</b></p>
+    <ol class="steps">${mls
+      ? '<li>In your MLS listing, open the <b>Photos</b> or <b>Media</b> section.</li><li>Click <b>Download all</b> (sometimes under a ⋯ or “Tools” menu). A <b>.zip</b> file is saved to your Downloads folder.</li><li>Drag that <b>.zip</b> file straight into the photo box above — every photo loads automatically.</li>'
+      : '<li>If it’s <b>your</b> listing, ask your photographer or the MLS for the <b>“download all photos”</b> link — it usually comes as one <b>.zip</b> file.</li><li>Drag that <b>.zip</b> file straight into the photo box above — every photo loads automatically. (No need to unzip it.)</li>'}</ol>
+    <p style="margin:10px 0 6px"><b>📋 Or copy them one by one:</b></p>
+    <ol class="steps"><li>Click <b>↗ Open the listing</b> above. On ${esc(site)}, click the first photo to open the big photo gallery.</li>
+    <li><b>Right-click</b> the photo and choose <b>Copy image</b>.</li>
+    <li>Come back to this tab, click the box below, and press <b>Ctrl + V</b>. The photo appears in your list.</li>
+    <li>Go back to ${esc(site)}, click the <b>›</b> arrow for the next photo, and repeat.</li></ol>
+    <p class="muted" style="font-size:12px;margin:6px 0 0">Tip: pick your 6–12 best photos — front exterior, living room, kitchen, primary bedroom, bathroom, backyard/pool, and a twilight shot if there is one.</p></div>`;
 }
 function renderThumbs(){
   const t=$('#thumbs'); if(!t) return;
-  if(!ST.photos.length){ t.innerHTML=''; return; }
-  t.innerHTML = `<div class="top" style="margin:14px 0 8px"><b>${ST.photos.length} photo${ST.photos.length>1?'s':''} · set the room for each, then put them in tour order</b>
+  const fc=$('#fcount'); if(fc) fc.textContent=ST.photos.length;
+  if(!ST.photos.length){ t.innerHTML='<div class="fempty">🖼️ No photos yet — they’ll show up here the moment you add them.</div>'; return; }
+  const fresh=new Set(ST.photos.filter(p=>!p.seen).map(p=>p.url)); ST.photos.forEach(p=>p.seen=true);
+  t.innerHTML = `<div class="top" style="margin:4px 0 8px"><b>${ST.photos.length} photo${ST.photos.length>1?'s':''} · tap a photo to view it big · set each room, then put them in tour order</b>
     <span style="display:flex;gap:8px;flex-wrap:wrap"><button class="qcopy" id="smart">✨ Smart tour order</button><button class="qcopy" id="clearall">🗑️ Remove all</button></span></div>
-    <div class="thumbs">${ST.photos.map((p,i)=>`<div class="th">
-      <div class="num">${i+1}</div><img src="${p.url}" alt="">
+    <div class="thumbs">${ST.photos.map((p,i)=>`<div class="th ${fresh.has(p.url)?'fresh':''}">
+      <div class="num">${i+1}</div>${fresh.has(p.url)?'<div class="newtag">NEW</div>':''}<img src="${p.url}" alt="${esc(p.name)}" data-view="${i}" title="${esc(p.name)} — click to view">
       <select data-i="${i}" class="roomsel">${ROOM_ORDER.map(k=>`<option value="${k}" ${p.room===k?'selected':''}>${ROOMS[k].n}</option>`).join('')}</select>
       <select data-pm="${i}" class="roomsel mvsel" title="Camera motion for this photo"><option value="default" ${!p.mv||p.mv==='default'?'selected':''}>🎥 ${ST.motion==='auto'?'Auto: '+MOTIONS[ROOM_MV[p.room]].n:ST.motion==='presets'?'Auto: '+MOTIONS[ROOM_PRESET[p.room]].n:'Default: '+MOTIONS[ST.motion].n}</option>${Object.entries(MOTIONS).map(([k,v])=>`<option value="${k}" ${p.mv===k?'selected':''}>🎥 ${v.n}</option>`).join('')}</select>
       <div class="thb"><button data-mv="${i}" data-d="-1" title="Move earlier">◀</button><button data-mv="${i}" data-d="1" title="Move later">▶</button><button data-rm="${i}" title="Remove">✕</button></div>
     </div>`).join('')}</div>
     <p class="muted" style="font-size:13px;margin-top:8px">Tip: start with an aerial or front exterior, walk through the inside, go out to the yard/pool, and finish on a twilight exterior.</p>`;
+  t.querySelectorAll('[data-view]').forEach(im=>im.onclick=()=>viewPhoto(+im.dataset.view));
+  if(fresh.size){ const last=t.querySelector('.th.fresh:last-of-type')||t.querySelector('.th.fresh'); const f=$('#folder'); if(f){ f.classList.add('pulse'); setTimeout(()=>f.classList.remove('pulse'),900); } if(last&&last.scrollIntoView) last.scrollIntoView({behavior:'smooth',block:'nearest'}); }
   t.querySelectorAll('.roomsel[data-i]').forEach(s=>s.onchange=()=>{ST.photos[+s.dataset.i].room=s.value; renderThumbs();});
   t.querySelectorAll('[data-pm]').forEach(s=>s.onchange=()=>{ST.photos[+s.dataset.pm].mv=s.value;});
   t.querySelectorAll('[data-mv]').forEach(b=>b.onclick=()=>{const i=+b.dataset.mv,j=i+ +b.dataset.d; if(j<0||j>=ST.photos.length) return; [ST.photos[i],ST.photos[j]]=[ST.photos[j],ST.photos[i]]; renderThumbs();});
@@ -1349,7 +1559,22 @@ function renderThumbs(){
   $('#clearall').onclick=()=>{ ST.photos=[]; renderThumbs(); $('#studioOut').innerHTML=''; };
 }
 
+function viewPhoto(i){
+  const m=document.createElement('div'); m.className='modal';
+  const draw=()=>{ const p=ST.photos[i]; m.innerHTML=`<div class="card pop" style="max-width:900px;width:100%;padding:14px">
+    <div class="top"><b>📁 Photo ${i+1} of ${ST.photos.length} · ${esc(ROOMS[p.room].n)}</b><button class="xbtn" id="pvX">✕ Close</button></div>
+    <img src="${p.url}" alt="" style="width:100%;max-height:70vh;object-fit:contain;border-radius:10px;margin-top:10px;background:#000">
+    <div class="muted" style="font-size:12px;margin-top:6px;word-break:break-all">${esc(p.name)}</div>
+    <div class="actions" style="justify-content:center"><button class="xbtn" id="pvP">◀ Previous</button><button class="xbtn" id="pvN">Next ▶</button></div></div>`;
+    m.querySelector('#pvX').onclick=close; m.querySelector('#pvP').onclick=()=>{ i=(i-1+ST.photos.length)%ST.photos.length; draw(); }; m.querySelector('#pvN').onclick=()=>{ i=(i+1)%ST.photos.length; draw(); }; };
+  const key=e=>{ if(e.key==='Escape') close(); else if(e.key==='ArrowRight'){ i=(i+1)%ST.photos.length; draw(); } else if(e.key==='ArrowLeft'){ i=(i-1+ST.photos.length)%ST.photos.length; draw(); } };
+  const close=()=>{ m.remove(); document.removeEventListener('keydown',key); };
+  document.addEventListener('keydown',key); m.onclick=e=>{ if(e.target===m) close(); };
+  document.body.appendChild(m); draw();
+}
+
 function transitionFor(A,B,isLast){
+  if(TRANS_TXT[ST.trans]) return isLast ? (ST.trans==='dip'?'Dip to black, 1 second, into the finale':'Slow cross-dissolve, 1 second, into the finale') : TRANS_TXT[ST.trans];
   const lt = ST.trans==='light'; const a=MOTIONS[A].anim, b=MOTIONS[B].anim;
   if(isLast) return lt?'Warm light-leak glow, 1 second, into the finale':'Slow cross-dissolve, 1 second, into the finale';
   if((a==='right'&&b==='right')||(a==='left'&&b==='left')) return 'Motion-matched cut: both clips move the same direction, so use a very short 0.3-second dissolve — it feels like one continuous move';
@@ -1362,13 +1587,15 @@ function clipPrompt(p,i,N){
   const keeps=KEEP.filter(k=>ST.keep[k[0]]);
   const neg=[...(M.preset?['fast motion','jerky motion','zoom blur']:['fast motion','multiple camera moves','direction changes','zoom blur']),...keeps.map(k=>k[2])].join(', ');
   return `CLIP ${i+1} OF ${N} — ${r.n.toUpperCase()} (${role})
-Use the attached photo as the first frame. Create a ${ST.len}-second cinematic real estate video clip.
+Use the attached photo as the first frame. Create ${ST.len===8?'an':'a'} ${ST.len}-second cinematic real estate video clip.
 Camera type: ${r.cam}
 Camera angle: ${r.angle} — keep the photo's original angle
 Shot size: ${r.size}
 ${M.preset?`Camera movement & scene: ONE continuous camera move — ${M.p()}. Keep it smooth and in one direction from start to finish; describe only what is visible in the photo.`:`Camera movement: ONE single camera motion only — ${M.p(ST.amount)}. Keep that one direction from start to finish. No other movement: no extra zoom, no rotation, no direction changes.`}
 Speed & energy: ${E.s}. Same pace as every other clip.
-Lens feel: wide 24mm cinema lens, no fisheye
+Lens: ${ST.lens==='auto'?(/aerial|front|twilight|pool|backyard|view/.test(p.room)?'wide 24mm lens':/bath|office|bedroom|entry/.test(p.room)?'16mm ultra-wide rectilinear lens, verticals straight':'wide 24mm cinema lens'):LENS[ST.lens][1]}, no fisheye
+Frame rate: ${FPS[ST.fps][1]}
+Depth of field: ${DOF[ST.dof][1]}${LEVEL==='adv'?`\nPro camera specs: full-frame cinema camera, white balance matched across all clips (5600K daylight / 3200K interiors with practicals), constant camera velocity with no acceleration spikes, horizon perfectly level\nPro color: Rec.709 warm grade, lifted shadows, soft highlight roll-off, gentle film grain, identical grade on every clip`:''}
 Lighting & color: ${L.grade}
 Environmental lighting: ${(()=>{const k=ST.light==='auto'?ROOM_LIGHT[p.room]:ST.light; const x=LIGHTS[k]; return x.p? x.p+' — very subtle and realistic; keep the overall brightness and colors of the photo' : 'none — keep the lighting perfectly still, exactly as in the photo';})()}
 Tone: ${L.tone}
@@ -1440,12 +1667,12 @@ ${allText}`;
         <li>Download each finished clip from ${ST.tool}. Rename them 01, 02, 03… so they stay in order.</li>
         <li>Open CapCut → <b>New project</b> → add all clips in order. Set the project ratio to <b>${ST.ar}</b>.</li>
         <li>Trim about <b>0.3 seconds</b> off the start and end of each clip — AI clips often wobble at the very edges.</li>
-        <li>Tap the small white square between two clips → <b>Transitions</b> → choose <b>${ST.trans==='light'?'“Light leak” or “Flash” (warm)':'“Mix” / “Dissolve”'}</b>. Use the lengths in the stitching table above.</li>
+        <li>Tap the small white square between two clips → <b>Transitions</b> → choose <b>${TRANS_CAPCUT[ST.trans]}</b>. Use the lengths in the stitching table above.</li>
         <li>Select all clips → <b>Filters</b> → pick one ${ST.look==='bright'?'clean, bright':ST.look==='twilight'?'cool, moody':'warm, golden'} filter at about 30–40% strength and apply it to <b>every</b> clip. This makes them look like one video.</li>
-        <li><b>Audio</b> → add ${ST.look==='bright'?'a light, uplifting acoustic or piano track':'a slow cinematic piano-and-strings track that builds'} (about 70–90 beats per minute) from CapCut’s library or a licensed stock-music site. Line up cuts with the music beats.</li>
+        <li><b>Audio</b> → add ${MUSIC[ST.music][1]} music from CapCut’s library or a licensed stock-music site. Line up cuts with the music beats.</li>
         <li><b>Text</b> → add the on-screen text from the table above. Use “fade in / fade out” animations.</li>
         <li>End with 2–3 seconds on your agent card (name, logo, phone).</li>
-        <li><b>Export</b> → 1080p or 4K, 30 frames per second.</li>
+        <li><b>Export</b> → ${EXPORT[ST.export][1]}. ${ST.export!=='hd'?'Also export a 1080p copy for social media.':''}</li>
       </ol>
       <h3>Tips for a seamless, professional result</h3>
       <ul class="steps">
@@ -1464,9 +1691,9 @@ ${allText}`;
 
 function startPreview(ov){
   if(PREV) cancelAnimationFrame(PREV.raf);
-  const cv=$('#prev'); const vertical=ST.ar==='9:16';
-  cv.width = vertical?540:960; cv.height = vertical?960:540;
-  cv.style.maxWidth = vertical?'320px':'100%';
+  const cv=$('#prev'); const vertical=ST.ar==='9:16'||ST.ar==='4:5'||ST.ar==='1:1'; const sz=AR_SIZES[ST.ar]||[960,540];
+  cv.width = sz[0]; cv.height = sz[1];
+  cv.style.maxWidth = ST.ar==='9:16'?'320px':ST.ar==='4:5'?'380px':ST.ar==='1:1'?'420px':'100%';
   const ctx=cv.getContext('2d'); const P=ST.photos.slice(), N=P.length, len=ST.len, ov_=0.75, step=len-ov_;
   const total=N*len-(N-1)*ov_+1.5;
   const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
@@ -1557,6 +1784,7 @@ function reShell(active){
       <div class="tabs" style="margin-bottom:0">
         <button class="tab ${active==='studio'?'on':''}" onclick="studioView()">🎬 Photo-to-Video Studio</button>
         <button class="tab ${active==='prompts'?'on':''}" onclick="rePrompts()">📋 Prompts & Scripts (${n})</button>
+        <button class="tab ${active==='detect'?'on':''}" onclick="videoDetectiveView()">🔍 Video Detective</button>
       </div>
     </div>
     <div id="reBody"></div>`;
@@ -1567,6 +1795,7 @@ function rePrompts(){
   $('#reBody').innerHTML = `
     <div class="card"><input id="q" placeholder="🔎 Search real estate prompts…" class="search">
     <p class="muted" style="font-size:14px;margin:10px 0 0">Includes: camera words cheat sheet · text-to-video vs. photo-to-video guide · photo-to-video & text-to-video prompts · dramatic luxury shot list · edit, music & captions plan · agent intro video prompt · 3 ready-to-read intro scripts.</p></div>
+    ${expertBanner()}
     <div id="plist">${sec.items.map((it,n)=>promptCard(it,'realestate',n)).join('')}</div>`;
   bindCards();
   window.scrollTo(0,0);
@@ -1595,6 +1824,8 @@ function toolsView(sub){
     </div>
     <div id="toolBody"></div>`;
   ({calc:calcTool, receipt:receiptTool, mortgage:mortgageTool, auto:autoTool})[sub]();
+  const tipsNow=()=>{ document.querySelectorAll('[data-tips]').forEach(d=>d.innerHTML=lvlNote(TOOL_TIPS[d.dataset.tips]||{})); if(sub==='mortgage') calcMortgage(); if(sub==='auto') calcAuto(); };
+  tipsNow(); window._rerender=tipsNow;
   window.scrollTo(0,0);
 }
 
@@ -1623,6 +1854,7 @@ function calcTool(){
       <div class="actions" style="justify-content:center"><button class="xbtn" data-k="⌫">⌫ Delete last</button><button class="xbtn" id="cCopy">📋 Copy result</button></div>
       <p class="muted" style="font-size:13px;text-align:center">Tip: you can also type with your keyboard — numbers, + − * / % ( ), Enter for =, Backspace to delete, Esc to clear. “50 + 10%” means 50 + 0.1; use “50 × 1.1” to add 10%.</p>
       <div id="cHist"></div>
+      <div class="tooltips" data-tips="calc"></div>
     </div>`;
   const draw=()=>{ $('#cExpr').textContent=CALC.expr||' ';
     let live=''; try{ if(CALC.expr) live=calcEval(CALC.expr).toLocaleString('en-US',{maximumFractionDigits:10}); }catch(e){}
@@ -1663,6 +1895,7 @@ function receiptTool(){
         <label class="fld"><span>Tip (%)</span><input id="rTip" type="number" min="0" step="0.01" value="${RCPT.tip||''}" placeholder="0"></label>
       </div>
       <div id="rTotals"></div>
+      <div class="tooltips" data-tips="receipt"></div>
       <div class="actions">
         <button class="btn ghost" id="rCopy">📋 Copy receipt</button>
         <button class="btn ghost" id="rClear">🗑️ Start new receipt</button>
@@ -1728,6 +1961,7 @@ function mortgageTool(){
         <label class="fld"><span>PMI (% per year, if under 20% down)</span><input id="mPmi" type="number" value="0.5" min="0" step="0.01"></label>
       </div>
       <div id="mOut"></div>
+      <div class="tooltips" data-tips="mortgage"></div>
       <p class="muted" style="font-size:12px;margin-top:12px">Estimates only — your actual rate, taxes, insurance and PMI will come from your lender and local government. Not financial advice.</p>
     </div>`;
   const link=(from)=>{ const p=num('#mPrice'); if(from==='pct') $('#mDown').value=Math.round(p*num('#mDownPct')/100); else if(from==='amt') $('#mDownPct').value=p?+(num('#mDown')/p*100).toFixed(2):0; else $('#mDown').value=Math.round(p*num('#mDownPct')/100); calcMortgage(); };
@@ -1753,6 +1987,12 @@ function calcMortgage(){
       <div class="stat"><span>Total interest over ${yrs} years</span><b>${money(totalInt)}</b></div>
       <div class="stat"><span>Total of all loan payments</span><b>${money(pi*n)}</b></div>
     </div>
+    ${LEVEL==='adv'&&loan>0?(()=>{ const e1=payoffWithExtra(loan,rate,n,pi,200), lower=payment(loan,Math.max(0,rate-1),n), p15=payment(loan,rate,180);
+      return `<div class="lvlnote lv-adv" style="margin-top:12px"><b>🌳 Pro insights</b><ul class="steps" style="margin:6px 0 0">
+        <li><b>Pay $200 extra per month:</b> paid off ${Math.floor((n-e1.months)/12)} yrs ${(n-e1.months)%12} mo sooner and saves about <b>${money(totalInt-e1.interest)}</b> in interest.</li>
+        <li><b>A rate 1% lower</b> (${(Math.max(0,rate-1)).toFixed(2)}%) would cut principal & interest to ${money(lower)}/mo — ${money(pi-lower)} less every month (${money((pi-lower)*n)} over the loan). Worth shopping several lenders.</li>
+        ${yrs!==15?`<li><b>15-year option:</b> ${money(p15)}/mo principal & interest, with total interest of ${money(p15*180-loan)} vs ${money(totalInt)} on your current term.</li>`:''}
+        <li><b>Income guideline:</b> to keep housing under 28% of gross income, aim for roughly <b>${money(total/0.28*12)}</b>/year household income or more.</li></ul></div>`; })():''}
     ${pmi?`<p class="warnnote" style="margin-top:12px">With less than 20% down, lenders usually add PMI (mortgage insurance). Putting ${money(price*0.2-down)} more down would likely remove it.</p>`:''}
     <details class="presetbox" style="margin-top:12px"><summary>📅 Year-by-year breakdown</summary>
       <div style="overflow-x:auto"><table class="tbl"><tr><th>Year</th><th>Principal paid</th><th>Interest paid</th><th>Balance left</th></tr>
@@ -1776,6 +2016,7 @@ function autoTool(){
         <label class="fld"><span>Include tax & fees in the loan?</span><select id="aRoll"><option value="yes">Yes — finance them</option><option value="no">No — pay them up front</option></select></label>
       </div>
       <div id="aOut"></div>
+      <div class="tooltips" data-tips="auto"></div>
       <p class="muted" style="font-size:12px;margin-top:12px">Estimates only. Sales tax rules (for example, whether trade-ins reduce the taxable price) vary by state. Not financial advice.</p>
     </div>`;
   ['#aPrice','#aDown','#aTrade','#aOwed','#aTax','#aFees','#aRate','#aTerm','#aRoll'].forEach(id=>$(id).oninput=calcAuto);
@@ -1798,6 +2039,12 @@ function calcAuto(){
       <div class="stat"><span>Sales tax</span><b>${money(tax)}</b></div>
       <div class="stat"><span>Total cost of the car</span><b>${money(pay*n+upfront+netTrade)}</b></div>
     </div>
+    ${LEVEL==='adv'&&financed>0?(()=>{ const lower=payment(financed,Math.max(0,rate-1),n), p48=payment(financed,rate,48);
+      return `<div class="lvlnote lv-adv" style="margin-top:12px"><b>🌳 Pro insights</b><ul class="steps" style="margin:6px 0 0">
+        <li><b>1% lower APR</b> (${Math.max(0,rate-1).toFixed(2)}%) saves ${money((pay-lower)*n)} over the loan — get pre-approved by a credit union before visiting the dealer.</li>
+        ${n>48?`<li><b>48-month loan instead:</b> ${money(p48)}/mo and ${money(p48*48-financed)} interest — saves ${money(totalInt-(p48*48-financed))}.</li>`:''}
+        <li><b>Negotiate the “out-the-door” price</b> (price + tax + fees) first, then discuss financing — never just the monthly payment.</li>
+        <li>Budget roughly ${money(price*0.0012)}–${money(price*0.002)}/mo extra for insurance and maintenance on top of the payment (rough estimate).</li></ul></div>`; })():''}
     ${negEquity?`<p class="warnnote" style="margin-top:12px">You owe ${money(negEquity)} more on your trade-in than it’s worth. That amount is added to your new loan.</p>`:''}
     <h3 style="margin-top:16px">Compare loan lengths</h3>
     <div style="overflow-x:auto"><table class="tbl"><tr><th>Term</th><th>Monthly payment</th><th>Total interest</th></tr>
@@ -1902,7 +2149,7 @@ function eventsOn(day){
 function tasksOn(day){ return PLAN.tasks.filter(t=>t.date===day); }
 
 function plannerView(){
-  setNav('planner');
+  setNav('planner'); window._rerender=plannerView;
   $('#app').innerHTML = `
     <div class="card pop">
       <div class="top"><span style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><h1 style="margin:0">📅 Planner</h1>${gStatusHtml()}</span>
@@ -1911,6 +2158,7 @@ function plannerView(){
           <button class="tab ${PV.mode==='week'?'on':''}" data-mode="week">📋 Next 7 days</button>
           <button class="tab ${PV.mode==='sync'?'on':''}" data-mode="sync">🔄 Sync: Google & Apple</button>
         </div></div>
+      ${lvlNote(PLANNER_TIPS)}
     </div>
     <div id="planBody"></div>`;
   document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{ PV.mode=b.dataset.mode; plannerView(); });
@@ -2432,10 +2680,285 @@ function openProfile(){
 }
 function updateMeBtn(){ const b=document.getElementById('nav-me'); if(b) b.innerHTML = pfCount()? `👤 ${esc((PF.name||'My Info').split(' ')[0])} <span class="mecheck">✓</span>` : '👤 My Info'; }
 
+/* ---------- Expert ("Almost there") prompt upgrades ---------- */
+const EXPERT_COMMON = {
+  C:'Success looks like: [DESCRIBE THE IDEAL RESULT — who will use it, what decision or action it should lead to]. Constraints: [BUDGET / DEADLINE / BRAND OR LEGAL RULES / THINGS TO AVOID].',
+  R:'Bring the judgment of a senior specialist with 15+ years of experience: use proven frameworks and current best practices, and point out anything a professional would do differently.',
+  A:'Work in this order: (1) if critical information is missing, ask me up to 3 short questions first; (2) list the key assumptions you are making; (3) create the deliverable; (4) critique your own draft against the success criteria above and give me a revised, final version.',
+  F:'Use clear headings and tables where they help. Put the polished, ready-to-use final version last. End with “Why this works” (3 bullets), “Risks / what to verify” and “Next steps.” Label any number or fact you are not certain of as an estimate.',
+  T:'Professional, specific and concrete — no filler, clichés or generic advice. Every sentence should be something I can act on.',
+  E:'Reference example (optional): [PASTE AN EXAMPLE OF THE QUALITY OR STYLE YOU WANT — the AI will match it].'
+};
+const EXPERT_TAB = {
+  home:'Quality bar: realistic for a real household — include time and cost estimates, and a simpler fallback option.',
+  office:'Quality bar: executive-ready — lead with the bottom line, keep it skimmable, and make every next step owner-and-date specific.',
+  solve:'Method: use structured problem-solving — root-cause analysis, 2–3 options scored against clear decision criteria, risks with mitigations, and a recommended path.',
+  strategy:'Method: use industry benchmarks where known (labelled as estimates), define KPIs with targets, show budget allocation, include risks & mitigations, and lay out a 30/60/90-day plan.',
+  leads:'Method: apply proven B2B sales frameworks (permission-based openers, SPIN-style discovery, objection handling) and stay compliant with TCPA, Do-Not-Call and CAN-SPAM rules.',
+  video:'Production specs for every shot: camera body and lens focal length (mm), aperture/depth of field, frame rate and 180° shutter, white balance, lighting setup (key/fill/practicals), camera movement speed, color grade/LUT, and music BPM. Deliver a shot-list table, editor’s notes with exact cut points, and export settings (resolution, codec, bitrate).',
+  conflict:'Method: use evidence-based frameworks (Nonviolent Communication, interest-based negotiation) — separate positions from interests, anticipate likely responses, and script de-escalation lines.',
+  realestate:'Production specs for every shot: camera body and lens focal length (mm), aperture, frame rate and 180° shutter, white balance, lighting (natural + practicals, HDR bracketing where needed), gimbal/drone speed, color grade/LUT and music BPM. Keep everything MLS-accurate and Fair-Housing compliant. Deliver a shot-list table, editor’s notes with exact cut points, and export settings for MLS (16:9) and social (9:16).'
+};
+const PLUS_COMMON = {
+  C:'Who it’s for: [AUDIENCE — who will read or use this]. Must include / avoid: [ANY MUST-HAVES OR NO-GOS].',
+  A:'If anything important is unclear, ask me 1–2 quick questions before you start.',
+  F:'Finish with 2–3 quick tips to make it even better.'
+};
+const PLUS_TAB = {
+  home:'Keep it simple and doable on a busy day.',
+  office:'Keep it clear and skimmable — short paragraphs or bullet points.',
+  solve:'Give me 2–3 options and tell me which one you’d pick and why.',
+  strategy:'Include a rough budget, the main numbers (KPIs) to track, and the first 3 things to do this week.',
+  leads:'Keep it short, friendly and within phone and email marketing rules.',
+  video:'For each shot, include the camera angle, movement and speed, lighting, and a music style.',
+  conflict:'Give me the exact words I can say, and what to do if it gets heated.',
+  realestate:'For each shot, include the camera angle, movement and speed, lighting and music style — and keep the home shown exactly as it is.'
+};
+function getSegs(it, tab){
+  if(it.script||(LEVEL!=='adv'&&LEVEL!=='some')) return it.p;
+  const order=['C','R','A','F','T'], out=[];
+  if(LEVEL==='some'){
+    const extra={...PLUS_COMMON}; extra.F=(PLUS_TAB[tab]?PLUS_TAB[tab]+' ':'')+extra.F;
+    order.forEach(L=>{ it.p.filter(x=>x[0]===L).forEach(x=>out.push(x)); if(extra[L]) out.push([L,extra[L],'p']); });
+    it.p.filter(x=>!order.includes(x[0])).forEach(x=>out.push(x));
+    return out;
+  }
+  const extra={...EXPERT_COMMON}; extra.F = (EXPERT_TAB[tab]?EXPERT_TAB[tab]+' ':'') + extra.F;
+  order.forEach(L=>{ it.p.filter(x=>x[0]===L).forEach(x=>out.push(x)); out.push([L,extra[L],'x']); });
+  it.p.filter(x=>!order.includes(x[0])).forEach(x=>out.push(x));
+  out.push(['E',extra.E,'x']);
+  return out;
+}
+function expertBanner(){
+  if(LEVEL==='adv') return `<div class="xbanner on">🌳 <b>Expert mode is on.</b> Every prompt below includes extra professional-level instructions (marked <span class="xchip">PRO</span>) — success criteria, self-critique, frameworks and detailed specs — for polished, professional results.</div>`;
+  if(LEVEL==='some') return `<div class="xbanner mid">🌿 <b>Plus mode is on.</b> Prompts include a few helpful extras (marked <span class="xchip plus">PLUS</span>) for better results. For the full professional version, switch to <b>🌳 Almost there</b>.</div>`;
+  return `<div class="xbanner">💡 Want better results? Switch <b>🎓 Skill level</b> to <b>🌿 Not completely lost</b> for a few helpful extras, or <b>🌳 Almost there</b> for full expert-level prompts.</div>`; }
+
+
+/* ---------- Video Detective: reverse-engineer prompts from a video ---------- */
+const VD = { file:null, url:'', meta:null, frames:[], blobs:[], local:null, result:null, busy:false, ctl:null };
+let _sampleP=null;
+function getSample(){ if(!_sampleP) _sampleP=(window.claude&&typeof window.claude.use==='function')?window.claude.use('sample').catch(()=>null):Promise.resolve(null); return _sampleP; }
+function vdWait(v,ev){ return new Promise((res,rej)=>{ const ok=()=>{ v.removeEventListener(ev,ok); v.removeEventListener('error',bad); res(); }; const bad=()=>{ v.removeEventListener(ev,ok); v.removeEventListener('error',bad); rej(new Error('video')); }; v.addEventListener(ev,ok); v.addEventListener('error',bad); }); }
+async function vdSeek(v,t){ v.currentTime=Math.min(Math.max(0,t),Math.max(0,v.duration-0.05)); await vdWait(v,'seeked'); }
+function vdGray(v,w,h){ const c=document.createElement('canvas'); c.width=w; c.height=h; const x=c.getContext('2d',{willReadFrequently:true}); x.drawImage(v,0,0,w,h); const d=x.getImageData(0,0,w,h).data; const g=new Float32Array(w*h); let R=0,G=0,B=0; for(let i=0,j=0;i<d.length;i+=4,j++){ g[j]=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2]; R+=d[i]; G+=d[i+1]; B+=d[i+2]; } const n=w*h; return {g,w,h,r:R/n,gg:G/n,b:B/n}; }
+function vdHist(f){ const hb=new Float32Array(16); for(const v of f.g) hb[Math.min(15,v>>4)]++; const n=f.g.length; return hb.map(x=>x/n); }
+function vdShift(a,b){ // best global shift + zoom between two small gray frames
+  const {w,h}=a; let best={dx:0,dy:0,z:1,err:1e9};
+  const err=(dx,dy,z)=>{ let s=0,n=0; const cx=w/2,cy=h/2; for(let y=4;y<h-4;y+=2) for(let x=4;x<w-4;x+=2){ const sx=Math.round(cx+(x-cx)*z+dx), sy=Math.round(cy+(y-cy)*z+dy); if(sx<0||sy<0||sx>=w||sy>=h) continue; s+=Math.abs(a.g[y*w+x]-b.g[sy*w+sx]); n++; } return n?s/n:1e9; };
+  for(const z of [0.95,0.97,0.985,1,1.015,1.03,1.05]) for(let dy=-4;dy<=4;dy+=2) for(let dx=-8;dx<=8;dx+=2){ const e=err(dx,dy,z); if(e<best.err) best={dx,dy,z,err:e}; }
+  for(let dy=best.dy-1;dy<=best.dy+1;dy++) for(let dx=best.dx-1;dx<=best.dx+1;dx++){ const e=err(dx,dy,best.z); if(e<best.err) best={dx,dy,z:best.z,err:e}; }
+  return best;
+}
+function vdMotionWord(m){
+  const parts=[]; if(m.z>1.005) parts.push('push-in / dolly forward'); else if(m.z<0.995) parts.push('pull-back / dolly out');
+  if(m.dx>=1) parts.push('moving/panning left (scene slides right)'); else if(m.dx<=-1) parts.push('moving/panning right (scene slides left)');
+  if(m.dy>=1) parts.push('tilting/craning up'); else if(m.dy<=-1) parts.push('tilting/craning down');
+  return parts.length?parts.join(' + '):'static or very subtle movement';
+}
+async function vdAnalyze(){
+  const v=$('#vdVideo'); if(!v) return;
+  if(!v.duration||!isFinite(v.duration)) await vdWait(v,'loadedmetadata');
+  const D=v.duration, W=v.videoWidth, H=v.videoHeight;
+  const g=(a,b)=>b?g(b,a%b):a, gg=g(W,H)||1; const ratio=`${W/gg}:${H/gg}`;
+  const arName=Math.abs(W/H-16/9)<.03?'16:9 horizontal':Math.abs(W/H-9/16)<.03?'9:16 vertical':Math.abs(W/H-1)<.03?'1:1 square':Math.abs(W/H-4/5)<.03?'4:5 portrait':Math.abs(W/H-2.33)<.12?'21:9 cinematic':ratio;
+  VD.meta={duration:D, width:W, height:H, aspect:arName};
+  const N=Math.min(8,Math.max(4,Math.round(D/1.5))); const times=[...Array(N)].map((_,i)=>D*(i+0.5)/N);
+  VD.frames=[]; VD.blobs=[]; const keys=[];
+  const cap=document.createElement('canvas'); const sc=Math.min(1,768/Math.max(W,H)); cap.width=Math.round(W*sc); cap.height=Math.round(H*sc); const cx=cap.getContext('2d');
+  const motions=[];
+  for(let i=0;i<times.length;i++){
+    $('#vdProg').textContent=`Reading frame ${i+1} of ${times.length}…`;
+    await vdSeek(v,times[i]); cx.drawImage(v,0,0,cap.width,cap.height);
+    const blob=await new Promise(r=>cap.toBlob(r,'image/jpeg',0.82)); VD.blobs.push(blob); VD.frames.push({t:times[i], url:URL.createObjectURL(blob)});
+    const a=vdGray(v,96,Math.max(32,Math.round(96*H/W))); keys.push(a);
+    await vdSeek(v,Math.min(D-0.05,times[i]+0.25)); const b=vdGray(v,96,a.h);
+    const m=vdShift(a,b); m.t=times[i]; motions.push(m);
+  }
+  const cuts=[]; for(let i=1;i<keys.length;i++){ const h1=vdHist(keys[i-1]), h2=vdHist(keys[i]); let d=0; for(let k=0;k<16;k++) d+=Math.abs(h1[k]-h2[k]); if(d>0.45) cuts.push(i); }
+  const lum=keys.reduce((s,k)=>s+(0.299*k.r+0.587*k.gg+0.114*k.b),0)/keys.length, warm=keys.reduce((s,k)=>s+(k.r-k.b),0)/keys.length;
+  const avgDx=motions.reduce((s,m)=>s+Math.abs(m.dx),0)/motions.length, avgZ=motions.reduce((s,m)=>s+Math.abs(m.z-1),0)/motions.length;
+  const speed= avgDx<1&&avgZ<0.01?'very slow / nearly static': avgDx<3&&avgZ<0.03?'slow and smooth':'fast / energetic';
+  const shake=motions.filter(m=>m.err>18).length>motions.length/2?'some handheld shake or busy motion':'smooth, stabilized';
+  VD.local={ shots:Math.max(1,cuts.length+1), cuts:cuts.map(i=>times[i]), brightness: lum>170?'bright, airy':lum>110?'balanced':lum>70?'moody / low-key':'dark / night', color: warm>18?'warm (golden/orange)':warm<-8?'cool (blue/teal)':'neutral', speed, stability:shake,
+    motions: motions.map(m=>({t:+m.t.toFixed(1), move:vdMotionWord(m)})) };
+  $('#vdProg').textContent='';
+}
+/* --- Video Detective: from a link / screenshots --- */
+const VSITES=[[/youtu\.?be/i,'YouTube'],[/tiktok/i,'TikTok'],[/instagram/i,'Instagram'],[/facebook|fb\.watch/i,'Facebook'],[/vimeo/i,'Vimeo'],[/(twitter|x)\.com/i,'X (Twitter)'],[/pinterest/i,'Pinterest'],[/linkedin/i,'LinkedIn'],[/zillow|redfin|realtor\.com|homes\.com/i,'the listing site']];
+function vdSite(u){ for(const [re,n] of VSITES) if(re.test(u)) return n; return 'the website'; }
+function vdLinkSteps(u){
+  const s=vdSite(u);
+  const own={YouTube:'If it’s <b>your own</b> video: open <b>YouTube Studio → Content</b>, click ⋮ next to the video → <b>Download</b>.',TikTok:'On TikTok, tap <b>Share → Save video</b> (only appears if the creator allows downloads).',Instagram:'If it’s <b>your own</b> Reel: open it, tap <b>⋯ → Download</b> (or Save to camera roll).',Facebook:'If it’s <b>your own</b> video: open it, click <b>⋯ → Download video</b>.'}[s];
+  return `<div class="lsteps">
+    <div class="fp-head" style="font-size:15px;margin:12px 0 6px">3 ways to analyze this ${esc(s)} video</div>
+    <p style="margin:0 0 4px"><b>⚡ Quickest — screenshots (about 1 minute):</b></p>
+    <ol class="steps"><li>Click <b>↗ Open the video</b> above and press play.</li>
+      <li>At 4–8 different moments, pause and take a screenshot: press <b>Windows key + Shift + S</b>, then drag a box around the video. (Mac: <b>⌘ + Ctrl + Shift + 4</b>.)</li>
+      <li>After each screenshot, come back here, click the box below and press <b>Ctrl + V</b>. Then click <b>🤖 Analyze my screenshots</b>.</li></ol>
+    <p style="margin:10px 0 4px"><b>🎥 Most accurate — record your screen (includes camera motion):</b></p>
+    <ol class="steps"><li><b>Windows 11:</b> open the <b>Snipping Tool</b>, click the 🎥 <b>Record</b> button, select the video area and click <b>Start</b>. Play 10–30 seconds, then stop and <b>Save</b>. (Or press <b>Windows key + Alt + R</b> to record with Game Bar.)</li>
+      <li><b>Mac:</b> press <b>⌘ + Shift + 5</b> → “Record Selected Portion.” <b>iPhone/Android:</b> use Screen Recording from the control panel.</li>
+      <li>Drag the saved recording into the video box above and click <b>🤖 Figure out the prompts</b>.</li></ol>
+    ${own?`<p style="margin:10px 0 4px"><b>⬇️ Download it (only if allowed):</b> ${own} Then upload it in the video box above.</p>`:''}
+    <p class="warnnote" style="margin-top:10px">⚠️ Use this to learn a <b>style</b>. Don’t download, re-post or copy other people’s videos, music or likeness without permission, and follow each site’s rules.</p></div>`;
+}
+const VDS={ shots:[] };
+function vdAddShots(files){
+  [...files].filter(f=>f.type&&f.type.startsWith('image/')).forEach(f=>{ VDS.shots.push({file:f,url:URL.createObjectURL(f)}); });
+  vdDrawShots();
+}
+function vdDrawShots(){
+  const box=$('#vdShots'); if(!box) return;
+  if(!VDS.shots.length){ box.innerHTML=''; return; }
+  box.innerHTML=`<div class="top" style="margin:10px 0 6px"><b>📸 ${VDS.shots.length} screenshot${VDS.shots.length>1?'s':''} ${VDS.shots.length<4?'— add a few more (4–8 is best)':''}</b><span style="display:flex;gap:6px"><button class="qcopy" id="vdShotsClear">🗑️ Clear</button></span></div>
+    <div class="vdframes">${VDS.shots.map((s,i)=>`<figure><img src="${s.url}" alt=""><figcaption>#${i+1} <button class="xbtn" data-shotrm="${i}" style="padding:0 6px">✕</button></figcaption></figure>`).join('')}</div>
+    <div class="actions"><button class="btn" id="vdShotsGo" ${VDS.shots.length?'':'disabled'}>🤖 Analyze my screenshots</button></div>`;
+  box.querySelectorAll('[data-shotrm]').forEach(b=>b.onclick=()=>{ URL.revokeObjectURL(VDS.shots[+b.dataset.shotrm].url); VDS.shots.splice(+b.dataset.shotrm,1); vdDrawShots(); });
+  $('#vdShotsClear').onclick=()=>{ VDS.shots.forEach(s=>URL.revokeObjectURL(s.url)); VDS.shots=[]; vdDrawShots(); };
+  $('#vdShotsGo').onclick=vdRunShots;
+}
+async function vdImgStats(f){ const img=new Image(); img.src=f.url; await img.decode().catch(()=>{}); const w=96,h=Math.max(32,Math.round(96*(img.naturalHeight||9)/(img.naturalWidth||16))); const c=document.createElement('canvas'); c.width=w; c.height=h; const x=c.getContext('2d'); x.drawImage(img,0,0,w,h); const d=x.getImageData(0,0,w,h).data; let R=0,G=0,B=0; for(let i=0;i<d.length;i+=4){R+=d[i];G+=d[i+1];B+=d[i+2];} const n=d.length/4; return {r:R/n,g:G/n,b:B/n,W:img.naturalWidth,H:img.naturalHeight}; }
+async function vdRunShots(){
+  if(VD.busy||!VDS.shots.length) return;
+  const st=await Promise.all(VDS.shots.map(vdImgStats)); const W=st[0].W||16,H=st[0].H||9;
+  const lum=st.reduce((s,k)=>s+(0.299*k.r+0.587*k.g+0.114*k.b),0)/st.length, warm=st.reduce((s,k)=>s+(k.r-k.b),0)/st.length;
+  const r=W/H, aspect=Math.abs(r-16/9)<.06?'16:9 horizontal':Math.abs(r-9/16)<.06?'9:16 vertical':Math.abs(r-1)<.06?'1:1 square':Math.abs(r-4/5)<.06?'4:5 portrait':`${W}×${H}`;
+  VD.file={name:'Screenshots'+($('#vdUrl')&&$('#vdUrl').value?' from '+vdSite($('#vdUrl').value):''),size:0};
+  VD.meta={duration:null,width:W,height:H,aspect, source:($('#vdUrl')&&$('#vdUrl').value.trim())||''};
+  VD.frames=VDS.shots.map((s,i)=>({t:i+1,url:s.url,shot:true})); VD.blobs=VDS.shots.map(s=>s.file);
+  VD.local={shots:'unknown (screenshots)',cuts:[],brightness: lum>170?'bright, airy':lum>110?'balanced':lum>70?'moody / low-key':'dark / night', color: warm>18?'warm (golden/orange)':warm<-8?'cool (blue/teal)':'neutral', speed:'not measurable from screenshots', stability:'not measurable from screenshots', motions:[], fromShots:true};
+  VD.result=null; await vdRun(true);
+}
+
+function videoDetectiveView(){
+  reShell('detect');
+  $('#reBody').innerHTML = `
+    <div class="card pop">
+      <div class="top"><h1 style="margin:0">🔍 Video Detective</h1></div>
+      <p class="muted" style="margin:8px 0 0">Upload any video — a listing video, a Reel you love, an AI clip — and find out the prompts most likely used to make it: camera type, angle, movement, speed, lighting, look and tone. Then copy ready-made prompts to recreate that style.</p>
+      ${lvlNote({new:'Tap the box below, pick a video from your computer or phone, then tap <b>🤖 Figure out the prompts</b>.', some:'Short clips (under 60 seconds) give the clearest results. Each scene change is detected as a separate shot.', adv:'Expert mode: the analysis adds lens, frame-rate, depth-of-field, grading and edit-pacing estimates, plus per-shot image-to-video prompts.'})}
+    </div>
+    <div class="card">
+      <h2>Step 1 · Upload a video</h2>
+      <label class="drop" id="vdDrop"><input type="file" id="vdFile" accept="video/*" hidden>
+        <span style="font-size:40px">🎞️</span><br><b>Drag & drop a video here</b><br><span class="muted">or tap to choose · MP4, MOV or WebM · your video stays on your device</span></label>
+      <div id="vdPrev"></div>
+      <details class="presetbox lstbox" id="vdLinkBox">
+        <summary>🔗 From a link (YouTube, TikTok, Instagram, Facebook, Vimeo…)</summary>
+        <label class="fld" style="display:block;margin-top:10px"><span>Paste the video’s web address</span><input id="vdUrl" type="url" placeholder="e.g. https://www.youtube.com/watch?v=…" autocomplete="off"></label>
+        <div class="actions" style="margin-top:8px"><a class="btn" id="vdOpen" href="#" target="_blank" rel="noopener" style="text-decoration:none;pointer-events:none;opacity:.45">↗ Open the video</a></div>
+        <div id="vdLinkSteps"></div>
+        <div class="pastezone" id="vdPaste" tabindex="0">📸 <b>Click here, then press Ctrl + V</b> to paste a screenshot<br><span class="muted" style="font-size:13px">paste 4–8 screenshots from different moments · or drag image files here</span></div>
+        <div id="vdShots"></div>
+      </details>
+    </div>
+    <div id="vdOut"></div>`;
+  const drop=$('#vdDrop'), f=$('#vdFile');
+  f.onchange=()=>f.files[0]&&vdLoad(f.files[0]);
+  drop.ondragover=e=>{e.preventDefault();drop.classList.add('over');}; drop.ondragleave=()=>drop.classList.remove('over');
+  drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over'); const x=[...e.dataTransfer.files].find(z=>z.type.startsWith('video/')); if(x) vdLoad(x); else toast('Please drop a video file (MP4, MOV or WebM)'); };
+  const u=$('#vdUrl'), o=$('#vdOpen');
+  u.oninput=()=>{ const v=u.value.trim(); const ok=/^https?:\/\/\S+\.\S+/i.test(v)||/^[\w-]+\.[\w.-]+\/\S*/.test(v); o.href=ok?(/^https?:/i.test(v)?v:'https://'+v):'#'; o.style.pointerEvents=ok?'auto':'none'; o.style.opacity=ok?1:.45; $('#vdLinkSteps').innerHTML=ok?vdLinkSteps(v):''; };
+  const pz=$('#vdPaste'); pz.onclick=()=>pz.focus();
+  pz.ondragover=e=>{e.preventDefault();pz.classList.add('ok');}; pz.ondragleave=()=>pz.classList.remove('ok');
+  pz.ondrop=e=>{e.preventDefault();pz.classList.remove('ok'); vdAddShots(e.dataTransfer.files);};
+  document.onpaste=e=>{ if(!$('#vdPaste')){ document.onpaste=null; return; } if(e.target&&/INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    const items=[...(e.clipboardData&&e.clipboardData.items||[])].filter(i=>i.kind==='file'&&i.type.startsWith('image/'));
+    if(items.length){ e.preventDefault(); $('#vdLinkBox').open=true; vdAddShots(items.map(i=>i.getAsFile())); pz.classList.add('ok'); setTimeout(()=>pz.classList.remove('ok'),600); toast('✅ Screenshot added'); }
+    else { const t=e.clipboardData&&e.clipboardData.getData('text'); if(t&&/^https?:/i.test(t.trim())){ $('#vdLinkBox').open=true; u.value=t.trim(); u.oninput(); toast('🔗 Link added — follow the steps to capture it'); } } };
+  vdDrawShots();
+  if(VD.file&&!VD.local?.fromShots) vdShowPreview(); else if(VD.local) vdRender(!VD.result);
+  window.scrollTo(0,0);
+}
+function vdLoad(file){
+  if(!file.type.startsWith('video/')){ toast('That isn’t a video file'); return; }
+  if(VD.url) URL.revokeObjectURL(VD.url); VD.frames.forEach(fr=>URL.revokeObjectURL(fr.url));
+  Object.assign(VD,{file, url:URL.createObjectURL(file), frames:[], blobs:[], local:null, result:null});
+  vdShowPreview();
+}
+function vdShowPreview(){
+  $('#vdPrev').innerHTML=`<div class="vdgrid"><video id="vdVideo" src="${VD.url}" controls playsinline muted preload="auto"></video>
+    <div><div class="muted" style="font-size:13px;word-break:break-all">📄 ${esc(VD.file.name)} · ${(VD.file.size/1048576).toFixed(1)} MB</div><div id="vdMeta" class="muted" style="font-size:13px;margin-top:4px"></div>
+    <div class="actions"><button class="btn" id="vdGo">🤖 Figure out the prompts</button></div><div id="vdProg" class="muted" style="font-size:13px"></div></div></div>`;
+  const v=$('#vdVideo'); v.onloadedmetadata=()=>{ $('#vdMeta').textContent=`${v.videoWidth}×${v.videoHeight} · ${v.duration.toFixed(1)} seconds`; };
+  v.onerror=()=>{ $('#vdMeta').innerHTML='⚠️ This browser can’t play that video format. Try an MP4 (H.264) version.'; };
+  $('#vdGo').onclick=vdRun;
+  if(VD.result||VD.local) vdRender();
+}
+async function vdRun(fromShots){
+  if(VD.busy) return; VD.busy=true;
+  if(fromShots===true){ const sb=$('#vdShotsGo'); if(sb){ sb.disabled=true; sb.textContent='⏳ Analyzing…'; } if(!$('#vdProg')){ $('#vdPrev').innerHTML='<div id="vdProg" class="muted" style="font-size:13px;margin-top:10px"></div>'; } }
+  const btn=$('#vdGo')||{set disabled(v){},set textContent(v){}};
+  if(fromShots!==true){ btn.disabled=true; btn.textContent='⏳ Analyzing…';
+    try{ $('#vdProg').textContent='Reading the video…'; await vdAnalyze(); }
+    catch(e){ VD.busy=false; btn.disabled=false; btn.textContent='🤖 Figure out the prompts'; $('#vdProg').textContent='⚠️ Couldn’t read that video. Try an MP4 (H.264) file.'; return; } }
+  VD.result=null; vdRender();
+  const sample=await getSample(); let caps=null; if(sample) caps=await sample.limits().catch(()=>null);
+  if(!sample||!caps||!caps.images){ VD.busy=false; btn.disabled=false; btn.textContent='🔄 Analyze again'; const sb3=$('#vdShotsGo'); if(sb3){ sb3.disabled=false; sb3.textContent='🤖 Analyze my screenshots'; } vdRender(true); return; }
+  const imgs=VD.blobs.slice(0,caps.images.maxCount||8);
+  const adv=LEVEL==='adv';
+  const ask= (VD.local.fromShots
+    ? `You are an expert cinematographer, video editor and AI-video prompt engineer. The images are ${imgs.length} screenshots taken in order at different moments of one video${VD.meta.source?` (from ${vdSite(VD.meta.source)}; you cannot open the link)`:''}. Screenshot size ${VD.meta.width}x${VD.meta.height} (${VD.meta.aspect}). Measured by the page: overall brightness ${VD.local.brightness}; color ${VD.local.color}. Camera motion was NOT measured — infer the most likely movement from framing differences, motion blur and composition, and say it is inferred.`
+    : `You are an expert cinematographer, video editor and AI-video prompt engineer. The images are ${imgs.length} frames taken in order from one video (timestamps: ${VD.frames.slice(0,imgs.length).map(f=>f.t.toFixed(1)+'s').join(', ')}).
+Video facts: ${VD.meta.duration.toFixed(1)} seconds, ${VD.meta.width}x${VD.meta.height} (${VD.meta.aspect}).
+Measured by the page: about ${VD.local.shots} shot(s)${VD.local.cuts.length?` with scene changes near ${VD.local.cuts.map(t=>t.toFixed(1)+'s').join(', ')}`:''}; overall brightness ${VD.local.brightness}; color ${VD.local.color}; motion ${VD.local.speed}, ${VD.local.stability}; measured camera motion per moment: ${VD.local.motions.map(m=>m.t+'s '+m.move).join('; ')}.`)+`
+Task: reverse-engineer how this video was most likely made and the prompts most likely used. Use the frames for what is visible and the measurements for motion. It is a best guess — never claim certainty.
+Reply with ONLY JSON in this shape:
+{"summary":"1–2 sentences on what the video is","made_with":"likely real footage, AI-generated, or a mix — and why (short)","style":{"look":"","color_grade":"","lighting":"","tone":"","pacing":"","music_guess":""${adv?',"lens":"","frame_rate":"","depth_of_field":""':''}},"shots":[{"time":"0–3s","what":"","camera_type":"","angle":"","shot_size":"","movement":"","speed":"","lighting":""${adv?',"lens":""':''}}],"text_to_video_prompt":"one detailed prompt to recreate the whole look with an AI text-to-video tool","image_to_video_prompts":["one prompt per shot to animate a still photo into that shot"],"craft_prompt":"a CRAFT-format prompt (Context, Role, Action, Format, Tone) the user could paste into Claude to plan a similar video","tips":["3 short tips to recreate it"]}
+Keep each field concise. Plain, beginner-friendly words${adv?' plus professional terms where useful':''}.`;
+  VD.ctl=new AbortController();
+  $('#vdProg').innerHTML='🤖 Claude is studying the frames… (this can take 20–60 seconds) <button class="xbtn" id="vdStop">Stop</button>';
+  $('#vdStop').onclick=()=>VD.ctl&&VD.ctl.abort();
+  try{
+    const r=await sample.json(ask,{images:imgs, signal:VD.ctl.signal});
+    VD.result=r&&typeof r==='object'?r:null; $('#vdProg').textContent='';
+  }catch(e){
+    const msg={not_granted:'Claude access wasn’t allowed for this page. You can still use the measurements and the “Ask Claude” prompt below.',rate_limited:'Claude is busy or you’ve hit a usage limit — please try again in a little while.',image_rejected:'One of the frames couldn’t be read. Try a different video.',images_unavailable:'Image analysis isn’t available here. Use the “Ask Claude” prompt below instead.',refused:'Claude couldn’t analyze this video. Try a different clip.',cancelled:'Stopped.',invalid_json:'Claude’s answer came back in an unexpected format — click “Analyze again.”',session_expired:'Please sign in to Claude again, then retry.'}[e&&e.code]||'Something went wrong — click “Analyze again.”';
+    $('#vdProg').textContent='⚠️ '+msg; if(e&&['not_granted','images_unavailable','sampling_disabled','not_declared','capability_disabled'].includes(e.code)) vdRender(true);
+  }
+  VD.busy=false; const b2=$('#vdGo'); if(b2){ b2.disabled=false; b2.textContent='🔄 Analyze again'; } const sb2=$('#vdShotsGo'); if(sb2){ sb2.disabled=false; sb2.textContent='🔄 Analyze my screenshots again'; }
+  vdRender(!VD.result);
+}
+function vdManualPrompt(){
+  return `I'm attaching ${VD.frames.length} screenshots taken in order from a video (${VD.meta.duration?VD.meta.duration.toFixed(1)+' seconds, ':''}${VD.meta.aspect}${VD.meta.source?', from '+vdSite(VD.meta.source):''}). Measured details: about ${VD.local.shots} shot(s); brightness ${VD.local.brightness}; color ${VD.local.color}; motion ${VD.local.speed}, ${VD.local.stability}; camera motion: ${VD.local.motions.length?VD.local.motions.map(m=>m.t+'s '+m.move).join('; '):'not measured (please infer it)'}.
+Act as an expert cinematographer and AI-video prompt engineer. Reverse-engineer how this video was most likely made: for each shot give camera type, angle, shot size, movement, speed and lighting; describe the look, color grade, tone, pacing and likely music. Then write (1) one text-to-video prompt to recreate the whole look, (2) one image-to-video prompt per shot, and (3) a CRAFT prompt I can reuse to plan a similar video. Use simple words and label everything as a best guess.`;
+}
+function vdRender(manual){
+  const out=$('#vdOut'); if(!out) return;
+  const L=VD.local, R=VD.result, cp=t=>`<button class="qcopy" data-vdcp="${encodeURIComponent(t)}">📋 Copy</button>`;
+  let html='';
+  if(VD.frames.length) html+=`<div class="card"><h2>🖼️ Key frames</h2><p class="muted" style="font-size:13px;margin:0 0 8px">Right-click any frame → <b>Copy image</b> to paste it into Claude yourself.</p><div class="vdframes">${VD.frames.map(f=>`<figure><img src="${f.url}" alt=""><figcaption>${f.shot?'Screenshot #'+f.t:f.t.toFixed(1)+'s'}</figcaption></figure>`).join('')}</div></div>`;
+  if(L) html+=`<div class="card"><h2>📏 What the page measured</h2><div class="formgrid">
+    <div class="stat"><span>Video shape</span><b>${esc(VD.meta.aspect)}</b></div><div class="stat"><span>Length</span><b>${VD.meta.duration?VD.meta.duration.toFixed(1)+'s':'—'}</b></div>
+    <div class="stat"><span>Shots / scene changes</span><b>${L.shots}</b></div><div class="stat"><span>Brightness</span><b>${L.brightness}</b></div>
+    <div class="stat"><span>Color temperature</span><b>${L.color}</b></div><div class="stat"><span>Camera speed</span><b>${L.speed}</b></div></div>
+    ${L.motions.length?`<div style="overflow-x:auto;margin-top:10px"><table class="tbl"><tr><th>Moment</th><th>Measured camera motion</th></tr>${L.motions.map(m=>`<tr><td>${m.t}s</td><td>${esc(m.move)}</td></tr>`).join('')}</table></div>`:'<p class="muted" style="font-size:13px;margin-top:8px">📸 Camera motion can’t be measured from screenshots — Claude will infer it. For measured motion, upload a screen recording instead.</p>'}
+    <p class="muted" style="font-size:12px">Motion is estimated from small frame-to-frame changes — a helpful hint, not exact.</p></div>`;
+  if(R){
+    const s=R.style||{};
+    html+=`<div class="card vdres"><h2>🕵️ Best-guess breakdown</h2>
+      <p style="font-size:17px;margin:0 0 6px">${esc(R.summary||'')}</p>${R.made_with?`<p class="muted" style="margin:0 0 10px">🎬 ${esc(R.made_with)}</p>`:''}
+      <div class="formgrid">${Object.entries(s).filter(([k,v])=>v).map(([k,v])=>`<div class="stat"><span>${esc(k.replace(/_/g,' '))}</span><b style="font-size:15px;font-family:Inter">${esc(v)}</b></div>`).join('')}</div>
+      ${Array.isArray(R.shots)&&R.shots.length?`<h3 style="margin-top:16px">🎥 Shot by shot</h3><div style="overflow-x:auto"><table class="tbl"><tr><th>Time</th><th>What we see</th><th>Camera type</th><th>Angle</th><th>Shot size</th><th>Movement</th><th>Speed</th><th>Lighting</th>${LEVEL==='adv'?'<th>Lens</th>':''}</tr>
+        ${R.shots.map(x=>`<tr><td>${esc(x.time||'')}</td><td>${esc(x.what||'')}</td><td>${esc(x.camera_type||'')}</td><td>${esc(x.angle||'')}</td><td>${esc(x.shot_size||'')}</td><td>${esc(x.movement||'')}</td><td>${esc(x.speed||'')}</td><td>${esc(x.lighting||'')}</td>${LEVEL==='adv'?`<td>${esc(x.lens||'')}</td>`:''}</tr>`).join('')}</table></div>`:''}
+      ${R.text_to_video_prompt?`<h3 style="margin-top:16px">✍️ Text-to-video prompt (recreate the whole look)</h3><div class="quote">${esc(R.text_to_video_prompt)}</div>${cp(R.text_to_video_prompt)}`:''}
+      ${Array.isArray(R.image_to_video_prompts)&&R.image_to_video_prompts.length?`<h3 style="margin-top:16px">📸 Photo-to-video prompts (one per shot)</h3>${R.image_to_video_prompts.map((t,i)=>`<div class="quote"><b>Shot ${i+1}:</b> ${esc(t)}</div>${cp(t)}`).join('')}`:''}
+      ${R.craft_prompt?`<h3 style="margin-top:16px">🧩 CRAFT prompt to plan a similar video</h3><div class="quote" style="white-space:pre-wrap">${esc(R.craft_prompt)}</div>${cp(R.craft_prompt)}`:''}
+      ${Array.isArray(R.tips)&&R.tips.length?`<h3 style="margin-top:16px">💡 Tips to recreate it</h3><ul class="steps">${R.tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}
+      <div class="actions"><button class="btn ghost" id="vdAll">📋 Copy the full breakdown</button></div>
+      <p class="muted" style="font-size:12px;margin:8px 0 0">These are educated guesses from the frames — no tool can see the exact prompt that was used. Only recreate styles, not someone else’s actual footage, branding or people.</p></div>`;
+  }
+  if(manual&&L) html+=`<div class="card"><h2>🤖 Ask Claude yourself</h2><p class="muted" style="font-size:14px">Automatic analysis isn’t available in this view. Copy this request, paste it into a Claude chat, then copy-and-paste 4–8 of the key frames above into the same message.</p><div class="quote" style="white-space:pre-wrap">${esc(vdManualPrompt())}</div>${cp(vdManualPrompt())}</div>`;
+  out.innerHTML=html;
+  out.querySelectorAll('[data-vdcp]').forEach(b=>b.onclick=async()=>{ const t=decodeURIComponent(b.dataset.vdcp); (await copyText(t))?toast('✅ Copied'):showCopyBox(t); });
+  if($('#vdAll')) $('#vdAll').onclick=async()=>{ const t=JSON.stringify(R,null,2); (await copyText(t))?toast('✅ Copied'):showCopyBox(t); };
+}
+
 /* ---------- Help & experience levels ---------- */
 const LEVELS = {new:['🌱','Just starting'], some:['🌿','Not completely lost'], adv:['🌳','Almost there']};
 let LEVEL = (()=>{ try{ return localStorage.getItem('pc_level')||'new'; }catch(e){ return 'new'; } })();
-function setLevel(l){ LEVEL=l; const lt=document.getElementById('lvlTop'); if(lt) lt.innerHTML=levelSwitch(); try{ localStorage.setItem('pc_level',l); }catch(e){} document.querySelectorAll('[data-level]').forEach(b=>b.classList.toggle('on',b.dataset.level===l)); }
+function setLevel(l){ const changed=LEVEL!==l; LEVEL=l; setTimeout(()=>{ if(changed&&!window._rerender&&document.querySelector('#app .bar')) toast('🎓 Your new level starts with the next game you play'); if(changed&&window._rerender&&!document.querySelector('.modal')) window._rerender(); if(changed&&l==='adv') toast('🌳 Expert mode on — prompts now include pro-level details'); else if(changed&&l==='some') toast('🌿 Plus mode on — prompts now include a few helpful extras'); },0); const lt=document.getElementById('lvlTop'); if(lt) lt.innerHTML=levelSwitch(); try{ localStorage.setItem('pc_level',l); }catch(e){} document.querySelectorAll('[data-level]').forEach(b=>b.classList.toggle('on',b.dataset.level===l)); }
 function levelSwitch(){ return `<div class="lvl" role="group" aria-label="Instruction level">${Object.entries(LEVELS).map(([k,v])=>`<button data-level="${k}" class="${LEVEL===k?'on':''}" onclick="setLevel('${k}');if(window._helpRedraw)window._helpRedraw()">${v[0]} ${v[1]}</button>`).join('')}</div>`; }
 
 function itemKind(it,tab){
@@ -2490,9 +3013,9 @@ function stepsFor(kind, level, title){
   if(kind==='video') S.push(['Control the video model','Keep camera motion, speed, lens and color grade identical across clips; reuse the same negative prompt; generate several seeds and pick the most stable; use first/last-frame controls only within the same room to avoid invented geometry.']);
   return S;
 }
-function askClaudePrompt(it, kind, level){
+function askClaudePrompt(it, kind, level, tab){
   const who = {new:'I have no computer experience, so please explain everything in very simple words, one small step at a time, and tell me exactly what to click or type.', some:'I am comfortable with basic computer tasks but new to AI tools. Please give clear step-by-step instructions without too much jargon.', adv:'I am an experienced user. Be concise and focus on advanced techniques, optimizations and pitfalls.'}[level];
-  const body = applyPF(it.script ? scriptText(it) : it.p.map(x=>x[1]).join('\n\n'));
+  const body = applyPF(it.script ? scriptText(it) : getSegs(it,tab).map(x=>x[1]).join('\n\n'));
   return `${who}
 
 I want to use the ${kind==='script'?'script':kind==='guide'?'guide':'prompt'} below, called "${it.t}". Please:
@@ -2515,7 +3038,7 @@ function openHelp(it, tab){
       <ol class="helpsteps">${steps.map(s=>`<li><b>${s[0]}</b><br>${s[1]}</li>`).join('')}</ol>
       <div class="fb good" style="margin-top:12px"><b>🤖 Want even more help?</b> Copy this ready-made request and paste it into Claude. It includes the ${kind==='script'?'script':'prompt'} and asks Claude to coach you at your level (${LEVELS[LEVEL][1].toLowerCase()}).
         <div class="actions" style="margin-top:8px"><button class="btn" id="askC">📋 Copy “help me use this” request</button></div></div>`;
-    m.querySelector('#askC').onclick=async()=>{ const t=askClaudePrompt(it,kind,LEVEL); (await copyText(t))?toast('✅ Copied — paste it into Claude'):showCopyBox(t); };
+    m.querySelector('#askC').onclick=async()=>{ const t=askClaudePrompt(it,kind,LEVEL,tab); (await copyText(t))?toast('✅ Copied — paste it into Claude'):showCopyBox(t); };
   };
   const m=document.createElement('div'); m.className='modal';
   m.innerHTML=`<div class="card pop helpcard"><div class="top"><h2 style="margin:0">❓ How to use: ${esc(it.t)}</h2><button class="xbtn" id="hClose">✕ Close</button></div><div class="helpbody"></div></div>`;
@@ -2568,6 +3091,7 @@ function libraryView(tab){
       <input id="q" placeholder="🔎 Search prompts…" class="search">
     </div>
     ${tab==='video'?`<button class="gbtn libbtn" style="margin:0 0 12px" onclick="rePrompts()"><span class="em" style="font-size:40px">🏡</span><span><span class="n">Looking for real estate videos?</span><span class="muted">All real estate prompts, intro scripts and the Photo-to-Video Studio are now together in the 🏡 Real Estate section.</span></span></button>`:''}
+    ${expertBanner()}
     <p class="muted" style="margin:0 4px 12px">${sec.d}</p>
     <div id="plist">${sec.items.map((it,n)=>promptCard(it,tab,n)).join('')}</div>
     <div class="card"><h3>💡 After the first answer</h3><p class="muted" style="margin:0">Keep talking to it! Try: "Make it shorter." · "Make it more casual." · "Give me 3 more options." · "What did you assume that I should check?" · "Ask me questions to make this better."</p></div>`;
@@ -2580,7 +3104,7 @@ function bindCards(){
   document.querySelectorAll('.pcard .head').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle('open'));
   document.querySelectorAll('.copy').forEach(b=>{ const label=b.textContent; b.onclick=async e=>{
     e.stopPropagation(); const it=LIB[b.dataset.tab].items[+b.dataset.n];
-    const txt=applyPF(it.script?scriptText(it):it.p.map(x=>x[1]).join('\n\n'));
+    const txt=applyPF(it.script?scriptText(it):getSegs(it,b.dataset.tab).map(x=>x[1]).join('\n\n'));
     const ok=await copyText(txt);
     if(ok){ b.textContent='✅ Copied!'; b.classList.add('done'); setTimeout(()=>{b.textContent=label;b.classList.remove('done');},1800); toast('✅ Copied! Now paste it into Claude and fill in the yellow [BLANKS].'); }
     else showCopyBox(txt);
@@ -2598,18 +3122,19 @@ function promptCard(it,tab,n){
         <div class="actions"><button class="btn copy" data-tab="${tab}" data-n="${n}">📋 Copy ${it.badge?'':'whole script'}</button></div>
       </div></div>`;
   }
+  const segs=getSegs(it,tab);
   const search=(it.t+' '+it.p.map(x=>x[1]).join(' ')).toLowerCase().replace(/"/g,'');
   return `<div class="pcard card" data-s="${search}">
-    <div class="head"><span style="font-size:24px">${it.i}</span><h3 style="margin:0;flex:1">${it.t}</h3>
+    <div class="head"><span style="font-size:24px">${it.i}</span><h3 style="margin:0;flex:1">${it.t}${LEVEL==='adv'?' <span class="xchip" style="vertical-align:middle">🌳 EXPERT</span>':LEVEL==='some'&&!it.script?' <span class="xchip plus" style="vertical-align:middle">🌿 PLUS</span>':''}</h3>
       <span class="dots">${it.p.map(x=>`<i style="background:${COLOR[x[0]]}" title="${WORD[x[0]]}"></i>`).join('')}</span><button class="qcopy qhelp" data-help-tab="${tab}" data-help-n="${n}" title="Step-by-step help">❓ How to use</button><button class="qcopy copy" data-tab="${tab}" data-n="${n}" title="Copy this prompt">📋 Copy</button><span class="arrow">▾</span></div>
     <div class="body">
-      ${it.p.map(x=>`<div class="pl"><span class="chip" style="background:${COLOR[x[0]]}" title="${WORD[x[0]]}">${x[0]}</span><div><small style="color:${COLOR[x[0]]};font-weight:700">${WORD[x[0]]}</small><br>${hl(x[1])}</div></div>`).join('')}
+      ${segs.map(x=>`<div class="pl ${x[2]==='x'?'xpro':x[2]==='p'?'xplus':''}"><span class="chip" style="background:${COLOR[x[0]]}" title="${WORD[x[0]]}">${x[0]}</span><div><small style="color:${COLOR[x[0]]};font-weight:700">${WORD[x[0]]}</small>${x[2]==='x'?' <span class="xchip">PRO</span>':x[2]==='p'?' <span class="xchip plus">PLUS</span>':''}<br>${hl(x[1])}</div></div>`).join('')}
       <div class="actions"><button class="btn copy" data-tab="${tab}" data-n="${n}">📋 Copy</button></div>
     </div></div>`;
 }
 
 document.getElementById('lvlTop').innerHTML=levelSwitch(); updateMeBtn();
-if(location.hash==='#tools') toolsView(); else if(location.hash==='#planner') plannerView(); else if(location.hash==='#studio'||location.hash==='#realestate') studioView(); else if(location.hash==='#library') libraryView(); else if(location.hash==='#games') gamesView(); else home();
+if(location.hash==='#detective') videoDetectiveView(); else if(location.hash==='#tools') toolsView(); else if(location.hash==='#planner') plannerView(); else if(location.hash==='#studio'||location.hash==='#realestate') studioView(); else if(location.hash==='#library') libraryView(); else if(location.hash==='#games') gamesView(); else home();
 </script>
 </body>
 </html>
