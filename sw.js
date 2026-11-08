@@ -1,5 +1,5 @@
 /* Prompt CRAFT service worker — offline support. Bump VERSION when you publish a new index.html. */
-const VERSION = 'pc-202611082322';
+const VERSION = 'pc-202611082329';
 const CORE = ['./', './index.html', './manifest.webmanifest', './privacy.html', './terms.html', './offline.html',
   './icons/icon-192.png', './icons/icon-512.png', './icons/maskable-512.png', './favicon.png', './fonts.css', './jszip.min.js',
   './fonts/fredoka-latin-500-normal.woff2', './fonts/fredoka-latin-600-normal.woff2', './fonts/fredoka-latin-700-normal.woff2',

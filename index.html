@@ -427,6 +427,11 @@
   .sndvol{display:block;margin-top:10px;max-width:360px}.sndvol input,#sndStart{width:100%;accent-color:var(--C)}
   .pkaud{display:grid;place-items:center;height:96px;border-radius:8px;background:var(--bg);font-size:40px}
   .capin{width:100%;box-sizing:border-box;margin-top:4px;font:inherit;font-size:12.5px;padding:5px 7px;border-radius:8px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
+  .vewrap{background:#000;border-radius:14px;overflow:hidden;display:flex;justify-content:center}.vewrap canvas{max-width:100%;max-height:520px;display:block}
+  .velooks{display:flex;flex-wrap:wrap;gap:6px}.velooks .xbtn.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .vegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px 16px;margin-top:8px}
+  .vesl{display:flex;flex-direction:column;gap:4px;font-size:14px}.vesl input{width:100%;accent-color:var(--C)}
+  .vesaved{display:inline-flex;gap:2px}
   .skip{position:absolute;left:8px;top:-60px;z-index:100;background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none}
   .skip:focus{top:8px}
   :focus-visible{outline:3px solid #1a5fd0;outline-offset:2px}
@@ -2371,13 +2376,14 @@ function reShell(active){
   const n = LIB.realestate.items.length;
   $('#app').innerHTML = `
     <div class="card pop">
-      <h1>🏡 Real Estate</h1>
-      <p class="muted" style="margin:0">All your real estate video tools in one place.</p>
+      <h1>🏡 Real Estate & Video</h1>
+      <p class="muted" style="margin:0">All your real estate and video tools in one place.</p>
       ${discHTML('re')}
       <div class="tabs" style="margin-bottom:0">
         <button class="tab ${active==='studio'?'on':''}" onclick="studioView()">🎬 Photo-to-Video Studio</button>
         <button class="tab ${active==='prompts'?'on':''}" onclick="rePrompts()">📋 Prompts & Scripts (${n})</button>
         <button class="tab ${active==='detect'?'on':''}" onclick="videoDetectiveView()">🔍 Video Detective</button>
+        <button class="tab ${active==='enhance'?'on':''}" onclick="videoEnhancerView()">✨ Video Enhancer</button>
       </div>
     </div>
     <div id="reBody"></div>`;
@@ -3641,6 +3647,168 @@ async function vdRunShots(){
   VD.result=null; await vdRun(true);
 }
 
+/* ---------- ✨ Video Enhancer: upgrade a video you already have ---------- */
+const VFX_LOOKS={
+ none:{n:'Original (no grade)',f:{b:100,c:100,s:100,w:0,v:0}},
+ auto:{n:'✨ Auto enhance',f:{b:104,c:110,s:112,w:4,v:15}},
+ warm:{n:'Warm luxury',f:{b:103,c:108,s:108,w:22,v:30}},
+ bright:{n:'Bright & airy',f:{b:112,c:96,s:104,w:6,v:5}},
+ twilight:{n:'Moody twilight',f:{b:92,c:118,s:96,w:-10,v:45}},
+ crisp:{n:'Crisp & clean',f:{b:104,c:116,s:100,w:0,v:10}},
+ vivid:{n:'Vivid social pop',f:{b:105,c:115,s:135,w:5,v:12}},
+ film:{n:'Soft film',f:{b:102,c:90,s:88,w:14,v:25,sep:12}},
+ bw:{n:'Classic black & white',f:{b:104,c:120,s:0,w:0,v:35}},
+};
+const VFX_DEF={look:'auto',b:104,c:110,s:112,w:4,v:15,sep:0,speed:1,trimA:0,trimB:0,ar:'keep',fadeIn:true,fadeOut:true,title:'',titleAt:'start',caption:'',audio:'orig',origVol:100,musicVol:60,music:'piano',bars:false};
+const VE={file:null,url:'',el:null,dur:0,w:0,h:0,s:{...VFX_DEF},raf:0,playing:false,rec:false};
+let VFXSAVE=(()=>{ try{ const v=JSON.parse(localStorage.getItem('pc_vfx')); return Array.isArray(v)?v:[]; }catch(e){ return []; } })();
+function vfxFilter(s){ return `brightness(${s.b}%) contrast(${s.c}%) saturate(${s.s}%)${s.sep?` sepia(${s.sep}%)`:''}`; }
+function veSize(){ const s=VE.s, W=VE.w||1280, H=VE.h||720; const r={ '16:9':16/9,'9:16':9/16,'1:1':1,'4:5':4/5 }[s.ar]; if(!r) { const k=Math.min(1,1920/Math.max(W,H)); return [Math.round(W*k/2)*2,Math.round(H*k/2)*2]; }
+  const long=1280; return r>=1?[long,Math.round(long/r/2)*2]:[Math.round(long*r/2)*2,long]; }
+function veDraw(ctx,W,H,t){
+  const v=VE.el, s=VE.s; if(!v||!v.videoWidth) return;
+  ctx.fillStyle='#000'; ctx.fillRect(0,0,W,H);
+  const sc=Math.max(W/v.videoWidth,H/v.videoHeight), dw=v.videoWidth*sc, dh=v.videoHeight*sc;
+  ctx.filter=vfxFilter(s); ctx.drawImage(v,(W-dw)/2,(H-dh)/2,dw,dh); ctx.filter='none';
+  if(s.w){ ctx.globalCompositeOperation='soft-light'; ctx.fillStyle=s.w>0?`rgba(255,150,60,${Math.min(.6,s.w/60)})`:`rgba(60,120,255,${Math.min(.6,-s.w/60)})`; ctx.fillRect(0,0,W,H); ctx.globalCompositeOperation='source-over'; }
+  if(s.v){ const g=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*0.35,W/2,H/2,Math.max(W,H)*0.75); g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,`rgba(0,0,0,${s.v/100})`); ctx.fillStyle=g; ctx.fillRect(0,0,W,H); }
+  if(s.bars&&W>H){ ctx.fillStyle='#000'; const bh=H*0.07; ctx.fillRect(0,0,W,bh); ctx.fillRect(0,H-bh,W,bh); }
+  const A=s.trimA, B=(s.trimB||VE.dur), rel=t-A, len=B-A;
+  const vert=H>W, fs=Math.round(Math.min(W,H)*(vert?0.06:0.065));
+  if(s.title){ const show=s.titleAt==='start'?rel<3.5:s.titleAt==='end'?rel>len-3.5:true; if(show){ const d=s.titleAt==='end'?len-rel:rel; const a=s.titleAt==='always'?1:Math.max(0,Math.min(1,(s.titleAt==='end'?3.5-d:d)/0.5, (s.titleAt==='end'?d:3.5-d)/0.5));
+    ctx.globalAlpha=a; ctx.fillStyle='#fff'; ctx.shadowColor='rgba(0,0,0,.65)'; ctx.shadowBlur=14; ctx.textAlign='center'; ctx.font=`600 ${fs}px Georgia, serif`; ctx.fillText(s.title,W/2,H*(vert?0.42:0.5),W*0.9); ctx.shadowBlur=0; ctx.globalAlpha=1; } }
+  if(s.caption){ const f2=Math.round(fs*0.62); ctx.font=`600 ${f2}px Inter, Arial, sans-serif`; ctx.textAlign='left'; const tw=Math.min(ctx.measureText(s.caption).width,W*0.86), x=W*0.05, y=H*(vert?0.88:0.86);
+    ctx.globalAlpha=0.55; ctx.fillStyle='#000'; ctx.fillRect(x-12,y-f2-6,tw+24,f2+16); ctx.globalAlpha=1; ctx.fillStyle='#fff'; ctx.fillText(s.caption,x,y,W*0.86); }
+  let fa=1; if(s.fadeIn&&rel<0.8) fa=rel/0.8; if(s.fadeOut&&rel>len-1) fa=Math.min(fa,(len-rel)/1); if(fa<1){ ctx.fillStyle=`rgba(0,0,0,${1-Math.max(0,fa)})`; ctx.fillRect(0,0,W,H); }
+}
+function veLoop(){
+  const cv=document.getElementById('veCv'); if(!cv||!VE.el){ veStopAll(); return; }
+  const [W,H]=veSize(); if(cv.width!==W||cv.height!==H){ cv.width=W; cv.height=H; }
+  const v=VE.el, s=VE.s, B=s.trimB||VE.dur;
+  if(VE.playing&&!VE.rec&&v.currentTime>=B-0.05){ v.currentTime=s.trimA; if(s.audio!=='orig'&&!SND.mute){ sndStart(s.music); } }
+  veDraw(cv.getContext('2d'),W,H,v.currentTime);
+  const el=document.getElementById('veTime'); if(el) el.textContent=`${fmtDur(v.currentTime-s.trimA)} / ${fmtDur((B-s.trimA)/s.speed)} at ${s.speed}× speed`;
+  VE.raf=requestAnimationFrame(veLoop);
+}
+function veAudioMix(){ const v=VE.el, s=VE.s; if(!v) return; v.playbackRate=s.speed; v.muted=s.audio==='music'; v.volume=s.audio==='music'?0:Math.min(1,s.origVol/100); ST.musicVol=s.musicVol; sndVol(); }
+function vePlay(on){ const v=VE.el; if(!v) return; VE.playing=on; const b=document.getElementById('vePP'); if(b) b.textContent=on?'⏸ Pause':'▶ Play';
+  if(on){ if(v.currentTime<VE.s.trimA||v.currentTime>=(VE.s.trimB||VE.dur)) v.currentTime=VE.s.trimA; veAudioMix(); v.play().catch(()=>{}); if(VE.s.audio!=='orig'){ SND.src='synth'; ST.musicVol=VE.s.musicVol; sndStart(VE.s.music); } }
+  else { v.pause(); sndStop(true); } }
+function veStopAll(){ cancelAnimationFrame(VE.raf); if(VE.el) try{ VE.el.pause(); }catch(e){} VE.playing=false; sndStop(); }
+async function veLoad(file){
+  veStopAll(); if(VE.url) try{ URL.revokeObjectURL(VE.url); }catch(e){}
+  VE.file=file; VE.url=URL.createObjectURL(file); const v=document.createElement('video'); v.src=VE.url; v.playsInline=true; v.preload='auto'; v.crossOrigin='anonymous';
+  const ok=await new Promise(r=>{ v.onloadeddata=()=>r(!!v.videoWidth); v.onerror=()=>r(false); setTimeout(()=>r(!!v.videoWidth),6000); });
+  if(!ok){ VE.el=null; veRender(); const m=document.getElementById('veMsg'); if(m) m.innerHTML=`<span class="vdbad">⚠️ <b>This video’s format can’t be opened in a browser.</b> Convert it to MP4 first — see <a href="#" onclick="videoDetectiveView();setTimeout(()=>{const x=document.getElementById('vdFix');if(x){x.open=true;x.scrollIntoView();}},200);return false">🛠️ how to fix the format</a> (Grabfy for Instagram, HandBrake for files on your computer).</span>`; return; }
+  VE.el=v; VE.dur=v.duration||0; VE.w=v.videoWidth; VE.h=v.videoHeight; VE.s.trimA=0; VE.s.trimB=Math.round(VE.dur*10)/10;
+  veRender(); toast('✅ Video loaded — try the looks and sliders'); }
+function veSliders(){ const s=VE.s; const sl=(k,l,min,max,step,u='')=>`<label class="vesl"><span>${l} <b id="veV_${k}">${s[k]}${u}</b></span><input type="range" data-ve="${k}" min="${min}" max="${max}" step="${step}" value="${s[k]}"></label>`;
+  return sl('b','☀️ Brightness',60,150,1,'%')+sl('c','◐ Contrast',60,160,1,'%')+sl('s','🎨 Color (saturation)',0,200,1,'%')+sl('w','🌡️ Warmth',-40,40,1)+sl('v','🔦 Vignette (dark edges)',0,70,1,'%'); }
+function veRender(){
+  reShell('enhance'); const s=VE.s, has=!!VE.el;
+  $('#reBody').innerHTML=`
+   <div class="card pop"><h1 style="margin:0">✨ Video Enhancer</h1>
+     <p class="muted" style="margin:6px 0 0">Make a video you already have look more professional: better color and light, trim the boring parts, change the speed, crop it for Instagram or TikTok, add a title, text and music — then download the new version.</p>
+     ${LEVEL==='new'?`<div class="vdhow"><h2 style="margin:0 0 8px;font-size:20px">👣 How to use it — 4 easy steps</h2><ol class="steps vdsteps"><li><b>Add your video</b> (MP4 works best) — drag it in, click the box, or choose it from My Files.</li><li><b>Pick a look</b> like “✨ Auto enhance” or “Warm luxury.” Move the sliders if you want it brighter or more colorful.</li><li><b>Optional:</b> trim the start and end, crop for social media, add a title, text or music.</li><li>Click <b>⬇️ Download enhanced video</b>. It plays through once while it records, then saves.</li></ol></div>`:''}
+   </div>
+   <div class="card"><h2>Step 1 · Add your video</h2>
+     <label class="drop" id="veDrop"><input type="file" id="veFile" accept="video/*" hidden><span style="font-size:40px">🎞️</span><br><b>Drag & drop a video here</b><br><span class="muted">or tap to choose · MP4 works best · your video stays on your device</span></label>
+     <div class="pickrow">${pickBtn('vePick','video')}<span class="muted" style="font-size:13px">Search videos you saved in My Files</span></div>
+     <div id="veMsg"></div>
+   </div>
+   ${has?`<div class="card"><h2>Step 2 · Enhance it</h2>
+     <div class="vewrap"><canvas id="veCv" role="img" aria-label="Preview of your enhanced video"></canvas></div>
+     <div class="actions"><button class="btn" id="vePP">▶ Play</button><button class="btn ghost" id="veCmp">👀 Hold to compare with original</button><span class="muted" id="veTime" style="align-self:center"></span></div>
+     <h3 style="margin-top:14px">🎨 Look</h3><div class="velooks">${Object.entries(VFX_LOOKS).map(([k,o])=>`<button class="xbtn ${s.look===k?'on':''}" data-vl="${k}" aria-pressed="${s.look===k}">${o.n}</button>`).join('')}</div>
+     <details class="presetbox" ${LEVEL==='new'?'':'open'}><summary>🎚️ Fine-tune (brightness, contrast, color, warmth, vignette)</summary><div class="vegrid">${veSliders()}</div><div class="actions"><button class="xbtn" id="veReset">↺ Reset to the look</button></div></details>
+     <h3 style="margin-top:14px">✂️ Trim, speed & shape</h3>
+     <div class="vegrid">
+       <label class="vesl"><span>Start at <b id="veV_trimA">${fmtDur(s.trimA)}</b></span><input type="range" data-ve="trimA" min="0" max="${VE.dur.toFixed(1)}" step="0.1" value="${s.trimA}"></label>
+       <label class="vesl"><span>End at <b id="veV_trimB">${fmtDur(s.trimB)}</b></span><input type="range" data-ve="trimB" min="0" max="${VE.dur.toFixed(1)}" step="0.1" value="${s.trimB}"></label>
+       <label class="fld"><span>Speed</span><select data-vs="speed">${[[0.5,'0.5× slow motion'],[0.75,'0.75× slower'],[1,'1× normal'],[1.25,'1.25× a bit faster'],[1.5,'1.5× faster'],[2,'2× time-lapse']].map(o=>`<option value="${o[0]}" ${+s.speed===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></label>
+       <label class="fld"><span>Shape (crop)</span><select data-vs="ar">${[['keep','Keep original'],['16:9','16:9 horizontal (YouTube, website)'],['9:16','9:16 vertical (Reels, TikTok, Shorts)'],['1:1','1:1 square'],['4:5','4:5 portrait (Instagram feed)']].map(o=>`<option value="${o[0]}" ${s.ar===o[0]?'selected':''}>${o[1]}</option>`).join('')}</select></label>
+     </div>
+     <div class="sndsrc" style="margin-top:8px"><label><input type="checkbox" data-vc="fadeIn" ${s.fadeIn?'checked':''}> Fade in from black</label><label><input type="checkbox" data-vc="fadeOut" ${s.fadeOut?'checked':''}> Fade out at the end</label><label><input type="checkbox" data-vc="bars" ${s.bars?'checked':''}> Cinematic black bars</label></div>
+     <h3 style="margin-top:14px">🔤 Text</h3>
+     <div class="vegrid"><label class="fld"><span>Big title (optional)</span><input data-vt="title" value="${esc(s.title)}" maxlength="50" placeholder="e.g. Welcome to 123 Ocean Ave"></label>
+       <label class="fld"><span>Show the title</span><select data-vs="titleAt"><option value="start" ${s.titleAt==='start'?'selected':''}>At the start (3 seconds)</option><option value="end" ${s.titleAt==='end'?'selected':''}>At the end (3 seconds)</option><option value="always" ${s.titleAt==='always'?'selected':''}>The whole time</option></select></label>
+       <label class="fld"><span>Bottom caption (optional)</span><input data-vt="caption" value="${esc(s.caption)}" maxlength="70" placeholder="e.g. Call Minh · (555) 123-4567"></label></div>
+     <h3 style="margin-top:14px">🎵 Sound</h3>
+     <div class="sndsrc" role="radiogroup" aria-label="Sound"><label><input type="radio" name="veau" value="orig" ${s.audio==='orig'?'checked':''}> Keep the original sound</label><label><input type="radio" name="veau" value="mix" ${s.audio==='mix'?'checked':''}> Original + music</label><label><input type="radio" name="veau" value="music" ${s.audio==='music'?'checked':''}> Music only</label></div>
+     <div class="vegrid" ${s.audio==='orig'?'hidden':''} id="veMus"><label class="fld"><span>Soundtrack (25 to choose from)</span><select data-vs="music">${[...new Set(SOUNDTRACKS.map(t=>t.cat))].map(c=>`<optgroup label="${c}">${SOUNDTRACKS.filter(t=>t.cat===c).map(t=>`<option value="${t.k}" ${s.music===t.k?'selected':''}>${t.n} · ${t.bpm} BPM</option>`).join('')}</optgroup>`).join('')}</select></label>
+       <label class="vesl"><span>🎵 Music volume <b id="veV_musicVol">${s.musicVol}%</b></span><input type="range" data-ve="musicVol" min="0" max="100" step="5" value="${s.musicVol}"></label></div>
+     <div class="vegrid" ${s.audio==='music'?'hidden':''} id="veOrig"><label class="vesl"><span>🔊 Original sound volume <b id="veV_origVol">${s.origVol}%</b></span><input type="range" data-ve="origVol" min="0" max="100" step="5" value="${s.origVol}"></label></div>
+     <h3 style="margin-top:14px">💾 Save these settings</h3>
+     <div class="lsave"><input id="veName" placeholder="Name these settings, e.g. “My listing reels”" maxlength="50" aria-label="Name for these enhancer settings"><button class="btn ghost" id="veSv">💾 Save settings</button></div>
+     ${VFXSAVE.length?`<div class="velooks">${VFXSAVE.map((x,i)=>`<span class="vesaved"><button class="xbtn" data-vsl="${i}">✅ ${esc(x.name)}</button><button class="xbtn" data-vsd="${i}" aria-label="Delete ${esc(x.name)}">✕</button></span>`).join('')}</div>`:''}
+     <div class="actions" style="margin-top:16px"><button class="btn" id="veExp">⬇️ Download enhanced video</button><span class="muted" style="align-self:center;font-size:13px">Takes about ${fmtDur(((s.trimB||VE.dur)-s.trimA)/s.speed)} — the video plays through once while it records.</span></div>
+     <div id="veDone"></div>
+   </div>
+   <div class="card"><h2>🤖 Want even more? AI enhancement prompts</h2>
+     <p class="muted" style="margin:0 0 8px">Some upgrades need special AI tools — like sharpening blurry footage, upscaling to 4K or smoothing shaky video. Copy a prompt for the tool you use:</p>
+     ${veAiPrompts().map((p,i)=>`<div class="quote" style="font-size:13.5px"><b>${p[0]}</b><br>${esc(p[1])}<div class="actions" style="margin-top:6px"><button class="qcopy" data-vap="${i}">📋 Copy</button></div></div>`).join('')}
+     ${discHTML('ai')}
+   </div>`:''}`;
+  const drop=$('#veDrop'), f=$('#veFile');
+  f.onchange=()=>f.files[0]&&veLoad(f.files[0]);
+  drop.ondragover=e=>{e.preventDefault();drop.classList.add('over');}; drop.ondragleave=()=>drop.classList.remove('over');
+  drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over'); const x=[...e.dataTransfer.files].find(z=>z.type.startsWith('video/')||VD_BAD_EXT.test(z.name)); if(x) veLoad(x); else toast('Please drop a video file (MP4 works best)'); };
+  $('#vePick').onclick=()=>mfPicker({kind:'video',multi:false,onPick:fs=>veLoad(fs[0])});
+  try{ history.replaceState(null,'','#enhance-video'); }catch(e){}
+  if(!has) return;
+  const upd=(k,v)=>{ const b=document.getElementById('veV_'+k); if(b) b.textContent=(k==='trimA'||k==='trimB')?fmtDur(v):v+({b:'%',c:'%',s:'%',v:'%',musicVol:'%',origVol:'%'}[k]||''); };
+  document.querySelectorAll('[data-ve]').forEach(r=>r.oninput=()=>{ const k=r.dataset.ve; let v=+r.value;
+    if(k==='trimA'&&v>VE.s.trimB-1){ v=Math.max(0,VE.s.trimB-1); r.value=v; } if(k==='trimB'&&v<VE.s.trimA+1){ v=Math.min(VE.dur,VE.s.trimA+1); r.value=v; }
+    VE.s[k]=v; upd(k,v); if(k==='trimA'||k==='trimB'){ VE.el.currentTime=v; } if(k==='musicVol'||k==='origVol') veAudioMix(); });
+  document.querySelectorAll('[data-vs]').forEach(sl=>sl.onchange=()=>{ const k=sl.dataset.vs; VE.s[k]=k==='speed'?+sl.value:sl.value; if(k==='speed') veAudioMix(); if(k==='music'&&VE.playing&&VE.s.audio!=='orig') sndStart(VE.s.music); });
+  document.querySelectorAll('[data-vt]').forEach(i=>i.oninput=()=>{ VE.s[i.dataset.vt]=i.value; });
+  document.querySelectorAll('[data-vc]').forEach(c=>c.onchange=()=>{ VE.s[c.dataset.vc]=c.checked; });
+  document.querySelectorAll('input[name=veau]').forEach(r=>r.onchange=()=>{ VE.s.audio=r.value; $('#veMus').hidden=r.value==='orig'; $('#veOrig').hidden=r.value==='music'; veAudioMix(); if(VE.playing){ if(r.value==='orig') sndStop(true); else sndStart(VE.s.music); } });
+  document.querySelectorAll('[data-vl]').forEach(b=>b.onclick=()=>{ VE.s.look=b.dataset.vl; Object.assign(VE.s,{sep:0},VFX_LOOKS[VE.s.look].f); const y=window.scrollY, was=VE.playing; veRender(); window.scrollTo(0,y); if(was) vePlay(true); });
+  $('#veReset').onclick=()=>{ Object.assign(VE.s,{sep:0},VFX_LOOKS[VE.s.look].f); const y=window.scrollY, was=VE.playing; veRender(); window.scrollTo(0,y); if(was) vePlay(true); };
+  $('#vePP').onclick=()=>vePlay(!VE.playing);
+  const cmp=$('#veCmp'), saved={}; const down=()=>{ Object.assign(saved,VE.s); Object.assign(VE.s,{b:100,c:100,s:100,w:0,v:0,sep:0}); cmp.textContent='👀 Showing original'; }, up=()=>{ if(!('b' in saved)) return; ['b','c','s','w','v','sep'].forEach(k=>VE.s[k]=saved[k]); for(const k in saved) delete saved[k]; cmp.textContent='👀 Hold to compare with original'; };
+  cmp.onpointerdown=down; cmp.onpointerup=up; cmp.onpointerleave=up; cmp.onkeydown=e=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); down(); } }; cmp.onkeyup=up;
+  $('#veSv').onclick=()=>{ const n=$('#veName').value.trim(); if(!n){ $('#veName').focus(); toast('Type a name first'); return; } const {trimA,trimB,...keep}=VE.s; VFXSAVE.unshift({name:n,s:keep}); try{ localStorage.setItem('pc_vfx',JSON.stringify(VFXSAVE)); }catch(e){} if(typeof cloudMark==='function') cloudMark('vfx'); const y=window.scrollY; veRender(); window.scrollTo(0,y); toast('💾 Settings saved — use them on your next video'); };
+  document.querySelectorAll('[data-vsl]').forEach(b=>b.onclick=()=>{ Object.assign(VE.s,VFXSAVE[+b.dataset.vsl].s); const y=window.scrollY; veRender(); window.scrollTo(0,y); toast('✅ Applied “'+VFXSAVE[+b.dataset.vsl].name+'” — adjust anything'); });
+  document.querySelectorAll('[data-vsd]').forEach(b=>b.onclick=()=>{ VFXSAVE.splice(+b.dataset.vsd,1); try{ localStorage.setItem('pc_vfx',JSON.stringify(VFXSAVE)); }catch(e){} if(typeof cloudMark==='function') cloudMark('vfx'); const y=window.scrollY; veRender(); window.scrollTo(0,y); });
+  document.querySelectorAll('[data-vap]').forEach(b=>b.onclick=async()=>{ const t=veAiPrompts()[+b.dataset.vap][1]; (await copyText(t))?toast('✅ Copied'):showCopyBox(t); });
+  $('#veExp').onclick=veExport;
+  VE.el.currentTime=VE.s.trimA; cancelAnimationFrame(VE.raf); VE.raf=requestAnimationFrame(veLoop);
+}
+function veAiPrompts(){ const s=VE.s, L=VFX_LOOKS[s.look].n, ar=s.ar==='keep'?'the original aspect ratio':s.ar;
+  return [
+   ['🎬 Runway (video-to-video restyle)',`Enhance this video while keeping the exact same content, people, layout and camera motion. Apply a ${L.toLowerCase()} color grade: ${s.b>102?'slightly brighter exposure, ':''}${s.c>105?'richer contrast, ':''}${s.s>110?'more vibrant colors, ':s.s<60?'desaturated tones, ':''}${s.w>5?'warm golden tones, ':s.w<-5?'cool blue tones, ':''}clean whites and natural skin tones. Output ${ar}. Do not add or remove objects, do not change faces, no new text.`],
+   ['📈 Topaz Video AI (upscale & sharpen)','Model: Proteus (or Rhea for faces). Upscale to 4K (3840×2160) with Recover Detail 20, Sharpen 10, Reduce Noise 15, Dehalo 5, Anti-alias 5. Enable Stabilization (Auto-crop, strength 40) if the footage is shaky. Enable Frame Interpolation (Chronos) only for slow-motion. Export H.264 MP4, high quality.'],
+   ['📱 CapCut (one-tap fixes)','Open the video in CapCut → tap Adjust → Auto adjust; then Enhance quality (Basic → Enhance image) and Stabilize (Recommended). Add Auto captions for sound-off viewers. Export 1080p, 30 fps.'],
+   ['💬 Ask Claude for an edit plan',`I have a ${fmtDur(VE.dur)} video I want to make look more professional for ${s.ar==='9:16'?'Instagram Reels and TikTok':s.ar==='1:1'||s.ar==='4:5'?'Instagram':'YouTube and my website'}. Act as a professional video editor. Give me a step-by-step edit plan for CapCut: where to cut, which transitions, color settings to get a ${L.toLowerCase()} look, text on screen, music style and pacing. Keep it simple — I’m a beginner. Format: numbered steps.`]];
+}
+async function veExport(){
+  if(!VE.el||VE.rec) return; const cv=$('#veCv'); if(!window.MediaRecorder||!cv.captureStream){ toast('⚠️ This browser can’t record video — try Chrome or Edge'); return; }
+  vePlay(false); const c=sndCtx(); if(!c){ toast('⚠️ Sound isn’t available in this browser'); return; }
+  const mime=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1,mp4a.40.2','video/mp4;codecs=avc1','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(t=>MediaRecorder.isTypeSupported(t))||''; const ext=/mp4/.test(mime)?'mp4':'webm';
+  const v=VE.el, s=VE.s, dest=c.createMediaStreamDestination();
+  if(!VE.srcNode){ try{ VE.srcNode=c.createMediaElementSource(v); VE.gain=c.createGain(); VE.srcNode.connect(VE.gain); VE.gain.connect(c.destination); }catch(e){} }
+  if(VE.gain){ VE.gain.gain.value=s.audio==='music'?0:s.origVol/100; try{ VE.gain.connect(dest); }catch(e){} }
+  v.muted=false; v.volume=1; v.playbackRate=s.speed; v.currentTime=s.trimA; await new Promise(r=>{ v.onseeked=r; setTimeout(r,800); });
+  if(s.audio!=='orig'){ SND.src='synth'; ST.musicVol=s.musicVol; sndStart(s.music); SND.master.connect(dest); }
+  const stream=new MediaStream([...cv.captureStream(30).getVideoTracks(),...dest.stream.getAudioTracks()]);
+  const rec=new MediaRecorder(stream,mime?{mimeType:mime,videoBitsPerSecond:8e6}:undefined), chunks=[]; rec.ondataavailable=e=>e.data.size&&chunks.push(e.data);
+  const btn=$('#veExp'); btn.disabled=true; VE.rec=true; VE.playing=true; const B=s.trimB||VE.dur, total=(B-s.trimA)/s.speed;
+  rec.start(500); v.play().catch(()=>{}); const t0=performance.now();
+  await new Promise(res=>{ const tick=setInterval(()=>{ const pct=Math.min(100,Math.round((v.currentTime-s.trimA)/(B-s.trimA)*100)); btn.textContent=`⏺ Recording… ${pct}%`;
+    if(s.fadeOut&&SND.master&&v.currentTime>B-1.2) SND.master.gain.setTargetAtTime(0,c.currentTime,0.3);
+    if(v.currentTime>=B-0.03||v.ended||(performance.now()-t0)/1000>total+3){ clearInterval(tick); res(); } },100); });
+  v.pause(); rec.stop(); await new Promise(r=>rec.onstop=r); sndStop(); try{ VE.gain&&VE.gain.disconnect(dest); }catch(e){}
+  if(VE.gain) VE.gain.gain.value=1;
+  VE.rec=false; VE.playing=false; btn.disabled=false; btn.textContent='⬇️ Download enhanced video'; const pp=$('#vePP'); if(pp) pp.textContent='▶ Play'; veAudioMix();
+  const blob=new Blob(chunks,{type:(mime||'video/webm').split(';')[0]}); const base=(VE.file&&VE.file.name||'video').replace(/\.[^.]+$/,''); const name=mfSafeName(base+' - enhanced')+'.'+ext;
+  const box=$('#veDone'); box.innerHTML=`<div class="lactive">✅ Your enhanced video is ready (${fmtDur(total)}, ${(blob.size/1048576).toFixed(1)} MB). <span class="lact"><button class="xbtn" id="veDl">⬇️ Download again</button><button class="xbtn" id="veSave">💾 Save to My Files</button></span></div>`;
+  $('#veDl').onclick=()=>mfSave(name,blob); $('#veSave').onclick=()=>mfUploadVideo(new File([blob],name,{type:blob.type}),{title:base+' (enhanced)',src:'Video Enhancer'});
+  mfSave(name,blob);
+}
+function videoEnhancerView(){ veRender(); }
+
 /* ---- Video Detective: simple steps + "wrong format" fix ---- */
 const VD_BAD_EXT=/\.(mkv|avi|wmv|flv|3gp|3g2|mpg|mpeg|ts|mts|m2ts|vob|ogv|divx|asf|rm|rmvb|f4v|hevc|h265)$/i;
 function vdStepsHTML(){
@@ -4117,6 +4285,7 @@ function libraryView(tab){
       <div class="tabs">${Object.keys(LIB).filter(k=>!LIB[k].hidden).map(k=>`<button class="tab ${k===tab?'on':''}" onclick="libraryView('${k}')">${LIB[k].name}</button>`).join('')}${`<button class="tab" onclick="rePrompts()">🏡 Real Estate ↗</button>`}</div>
       <input id="q" placeholder="🔎 Search prompts…" class="search">
     </div>
+    ${tab==='video'?`<button class="gbtn libbtn" style="margin:0 0 12px" onclick="videoEnhancerView()"><span class="em" style="font-size:40px">✨</span><span><span class="n">Enhance a video you already have</span><span class="m">Upload your video → better color, trim, speed, crop for social, title & music → download the new version.</span></span></button>`:''}
     ${tab==='video'?`<button class="gbtn libbtn" style="margin:0 0 12px" onclick="rePrompts()"><span class="em" style="font-size:40px">🏡</span><span><span class="n">Looking for real estate videos?</span><span class="muted">All real estate prompts, intro scripts and the Photo-to-Video Studio are now together in the 🏡 Real Estate section.</span></span></button>`:''}
     ${expertBanner()}
     <p class="muted" style="margin:0 4px 12px">${sec.d}</p>
@@ -4657,6 +4826,7 @@ const CLOUD_KEYS={
   myfiles:{ get:()=>MYF.filter(x=>!MF_FILE(x)||x.assetId||x.shared), set:v=>{ if(Array.isArray(v)){ const local=MYF.filter(x=>MF_FILE(x)&&!x.assetId&&!x.shared); MYF=local.concat(v); try{ localStorage.setItem('pc_myfiles',JSON.stringify(MYF)); }catch(e){} updateFilesBtn(); if(document.getElementById('nav-files')&&document.getElementById('nav-files').classList.contains('on')) myFilesView(); } } },
   missions:{ get:()=>MS, set:v=>{ if(v&&typeof v==='object'){ Object.keys(MS).forEach(k=>delete MS[k]); Object.assign(MS,v); try{ localStorage.setItem('pc_missions',JSON.stringify(MS)); }catch(e){} } } },
   projects:{ get:()=>PROJ, set:v=>{ if(Array.isArray(v)){ PROJ=v; try{ localStorage.setItem('pc_projects',JSON.stringify(v)); }catch(e){} } } },
+  vfx:{ get:()=>VFXSAVE, set:v=>{ if(Array.isArray(v)){ VFXSAVE=v; try{ localStorage.setItem('pc_vfx',JSON.stringify(v)); }catch(e){} } } },
   looks:{ get:()=>LOOKSAVE, set:v=>{ if(Array.isArray(v)){ LOOKSAVE=v; try{ localStorage.setItem('pc_looks',JSON.stringify(v)); }catch(e){} } } },
   enhancer:{ get:()=>ENH.hist.slice(0,15), set:v=>{ if(Array.isArray(v)){ ENH.hist=v; try{ localStorage.setItem('pc_enh_hist',JSON.stringify(v)); }catch(e){} } } },
   scores:{ get:()=>{ const o={}; ['match','sort','scramble','build','recall'].forEach(g=>{ const b=store('best_'+g); if(b) o[g]=b; }); return o; },
@@ -4756,7 +4926,7 @@ document.getElementById('footBox').innerHTML=footerHTML();
 a11yInit();
 setTimeout(firstRunDisclaimer,400);
 if('serviceWorker' in navigator && location.protocol==='https:' && window.top===window && !/claude\.ai|claudeusercontent/.test(location.hostname)){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
-if(/^#legal-/.test(location.hash)) legalView(location.hash.slice(7)); else if(location.hash==='#missions'){ gamesView(); } else if(location.hash==='#claudecode'){ home(); openClaudeCode(); } else if(location.hash==='#files') myFilesView(); else if(location.hash==='#enhancer') enhancerView(); else if(location.hash==='#detective') videoDetectiveView(); else if(location.hash==='#tools') toolsView(); else if(location.hash==='#planner') plannerView(); else if(location.hash==='#studio'||location.hash==='#realestate') studioView(); else if(location.hash==='#library') libraryView(); else if(location.hash==='#games') gamesView(); else home();
+if(location.hash==='#enhance-video') videoEnhancerView(); else if(/^#legal-/.test(location.hash)) legalView(location.hash.slice(7)); else if(location.hash==='#missions'){ gamesView(); } else if(location.hash==='#claudecode'){ home(); openClaudeCode(); } else if(location.hash==='#files') myFilesView(); else if(location.hash==='#enhancer') enhancerView(); else if(location.hash==='#detective') videoDetectiveView(); else if(location.hash==='#tools') toolsView(); else if(location.hash==='#planner') plannerView(); else if(location.hash==='#studio'||location.hash==='#realestate') studioView(); else if(location.hash==='#library') libraryView(); else if(location.hash==='#games') gamesView(); else home();
 </script>
 </body>
 </html>
