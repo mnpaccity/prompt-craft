@@ -296,6 +296,37 @@
   .vdframes{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px}
   .vdframes figure{margin:0}.vdframes img{width:100%;border-radius:8px;display:block}.vdframes figcaption{font-size:12px;color:var(--muted);text-align:center}
   .vdres .stat b{word-break:break-word}
+  .cloud{font:inherit;font-size:11.5px;font-weight:600;border-radius:999px;padding:3px 10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+  .cloud.cs-on{border-color:color-mix(in srgb,var(--F) 55%,var(--line));color:var(--F)}
+  .cloud.cs-saving,.cloud.cs-checking{color:var(--muted)}
+  .cloud.cs-error{border-color:var(--bad);color:var(--bad)}
+  .pbasics{border-color:color-mix(in srgb,var(--F) 45%,var(--line));background:linear-gradient(180deg,color-mix(in srgb,var(--F) 7%,var(--card)),var(--card))}
+  .pb-tag{display:inline-block;font-family:Fredoka;font-weight:600;font-size:14px;background:var(--F);color:#fff;border-radius:999px;padding:3px 12px;margin-bottom:10px}
+  .pb-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media (max-width:720px){ .pb-grid{grid-template-columns:1fr} }
+  .pbasics h3{margin:0 0 6px}.pbasics p{font-size:15.5px}
+  .pbmini summary{cursor:pointer;font-family:Fredoka;font-weight:600;font-size:16px}
+  .pbmini[open] summary{margin-bottom:12px}
+  .chatmock{max-width:560px;border:2px solid var(--line);border-radius:16px;overflow:hidden;background:var(--bg)}
+  .cm-bar{background:var(--card);border-bottom:1px solid var(--line);padding:8px 12px;font-family:Fredoka;font-weight:600;font-size:14px}
+  .cm-body{padding:12px;display:flex;flex-direction:column;gap:8px}
+  .cm-msg{max-width:85%;padding:8px 12px;border-radius:14px;font-size:14px;line-height:1.45}
+  .cm-msg.you{align-self:flex-end;background:color-mix(in srgb,var(--C) 16%,var(--card));border-bottom-right-radius:4px}
+  .cm-msg.ai{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:4px}
+  .cm-input{display:flex;align-items:center;justify-content:space-between;margin:0 12px 12px;padding:10px 12px;border:2px solid var(--C);border-radius:12px;background:var(--card)}
+  .cm-ph{color:var(--muted);font-size:14px}.cm-send{display:inline-flex;width:28px;height:28px;border-radius:8px;align-items:center;justify-content:center;background:var(--A);color:#fff;font-weight:700}
+  .hdr .toolbar .nav .entab{background:linear-gradient(135deg,color-mix(in srgb,var(--R) 18%,var(--card)),color-mix(in srgb,var(--C) 18%,var(--card)))}
+  .hdr .toolbar .nav .entab.on{background:var(--ink)}
+  .enhin,.enhout{width:100%;font:inherit;font-size:15.5px;line-height:1.55;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);resize:vertical}
+  .enhin:focus,.enhout:focus{outline:none;border-color:var(--C)}
+  .enhout{font-size:15px;background:var(--card)}
+  .escore{display:inline-flex;flex-direction:column;gap:3px}
+  .escore-row{display:flex;gap:4px;align-items:center}
+  .echip{width:26px;height:26px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-family:Fredoka;font-weight:700;font-size:14px;color:var(--muted);background:var(--bg);border:2px dashed var(--line)}
+  .echip.ok{background:var(--c);color:#fff;border:2px solid var(--c)}
+  .escore-row b{margin-left:6px;font-family:Fredoka}
+  .ecompare{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:12px}
+  .ehist{display:flex;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
   .steps li{margin-bottom:6px}
   .keeps{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px}
   .keep{display:flex;gap:8px;align-items:center;background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:8px 10px;font-size:14px;cursor:pointer}
@@ -312,8 +343,8 @@
 <div class="wrap">
   <header class="hdr">
     <div class="toolbar">
-      <nav class="nav"><button class="tab" id="nav-home" onclick="home()">🏠 Home</button><button class="tab" id="nav-games" onclick="gamesView()">🎮 Games</button><button class="tab" id="nav-lib" onclick="libraryView()">📚 Prompt Library</button><button class="tab" id="nav-studio" onclick="studioView()">🏡 Real Estate</button><button class="tab" id="nav-tools" onclick="toolsView()">🧮 Tools</button><button class="tab" id="nav-planner" onclick="plannerView()">📅 Planner</button><button class="tab metab" id="nav-me" onclick="openProfile()">👤 My Info</button></nav>
-      <div class="tb-skill"><span class="hb-label">🎓 Skill level:</span><span id="lvlTop"></span></div>
+      <nav class="nav"><button class="tab" id="nav-home" onclick="home()">🏠 Home</button><button class="tab" id="nav-games" onclick="gamesView()">🎮 Games</button><button class="tab" id="nav-lib" onclick="libraryView()">📚 Prompt Library</button><button class="tab entab" id="nav-enh" onclick="enhancerView()">✨ Enhancer</button><button class="tab" id="nav-studio" onclick="studioView()">🏡 Real Estate</button><button class="tab" id="nav-tools" onclick="toolsView()">🧮 Tools</button><button class="tab" id="nav-planner" onclick="plannerView()">📅 Planner</button><button class="tab metab" id="nav-me" onclick="openProfile()">👤 My Info</button></nav>
+      <div class="tb-skill"><span class="hb-label">🎓 Skill level:</span><span id="lvlTop"></span><span id="cloudBox"></span></div>
     </div>
     <div class="hdr-center">
       <div class="logo" onclick="home()" style="cursor:pointer">
@@ -356,9 +387,47 @@ const GAMES = [
     {id:'recall', em:'🧠', n:'5. Memory Test', d:'Final exam! Type every CRAFT word from memory — no peeking.'},
   ];
 function setNav(id){ window._rerender=null; document.querySelectorAll('.nav .tab').forEach(b=>b.classList.toggle('on',b.id==='nav-'+id)); }
+function promptBasicsHTML(){
+  const body=`
+      <div class="pb-grid">
+        <div>
+          <h3>💬 What is a prompt?</h3>
+          <p>A <b>prompt</b> is the message you type to an AI assistant to tell it what you want. It’s just like giving instructions to a very smart, very fast helper — in plain, everyday words. No special codes or computer skills needed.</p>
+          <p><b>The better your instructions, the better the answer.</b> “Write an email” gets a so-so result. “Write a friendly 100-word email to a client named Sam thanking him for his order” gets exactly what you need. That’s what CRAFT teaches you to do.</p>
+        </div>
+        <div>
+          <h3>🖥️ Where do you type a prompt?</h3>
+          <p>Into an <b>AI chat app</b>. The one this site is built for is <b>Claude</b>:</p>
+          <ul class="steps">
+            <li><b>On a computer:</b> go to <a href="https://claude.ai" target="_blank" rel="noopener">claude.ai</a> in your web browser and sign in.</li>
+            <li><b>On a phone:</b> download the free <b>Claude</b> app from the App Store (iPhone) or Google Play (Android).</li>
+          </ul>
+          <p class="muted" style="font-size:14px">Your prompts also work in other AI chat apps like ChatGPT, Google Gemini or Microsoft Copilot. For <b>videos</b>, you paste prompts into AI video websites like Kling or Luma (see 🏡 Real Estate).</p>
+        </div>
+      </div>
+      <h3 style="margin-top:6px">✍️ What it looks like</h3>
+      <div class="chatmock">
+        <div class="cm-bar"><span>✳️ Claude</span></div>
+        <div class="cm-body">
+          <div class="cm-msg you">Write a friendly 100-word email to my client Sam thanking him for his order. Keep it warm and professional.</div>
+          <div class="cm-msg ai">Hi Sam, thank you so much for your order! We truly appreciate your business…</div>
+        </div>
+        <div class="cm-input"><span class="cm-ph">How can I help you today?</span><span class="cm-send">↑</span></div>
+      </div>
+      <ol class="steps" style="margin-top:12px">
+        <li>Click inside the box at the bottom (it says <b>“How can I help you today?”</b>).</li>
+        <li>Type your prompt — or paste one from this site with <b>Ctrl + V</b>.</li>
+        <li>Press <b>Enter</b> (or click the <b>↑</b> arrow). Claude writes the answer in a few seconds.</li>
+        <li>Not quite right? Just reply in plain words: <i>“make it shorter”</i> or <i>“more casual.”</i></li>
+      </ol>
+      <div class="actions"><a class="btn" href="https://claude.ai" target="_blank" rel="noopener" style="text-decoration:none">↗ Open Claude in a new tab</a></div>`;
+  if(LEVEL==='new') return `<div class="card pop pbasics"><div class="pb-tag">🌱 New here? Start with this</div>${body}</div>`;
+  return `<details class="card pbasics pbmini"><summary>💬 Refresher: what is a prompt, and where do I type it?</summary>${body}</details>`;
+}
 function home(){
   setNav('home'); window._rerender=home;
   $('#app').innerHTML = `
+    ${promptBasicsHTML()}
     <div class="card pop">
       <h1>Learn to write great AI prompts</h1>
       <p class="muted">A good prompt has 5 parts. Remember them with one word: <b>CRAFT</b>. Read the cards below, then open the <b>🎮 Games</b> tab at the top and play them in order. Each game gets a little harder.</p>
@@ -2319,7 +2388,7 @@ function drawSync(){
     </div>`;
   if($('#gAllow')) $('#gAllow').onclick=gAllow;
   if($('#gRetry')) $('#gRetry').onclick=async()=>{ GC.err=''; if(GC.mcp){ try{ await GC.mcp.invalidate(GSV,'list_events'); }catch(e){} } GC.key=''; watchGoogle(); toast('🔄 Refreshing…'); };
-  if($('#gAuto')) $('#gAuto').onchange=e=>{ GC.auto=e.target.checked; try{ localStorage.setItem('pc_gauto',GC.auto?'1':'0'); }catch(x){} };
+  if($('#gAuto')) $('#gAuto').onchange=e=>{ GC.auto=e.target.checked; try{ localStorage.setItem('pc_gauto',GC.auto?'1':'0'); }catch(x){} cloudMark('prefs'); };
   if($('#gPushAll')) $('#gPushAll').onclick=async()=>{ const b=$('#gPushAll'); b.disabled=true; let n=0; for(const e of unsynced){ b.textContent=`Saving ${n+1} of ${unsynced.length}…`; if(await gSave(e,true)) n++; else break; } toast(`✅ Saved ${n} event${n===1?'':'s'} to Google Calendar`); drawSync(); };
   if($('#bulkG')) $('#bulkG').onclick=()=>{ const up=PLAN.events.filter(e=>e.date>=t).sort((a,b)=>(a.date+(a.start||'')).localeCompare(b.date+(b.start||'')));
     $('#bulkList').innerHTML = up.length? `<p class="muted" style="font-size:14px">Tap each one, press Save in Google, then come back for the next:</p>`+up.map(e=>`<a class="glink" style="display:block;margin:6px 0" href="${gcalLink(e)}" target="_blank" rel="noopener">📅 ${parseYmd(e.date).toLocaleDateString('en-US',{month:'short',day:'numeric'})} ${e.allDay||!e.start?'':fmtTime(e.start)} — ${esc(e.title)}</a>`).join('') : '<p class="muted">No upcoming events yet.</p>'; };
@@ -2614,14 +2683,14 @@ function openClip(i){
   set(i); P.raf=requestAnimationFrame(loop);
   m.querySelector('#clPlay').onclick=()=>{ if(P.playing){ P.off+=(performance.now()-P.t0)/1000; P.playing=false; m.querySelector('#clPlay').textContent='▶ Play'; if(AUD.ctx) AUD.ctx.suspend(); if(hasSpeech) try{ speechSynthesis.pause(); }catch(e){} } else { P.t0=performance.now(); P.playing=true; m.querySelector('#clPlay').textContent='⏸ Pause'; if(AUD.ctx) AUD.ctx.resume(); if(hasSpeech) try{ speechSynthesis.resume(); }catch(e){} } };
   const sndLbl=()=>{ m.querySelector('#clMusic').textContent=AUD.music?'🎵 Music: On':'🔇 Music: Off'; const v=m.querySelector('#clVoice'); if(v) v.textContent=AUD.voice?'🗣️ Voice: On':'🤐 Voice: Off'; };
-  m.querySelector('#clMusic').onclick=()=>{ AUD.music=!AUD.music; try{ localStorage.setItem('pc_music',AUD.music?'1':'0'); }catch(e){} ensureCtx(); if(AUD.ctx){ AUD.ctx.resume(); AUD.bus.gain.setTargetAtTime(AUD.music?0.7:0,AUD.ctx.currentTime,0.05); } sndLbl(); };
-  if(m.querySelector('#clVoice')) m.querySelector('#clVoice').onclick=()=>{ AUD.voice=!AUD.voice; try{ localStorage.setItem('pc_voice',AUD.voice?'1':'0'); }catch(e){} if(!AUD.voice&&hasSpeech) try{ speechSynthesis.cancel(); duck(false); }catch(e){} else speakLine(P.i); sndLbl(); };
+  m.querySelector('#clMusic').onclick=()=>{ AUD.music=!AUD.music; try{ localStorage.setItem('pc_music',AUD.music?'1':'0'); }catch(e){} cloudMark('prefs'); ensureCtx(); if(AUD.ctx){ AUD.ctx.resume(); AUD.bus.gain.setTargetAtTime(AUD.music?0.7:0,AUD.ctx.currentTime,0.05); } sndLbl(); };
+  if(m.querySelector('#clVoice')) m.querySelector('#clVoice').onclick=()=>{ AUD.voice=!AUD.voice; try{ localStorage.setItem('pc_voice',AUD.voice?'1':'0'); }catch(e){} cloudMark('prefs'); if(!AUD.voice&&hasSpeech) try{ speechSynthesis.cancel(); duck(false); }catch(e){} else speakLine(P.i); sndLbl(); };
   m.querySelector('#clHow').onclick=()=>{ const n=P.i; close(); if(!document.getElementById('howBody')) home(); showHowto(n); setTimeout(()=>document.getElementById('howBody').scrollIntoView({behavior:'smooth',block:'start'}),60); };
   const vsel=m.querySelector('#clVoiceSel');
   const fillV=()=>{ if(!vsel) return; const f=femaleVoices(), cur=(AUD.voiceObj||pickVoice()||{}).name; const list=f.length?f:speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));
     vsel.innerHTML=list.map(v=>`<option value="${esc(v.name)}" ${v.name===cur?'selected':''}>${esc(v.name.replace(/Microsoft |Google | Online \(Natural\)/g,''))}</option>`).join('')||'<option>Default voice</option>'; };
   if(vsel){ fillV(); try{ speechSynthesis.addEventListener('voiceschanged',fillV); }catch(e){}
-    vsel.onchange=()=>{ const v=speechSynthesis.getVoices().find(x=>x.name===vsel.value); if(v){ AUD.voiceObj=v; try{ localStorage.setItem('pc_voicename',v.name); }catch(e){} if(AUD.voice) speakLine(P.i); } }; }
+    vsel.onchange=()=>{ const v=speechSynthesis.getVoices().find(x=>x.name===vsel.value); if(v){ AUD.voiceObj=v; try{ localStorage.setItem('pc_voicename',v.name); }catch(e){} cloudMark('prefs'); if(AUD.voice) speakLine(P.i); } }; }
   sndLbl(); ensureCtx(); if(AUD.ctx&&AUD.ctx.state==='suspended') AUD.ctx.resume();
   m.querySelector('#clRe').onclick=()=>set(P.i);
   m.querySelector('#clPrev').onclick=()=>set(P.i-1);
@@ -2675,7 +2744,7 @@ function openProfile(){
   const close=()=>m.remove();
   m.querySelector('#pfX').onclick=close; m.onclick=e=>{ if(e.target===m) close(); };
   m.querySelector('#pfForm').onsubmit=e=>{ e.preventDefault(); const fd=new FormData(e.target); PF_FIELDS.forEach(f=>PF[f[0]]=(fd.get(f[0])||'').toString().trim()); PF.auto=m.querySelector('#pfAuto').checked; savePF(); close(); updateMeBtn(); toast('✅ Saved — your info will fill in automatically'); if(window._rerender) window._rerender(); };
-  m.querySelector('#pfErase').onclick=()=>{ PF={auto:true}; try{ localStorage.removeItem('pc_profile'); }catch(e){} close(); updateMeBtn(); toast('🗑️ Your info was erased'); if(window._rerender) window._rerender(); };
+  m.querySelector('#pfErase').onclick=()=>{ PF={auto:true}; try{ localStorage.removeItem('pc_profile'); }catch(e){} cloudMark('profile'); close(); updateMeBtn(); toast('🗑️ Your info was erased'); if(window._rerender) window._rerender(); };
   setTimeout(()=>{ const i=m.querySelector('input[name=name]'); if(i) i.focus(); },50);
 }
 function updateMeBtn(){ const b=document.getElementById('nav-me'); if(b) b.innerHTML = pfCount()? `👤 ${esc((PF.name||'My Info').split(' ')[0])} <span class="mecheck">✓</span>` : '👤 My Info'; }
@@ -2955,6 +3024,166 @@ function vdRender(manual){
   if($('#vdAll')) $('#vdAll').onclick=async()=>{ const t=JSON.stringify(R,null,2); (await copyText(t))?toast('✅ Copied'):showCopyBox(t); };
 }
 
+
+/* ---------- ✨ Prompt Enhancer ---------- */
+const ENH = { input:'', type:'auto', out:null, prompt:'', fills:{}, busy:false, ctl:null, ai:false,
+  hist:(()=>{ try{ return JSON.parse(localStorage.getItem('pc_enh_hist'))||[]; }catch(e){ return []; } })() };
+function saveEnhHist(){ try{ localStorage.setItem('pc_enh_hist',JSON.stringify(ENH.hist.slice(0,15))); }catch(e){} if(typeof cloudMark==='function') cloudMark('enhancer'); }
+const ENH_TYPES = { auto:'✨ Figure it out for me', email:'✉️ Email or message', social:'📱 Social media post', video:'🎬 Video or image', business:'📈 Business or marketing plan', sales:'📞 Sales / client outreach', realestate:'🏡 Real estate', personal:'🏠 Home & personal', learn:'🎓 Learn or explain something', other:'🧩 Something else' };
+const ENH_LOCAL = {
+  email:{role:'Act as an experienced business communication coach who writes clear, effective messages.', format:'Under [MAX WORDS, e.g. 120] words, with a subject line, short paragraphs and one clear next step at the end.'},
+  social:{role:'Act as a social media manager who writes scroll-stopping, on-brand posts.', format:'[HOW MANY] post options, each under [MAX WORDS, e.g. 40] words, with a call to action and 3–5 hashtags.'},
+  video:{role:'Act as a video director and expert AI-video prompt writer.', format:'A shot-by-shot list with camera type, angle, movement, speed and lighting for each shot, then a ready-to-paste prompt for [AI VIDEO TOOL].'},
+  business:{role:'Act as a seasoned small-business strategist.', format:'Clear headings, a short summary first, tables where helpful, and a list of next steps with owners and dates.'},
+  sales:{role:'Act as a top-performing sales coach for small businesses.', format:'A short script or message, plus answers to the 3 most likely objections.'},
+  realestate:{role:'Act as a successful real estate marketing expert.', format:'[FORMAT: listing description / email / post / video plan], with the key features and a clear call to action.'},
+  personal:{role:'Act as a practical, friendly expert in this topic.', format:'Simple step-by-step instructions or a checklist I can follow.'},
+  learn:{role:'Act as a patient teacher who explains things with everyday examples.', format:'A one-sentence summary, a simple explanation, 3 key terms, and 3 quiz questions.'},
+  other:{role:'Act as an expert in [THE TOPIC].', format:'[HOW YOU WANT THE ANSWER LAID OUT: list, table, steps, paragraphs] and about [LENGTH].'}
+};
+function enhGuessType(t){ t=t.toLowerCase();
+  if(/\b(listing|realtor|real estate|open house|buyer|seller|property|mls)\b/.test(t)) return 'realestate';
+  if(/\b(video|reel|tiktok|youtube|clip|shot|camera|animation|image|photo)\b/.test(t)) return 'video';
+  if(/\b(email|e-mail|message|text|reply|letter|follow ?up)\b/.test(t)) return 'email';
+  if(/\b(instagram|facebook|linkedin|post|caption|hashtag|social)\b/.test(t)) return 'social';
+  if(/\b(cold call|prospect|lead|client|pitch|sell|sales|objection)\b/.test(t)) return 'sales';
+  if(/\b(plan|strategy|marketing|budget|ads?|campaign|business|revenue|competitor)\b/.test(t)) return 'business';
+  if(/\b(explain|learn|understand|teach|what is|how does)\b/.test(t)) return 'learn';
+  if(/\b(home|kids?|family|meal|clean|trip|party|budget)\b/.test(t)) return 'personal';
+  return 'other'; }
+function enhLocal(text, type){
+  const tidy=s=>s.replace(/\bi\b/g,'I').replace(/\bdont\b/gi,'don’t').replace(/\bcant\b/gi,'can’t').replace(/\bim\b/gi,'I’m').replace(/\bwont\b/gi,'won’t');
+  const clean=tidy(text.replace(/\s+/g,' ').trim()); const sents=clean.split(/(?<=[.!?])\s+|\s*\n+\s*/).filter(Boolean);
+  const verbRe=/\b(write|create|make|draft|plan|build|design|give|help|come up|list|summari[sz]e|explain|rewrite|improve|generate|find|figure out|need|want)\b/i;
+  const actionS=sents.filter(s=>verbRe.test(s)); const ctxS=sents.filter(s=>!verbRe.test(s));
+  const toneM=clean.match(/\b(friendly|professional|casual|funny|playful|warm|formal|upbeat|calm|confident|luxur\w*|simple|bold|serious)\b/gi);
+  const T=type==='auto'?enhGuessType(clean):type; const L=ENH_LOCAL[T]||ENH_LOCAL.other;
+  const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+  const craft={
+    context: (ctxS.length?ctxS.map(cap).join(' '):'Here is my situation: '+cap(clean))+' [ADD BACKGROUND: who this is for and why you need it]',
+    role: L.role,
+    action: !ctxS.length ? '[WHAT EXACTLY SHOULD BE CREATED, e.g. “a short follow-up email”] based on my situation above.' : actionS.length? 'Help me with this: '+actionS.map(s=>cap(s.replace(/^(can you|could you|please)\s+/i,'').replace(/\bi\b/g,'I').replace(/\bdont\b/gi,'don’t').replace(/\bcant\b/gi,'can’t'))).join(' ')+'' : `[WHAT EXACTLY SHOULD BE CREATED] based on: ${clean}`,
+    format: L.format,
+    tone: toneM? cap([...new Set(toneM.map(x=>x.toLowerCase()))].join(', '))+'.' : '[TONE: e.g. friendly, professional, upbeat]'
+  };
+  if(LEVEL!=='new') craft.action+=' If anything important is unclear, ask me 1–2 quick questions first.';
+  if(LEVEL==='adv'){ craft.context+=' Success looks like: [DESCRIBE THE IDEAL RESULT]. Constraints: [BUDGET / DEADLINE / RULES].'; craft.format+=' End with “Why this works” and “Next steps.” Critique your draft and give a revised final version.'; }
+  return {craft, changes:['Organized your notes into the 5 CRAFT parts (Context, Role, Action, Format, Tone)','Added an expert role so the AI answers like a specialist','Added a clear format so the answer comes back the way you want','Marked missing details with [BRACKETS] for you to fill in'], type:T};
+}
+function enhAssemble(c){
+  const parts=[['Context',c.context],['Role',c.role],['Task',c.action],['Format',c.format],['Tone',c.tone]];
+  if(c.examples) parts.push(['Example',c.examples]);
+  return parts.filter(p=>p[1]&&String(p[1]).trim()).map(p=>`${p[0]}: ${String(p[1]).trim()}`).join('\n\n');
+}
+function enhBlanks(t){ const s=new Set(); (t.match(/\[[^\]\n]{2,120}\]/g)||[]).forEach(b=>s.add(b)); return [...s]; }
+function enhCheck(t){ const lt=t.toLowerCase(); return {
+  C: /\b(i am|i'm|my |our |we |for |context|background|who)\b/.test(lt) && t.length>60,
+  R: /\b(act as|you are|role|expert|as a )\b/.test(lt),
+  A: /\b(write|create|make|draft|plan|build|design|list|summari[sz]e|explain|task|give)\b/.test(lt),
+  F: /\b(format|bullet|table|list|words|paragraph|steps|headings|under \d|\d+ (words|items|options|posts))\b/.test(lt),
+  T: /\b(tone|friendly|professional|casual|warm|upbeat|formal|playful|calm|confident)\b/.test(lt) }; }
+function enhScoreHTML(t,label){ const c=enhCheck(t); const n=Object.values(c).filter(Boolean).length;
+  return `<div class="escore"><span class="muted" style="font-size:12px">${label}</span><div class="escore-row">${CRAFT.map(x=>`<span class="echip ${c[x.L]?'ok':''}" style="--c:${COLOR[x.L]}" title="${x.w}">${x.L}</span>`).join('')}<b>${n}/5</b></div></div>`; }
+function enhancerView(){
+  setNav('enh'); window._rerender=null;
+  $('#app').innerHTML=`
+    <div class="card pop">
+      <h1>✨ Prompt Enhancer</h1>
+      <p class="muted" style="margin:6px 0 0">Type whatever is in your head — messy notes, half-ideas, run-on thoughts. The Enhancer turns it into a clean, well-structured CRAFT prompt, and adds <span class="ph">[BRACKETS]</span> wherever it needs a specific detail from you.</p>
+      ${lvlNote({new:'Just type like you’re talking to a friend. Spelling doesn’t matter. Then click <b>✨ Enhance my prompt</b>.',some:'Your prompt will also include a couple of helpful extras, like asking you questions first when something is unclear.',adv:'Expert mode: adds success criteria, constraints, self-critique and a “why this works / next steps” ending.'})}
+    </div>
+    <div class="card">
+      <h2>Step 1 · Dump your thoughts</h2>
+      <textarea id="enhIn" class="enhin" rows="7" placeholder="e.g. need to email a gym owner who got free samples 2 weeks ago, he hasn't answered, i want a call, dont want to sound pushy, short">${esc(ENH.input)}</textarea>
+      <div class="formgrid" style="margin-top:10px"><label class="fld"><span>What’s it for? (optional)</span><select id="enhType">${Object.entries(ENH_TYPES).map(([k,v])=>`<option value="${k}" ${ENH.type===k?'selected':''}>${v}</option>`).join('')}</select></label></div>
+      <div class="actions"><button class="btn" id="enhGo">✨ Enhance my prompt</button><span id="enhStatus" class="muted" style="align-self:center;font-size:14px"></span></div>
+      <div id="enhBefore"></div>
+    </div>
+    <div id="enhOut"></div>
+    ${ENH.hist.length?`<details class="card"><summary style="cursor:pointer;font-family:Fredoka;font-weight:600">🕘 Recent enhanced prompts (${ENH.hist.length})</summary>${ENH.hist.map((x,i)=>`<div class="ehist"><div style="flex:1;min-width:0"><b>${esc(x.title||'Prompt')}</b><div class="muted" style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(x.prompt.slice(0,120))}</div></div><button class="xbtn" data-eh="${i}">Open</button><button class="xbtn" data-ehdel="${i}">✕</button></div>`).join('')}</details>`:''}`;
+  const inp=$('#enhIn');
+  inp.oninput=()=>{ ENH.input=inp.value; $('#enhBefore').innerHTML=inp.value.trim().length>10?enhScoreHTML(inp.value,'Your notes right now:'):''; };
+  inp.oninput();
+  $('#enhType').onchange=e=>ENH.type=e.target.value;
+  $('#enhGo').onclick=enhRun;
+  document.querySelectorAll('[data-eh]').forEach(b=>b.onclick=()=>{ const x=ENH.hist[+b.dataset.eh]; ENH.out={changes:x.changes||[],questions:[],title:x.title}; ENH.prompt=x.prompt; ENH.fills={}; enhRender(); $('#enhOut').scrollIntoView({behavior:'smooth'}); });
+  document.querySelectorAll('[data-ehdel]').forEach(b=>b.onclick=()=>{ ENH.hist.splice(+b.dataset.ehdel,1); saveEnhHist(); enhancerView(); });
+  if(ENH.out) enhRender();
+  window.scrollTo(0,0);
+}
+async function enhRun(again){
+  const text=(again===true?ENH.prompt:ENH.input).trim();
+  if(text.length<5){ toast('Type a few words about what you need first'); return; }
+  if(ENH.busy) return; ENH.busy=true;
+  const btn=again===true?$('#enhAgain'):$('#enhGo'); if(btn){ btn.disabled=true; btn.textContent='⏳ Working…'; }
+  const st=$('#enhStatus'); if(st&&again!==true) st.textContent='';
+  const sample=await getSample().catch(()=>null);
+  let res=null;
+  if(sample){
+    const lvl={new:'The user is a beginner: keep the prompt simple and clear, with at most 5 brackets, in plain words.',some:'The user has some experience: include 1–2 helpful extras (who it is for, ask 1–2 clarifying questions first, a quick-tips ending).',adv:'The user is advanced: make it expert-level — success criteria, constraints, a senior-specialist role, a self-critique-and-revise step, precise output format, and a “why this works / next steps” ending.'}[LEVEL];
+    const ask=`You are a world-class prompt engineer. Turn the user's ${again===true?'existing prompt':'messy notes'} below into the best possible prompt they can paste into an AI assistant like Claude, using the CRAFT method: Context, Role, Action (the task), Format, Tone.
+Rules:
+- Keep every real detail the user gave (names, numbers, places, goals). Never invent facts about them.
+- Fix grammar and organize it clearly. Be specific and concrete.
+- Wherever a specific detail is missing that would clearly improve the result, insert a short placeholder in square brackets in CAPITALS with a hint, e.g. [CLIENT'S NAME], [WORD LIMIT, e.g. 120 words], [DEADLINE]. ${again===true?'Keep any brackets the user has not filled yet; do not re-add brackets for details they already filled in.':''}
+- ${lvl}
+- Goal type hint: ${ENH_TYPES[ENH.type]||'auto'}.
+Reply with ONLY JSON in this shape:
+{"title":"3–6 word name for this prompt","context":"","role":"","action":"","format":"","tone":"","examples":"(optional: leave empty unless useful)","changes":["3–5 short bullets on what you improved"],"questions":["0–3 short questions the user could answer to make it even better"]}
+
+${again===true?'Existing prompt':'User notes'}:
+"""
+${text.slice(0,8000)}
+"""`;
+    ENH.ctl=new AbortController();
+    if(st&&again!==true) st.innerHTML='🤖 Claude is rewriting your prompt… <button class="xbtn" id="enhStop">Stop</button>';
+    if($('#enhStop')) $('#enhStop').onclick=()=>ENH.ctl&&ENH.ctl.abort();
+    try{
+      const r=await sample.json(ask,{signal:ENH.ctl.signal, cache:false});
+      if(r&&typeof r==='object'&&(r.action||r.context)){ res={craft:{context:r.context,role:r.role,action:r.action,format:r.format,tone:r.tone,examples:r.examples},changes:Array.isArray(r.changes)?r.changes:[],questions:Array.isArray(r.questions)?r.questions:[],title:r.title}; ENH.ai=true; }
+    }catch(e){
+      if(e&&e.code==='cancelled'){ ENH.busy=false; if(btn){ btn.disabled=false; btn.textContent=again===true?'🔁 Make it even better':'✨ Enhance my prompt'; } if(st) st.textContent='Stopped.'; return; }
+      if(st&&!['not_granted','sampling_disabled','not_declared','capability_disabled'].includes(e&&e.code)) st.textContent={rate_limited:'⚠️ Claude is busy — used the built-in enhancer instead.',refused:'⚠️ Claude couldn’t rewrite that — used the built-in enhancer instead.'}[e&&e.code]||'⚠️ Used the built-in enhancer this time.';
+    }
+  }
+  if(!res){ const l=enhLocal(text, ENH.type); res={craft:l.craft,changes:l.changes,questions:[],title:ENH_TYPES[l.type].replace(/^\S+\s/,'')+' prompt',local:true}; ENH.ai=false; }
+  ENH.out=res; ENH.prompt=enhAssemble(res.craft); ENH.fills={};
+  ENH.hist.unshift({title:res.title||'Prompt',prompt:ENH.prompt,changes:res.changes,at:Date.now()}); ENH.hist=ENH.hist.slice(0,15); saveEnhHist();
+  ENH.busy=false; if(btn){ btn.disabled=false; btn.textContent=again===true?'🔁 Make it even better':'✨ Enhance my prompt'; } if(st&&!st.textContent.startsWith('⚠️')) st.textContent='';
+  enhRender(); setTimeout(()=>{ const o=$('#enhOut'); if(o) o.scrollIntoView({behavior:'smooth',block:'start'}); },50);
+}
+function enhFilled(){ let t=ENH.prompt; Object.entries(ENH.fills).forEach(([b,v])=>{ if(v&&v.trim()) t=t.split(b).join(v.trim()); }); return t; }
+function enhRender(){
+  const out=$('#enhOut'); if(!out||!ENH.out) return;
+  const blanks=enhBlanks(ENH.prompt), R=ENH.out;
+  out.innerHTML=`
+    <div class="card enhres">
+      <div class="top"><h2 style="margin:0">Step 2 · Your enhanced prompt</h2><span class="badge" style="margin:0">${ENH.ai?'🤖 Rewritten by Claude':'⚙️ Built-in enhancer'}</span></div>
+      <div class="ecompare">${enhScoreHTML(ENH.input||'','Before')}<span style="font-size:22px">➜</span>${enhScoreHTML(enhFilled(),'After')}</div>
+      ${R.changes&&R.changes.length?`<div class="lvlnote lv-some" style="margin-top:10px"><b>✅ What I improved:</b><ul class="steps" style="margin:4px 0 0">${R.changes.map(c=>`<li>${esc(c)}</li>`).join('')}</ul></div>`:''}
+      ${blanks.length?`<h3 style="margin-top:16px">🧩 Fill in the blanks <span class="muted" style="font-size:13px;font-family:Inter;font-weight:400">— <span id="enhLeft"></span></span></h3>
+        <div class="formgrid">${blanks.map((b,i)=>`<label class="fld"><span>${esc(b.slice(1,-1))}</span><input data-fill="${i}" value="${esc(ENH.fills[b]||'')}" placeholder="Type your answer…"></label>`).join('')}</div>`:'<p class="fb good" style="margin-top:12px">🎉 No blanks to fill — this prompt is ready to use.</p>'}
+      <h3 style="margin-top:16px">✏️ Your prompt <span class="muted" style="font-size:13px;font-family:Inter;font-weight:400">— you can edit it right here</span></h3>
+      <textarea id="enhOutTxt" class="enhout" rows="12">${esc(enhFilled())}</textarea>
+      <div class="actions">
+        <button class="btn" id="enhCopy">📋 Copy prompt</button>
+        <a class="btn ghost" href="https://claude.ai/new" target="_blank" rel="noopener" style="text-decoration:none">↗ Open Claude</a>
+        <button class="btn ghost" id="enhAgain">🔁 Make it even better</button>
+        <button class="btn ghost" id="enhReset">🗑️ Start over</button>
+      </div>
+      ${R.questions&&R.questions.length?`<div class="lvlnote lv-adv"><b>💡 Answer these to make it even better</b> (add them to your prompt, then click 🔁):<ul class="steps" style="margin:4px 0 0">${R.questions.map(q=>`<li>${esc(q)}</li>`).join('')}</ul></div>`:''}
+      ${!ENH.ai?`<p class="muted" style="font-size:13px;margin-top:10px">⚙️ This used the simple built-in enhancer. Inside claude.ai, Claude itself rewrites your prompt for much smarter results.</p>`:''}
+    </div>`;
+  const ta=$('#enhOutTxt');
+  const left=()=>{ const l=$('#enhLeft'); if(l){ const n=enhBlanks(ta.value).length; l.textContent=n?`${n} blank${n>1?'s':''} left`:'all filled in ✅'; } };
+  out.querySelectorAll('[data-fill]').forEach(inp=>inp.oninput=()=>{ ENH.fills[blanks[+inp.dataset.fill]]=inp.value; ta.value=enhFilled(); left(); });
+  ta.oninput=()=>{ ENH.prompt=ta.value; ENH.fills={}; left(); out.querySelectorAll('[data-fill]').forEach(i=>i.value=''); };
+  left();
+  $('#enhCopy').onclick=async()=>{ const t=ta.value; const n=enhBlanks(t).length; (await copyText(t))?toast(n?`✅ Copied — ${n} blank${n>1?'s':''} still to fill in`:'✅ Copied! Paste it into Claude'):showCopyBox(t); };
+  $('#enhAgain').onclick=()=>{ ENH.prompt=ta.value; ENH.fills={}; enhRun(true); };
+  $('#enhReset').onclick=()=>{ Object.assign(ENH,{input:'',out:null,prompt:'',fills:{}}); enhancerView(); };
+}
+
 /* ---------- Help & experience levels ---------- */
 const LEVELS = {new:['🌱','Just starting'], some:['🌿','Not completely lost'], adv:['🌳','Almost there']};
 let LEVEL = (()=>{ try{ return localStorage.getItem('pc_level')||'new'; }catch(e){ return 'new'; } })();
@@ -3133,8 +3362,110 @@ function promptCard(it,tab,n){
     </div></div>`;
 }
 
-document.getElementById('lvlTop').innerHTML=levelSwitch(); updateMeBtn();
-if(location.hash==='#detective') videoDetectiveView(); else if(location.hash==='#tools') toolsView(); else if(location.hash==='#planner') plannerView(); else if(location.hash==='#studio'||location.hash==='#realestate') studioView(); else if(location.hash==='#library') libraryView(); else if(location.hash==='#games') gamesView(); else home();
+/* ---------- Cloud sync (Claude built-in storage, private per user) ---------- */
+const CLOUD={db:null, uid:null, state:'checking', pending:{}, writing:{}, timers:{}, unsubs:[], device:(()=>{ try{ let d=localStorage.getItem('pc_device'); if(!d){ d=Math.random().toString(36).slice(2,10); localStorage.setItem('pc_device',d); } return d; }catch(e){ return 'x'+Math.random().toString(36).slice(2,8); } })(), applying:false, lastSync:null};
+const lsGet=(k,d)=>{ try{ const v=localStorage.getItem(k); return v==null?d:v; }catch(e){ return d; } };
+const lsSet=(k,v)=>{ try{ localStorage.setItem(k,v); }catch(e){} };
+const CLOUD_KEYS={
+  profile:{ get:()=>PF, set:v=>{ PF=v||{auto:true}; if(PF.auto===undefined) PF.auto=true; _savePF0(); updateMeBtn(); } },
+  planner:{ get:()=>PLAN, set:v=>{ PLAN=(v&&Array.isArray(v.events)&&Array.isArray(v.tasks))?v:{events:[],tasks:[]}; _savePlan0(); } },
+  receipt:{ get:()=>RCPT, set:v=>{ RCPT=v&&Array.isArray(v.items)?v:{items:[],tax:0,disc:0,tip:0,title:''}; _saveRcpt0(); } },
+  prefs:{ get:()=>({level:LEVEL, music:AUD.music, voice:AUD.voice, voicename:lsGet('pc_voicename',''), gauto:GC.auto}),
+          set:v=>{ if(!v) return; if(v.level&&v.level!==LEVEL){ CLOUD.applying=true; setLevel(v.level); CLOUD.applying=false; } if(typeof v.music==='boolean'){ AUD.music=v.music; lsSet('pc_music',v.music?'1':'0'); } if(typeof v.voice==='boolean'){ AUD.voice=v.voice; lsSet('pc_voice',v.voice?'1':'0'); } if(v.voicename) lsSet('pc_voicename',v.voicename); if(typeof v.gauto==='boolean'){ GC.auto=v.gauto; lsSet('pc_gauto',v.gauto?'1':'0'); } } },
+  enhancer:{ get:()=>ENH.hist.slice(0,15), set:v=>{ if(Array.isArray(v)){ ENH.hist=v; try{ localStorage.setItem('pc_enh_hist',JSON.stringify(v)); }catch(e){} } } },
+  scores:{ get:()=>{ const o={}; ['match','sort','scramble','build','recall'].forEach(g=>{ const b=store('best_'+g); if(b) o[g]=b; }); return o; },
+           set:v=>{ if(!v) return; Object.entries(v).forEach(([g,b])=>{ const cur=store('best_'+g)||0; if(b>cur) store('best_'+g,b); }); } }
+};
+function cloudBadge(){
+  const t={checking:'⏳ Connecting…', on:'☁️ Saved to cloud', saving:'⏳ Saving…', off:'💻 This device only', error:'⚠️ Cloud sync paused'}[CLOUD.state]||'';
+  return `<button class="cloud cs-${CLOUD.state}" onclick="openCloudInfo()" title="Cloud sync">${t}</button>`;
+}
+function drawCloudBadge(){ const b=document.getElementById('cloudBox'); if(b) b.innerHTML=cloudBadge(); }
+function cloudSetState(s){ CLOUD.state=s; drawCloudBadge(); }
+function cloudDoc(key){ return CLOUD.db.doc(`data/users/${CLOUD.uid}/${key}`); }
+function cloudMark(key){
+  lsSet('pc_ts_'+key, String(Date.now()));
+  if(CLOUD.applying||!CLOUD.db||!CLOUD.uid) return;
+  CLOUD.pending[key]=true; clearTimeout(CLOUD.timers[key]);
+  if(CLOUD.state==='on') cloudSetState('saving');
+  CLOUD.timers[key]=setTimeout(()=>cloudFlush(key),1200);
+}
+async function cloudFlush(key){
+  if(CLOUD.writing[key]){ CLOUD.timers[key]=setTimeout(()=>cloudFlush(key),600); return; }
+  if(!CLOUD.pending[key]) return; CLOUD.pending[key]=false; CLOUD.writing[key]=true;
+  const ts=Number(lsGet('pc_ts_'+key,'0'))||Date.now();
+  try{ await cloudDoc(key).set({v:JSON.parse(JSON.stringify(CLOUD_KEYS[key].get()||null)), updatedAt:ts, device:CLOUD.device}); CLOUD.lastSync=Date.now(); }
+  catch(e){ if(e&&e.code==='unavailable'){ CLOUD.pending[key]=true; setTimeout(()=>cloudFlush(key),2000+Math.random()*2000); }
+    else { CLOUD.writing[key]=false; cloudSetState(e&&e.code==='quota_exceeded'?'error':(['revoked','not_granted','capability_disabled','capability_removed'].includes(e&&e.code)?'off':'error')); return; } }
+  CLOUD.writing[key]=false;
+  if(!Object.values(CLOUD.pending).some(Boolean)&&!Object.values(CLOUD.writing).some(Boolean)) cloudSetState('on');
+}
+function cloudRefreshView(key){
+  if(document.querySelector('.modal')) return;
+  const a=document.activeElement; if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)&&document.getElementById('app').contains(a)) return;
+  if(key==='planner'&&document.getElementById('planBody')) redrawPlanner(true);
+  else if(key==='receipt'&&document.getElementById('rList')) receiptTool();
+  else if(key==='scores'&&document.querySelector('.games')&&!document.querySelector('#app .bar')) gamesView();
+  else if(key==='profile'&&window._rerender) window._rerender();
+}
+function mergePlanner(local,cloud){
+  const by=(a,b)=>{ const m=new Map(); [...(b||[]),...(a||[])].forEach(x=>{ if(x&&x.id&&!m.has(x.id)) m.set(x.id,x); }); return [...m.values()]; };
+  return {events:by(local.events,cloud.events), tasks:by(local.tasks,cloud.tasks)};
+}
+async function initCloud(){
+  try{
+    if(!(window.claude&&typeof window.claude.use==='function')){ cloudSetState('off'); return; }
+    const [db,user]=await Promise.all([window.claude.use('db').catch(()=>null), window.claude.use('user').catch(()=>null)]);
+    const uid=user&&typeof user.id==='function'?await user.id().catch(()=>null):null;
+    if(!db||!uid){ cloudSetState('off'); return; }
+    CLOUD.db=db; CLOUD.uid=uid;
+    for(const key of Object.keys(CLOUD_KEYS)){
+      let snap=null; try{ snap=await cloudDoc(key).get(); }catch(e){ if(['revoked','not_granted','capability_disabled','capability_removed'].includes(e&&e.code)){ CLOUD.db=null; cloudSetState('off'); return; } }
+      const cd=snap&&snap.exists?snap.data():null, lts=Number(lsGet('pc_ts_'+key,'0'));
+      if(cd&&cd.v!==undefined){
+        if(key==='planner'&&!lts){ CLOUD.applying=true; CLOUD_KEYS.planner.set(mergePlanner(PLAN,cd.v)); CLOUD.applying=false; lsSet('pc_ts_planner',String(Date.now())); CLOUD.pending.planner=true; cloudFlush('planner'); }
+        else if(key==='scores'){ CLOUD.applying=true; CLOUD_KEYS.scores.set(cd.v); CLOUD.applying=false; CLOUD.pending.scores=true; cloudFlush('scores'); }
+        else if((cd.updatedAt||0)>lts){ CLOUD.applying=true; CLOUD_KEYS[key].set(cd.v); CLOUD.applying=false; lsSet('pc_ts_'+key,String(cd.updatedAt||Date.now())); }
+        else if(lts>(cd.updatedAt||0)){ CLOUD.pending[key]=true; cloudFlush(key); }
+      } else { lsSet('pc_ts_'+key, String(lts||Date.now())); CLOUD.pending[key]=true; cloudFlush(key); }
+    }
+    for(const key of Object.keys(CLOUD_KEYS)){
+      CLOUD.unsubs.push(cloudDoc(key).onSnapshot(s=>{
+        if(!s.exists||s.metadata.hasPendingWrites) return; const d=s.data(); if(!d||d.device===CLOUD.device) return;
+        const lts=Number(lsGet('pc_ts_'+key,'0')); if((d.updatedAt||0)<=lts) return;
+        CLOUD.applying=true; CLOUD_KEYS[key].set(d.v); CLOUD.applying=false; lsSet('pc_ts_'+key,String(d.updatedAt)); CLOUD.lastSync=Date.now();
+        cloudRefreshView(key); toast('☁️ Updated from your other device');
+      }, e=>{ if(e&&e.code==='revoked') cloudSetState('off'); }));
+    }
+    CLOUD.lastSync=Date.now(); if(CLOUD.state!=='saving') cloudSetState('on');
+    if(window._rerender&&!document.querySelector('#app .bar')&&!document.querySelector('.modal')) try{ window._rerender(); }catch(e){}
+  }catch(e){ cloudSetState('off'); }
+}
+function openCloudInfo(){
+  const m=document.createElement('div'); m.className='modal';
+  const on=CLOUD.state==='on'||CLOUD.state==='saving';
+  m.innerHTML=`<div class="card pop helpcard"><div class="top"><h2 style="margin:0">☁️ Cloud saving</h2><button class="xbtn" id="ccX">✕ Close</button></div>
+    ${on?`<p class="fb good" style="margin-top:10px">✅ <b>Your data is saved to your Claude account</b> and syncs automatically to every device where you open this app in Claude.${CLOUD.lastSync?` <span class="muted" style="font-size:12px">Last synced ${new Date(CLOUD.lastSync).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}.</span>`:''}</p>`
+       :CLOUD.state==='error'?`<p class="warnnote" style="margin-top:10px">⚠️ Cloud saving hit a problem, so changes are being kept on this device for now. They’ll sync when you reload the page.</p>`
+       :`<p class="warnnote" style="margin-top:10px">💻 <b>Saving on this device only.</b> Cloud saving works when you open the app inside <b>claude.ai</b> (or the Claude app) while signed in. On other copies — like the GitHub website — your data stays in this browser.</p>`}
+    <h3>What’s saved</h3>
+    <ul class="steps"><li>📅 Planner events and to-do lists</li><li>✨ Your recent enhanced prompts</li><li>👤 My Info (name, phone, address…)</li><li>🧾 Running receipt</li><li>🎓 Skill level, 🎵 music & 🗣️ voice settings, Google sync setting</li><li>🏆 Your best game scores</li></ul>
+    <h3>Privacy</h3><p style="font-size:14px">Your cloud data is private to <b>your</b> account — even if you share this app with someone, they can’t see your planner or info, and you can’t see theirs. Photos and videos you add in the Studio or Video Detective are <b>never</b> uploaded.</p>
+    ${on?`<div class="actions"><button class="btn" id="ccSync">🔄 Sync now</button></div>`:''}</div>`;
+  document.body.appendChild(m); const close=()=>m.remove();
+  m.querySelector('#ccX').onclick=close; m.onclick=e=>{ if(e.target===m) close(); };
+  if(m.querySelector('#ccSync')) m.querySelector('#ccSync').onclick=()=>{ Object.keys(CLOUD_KEYS).forEach(k=>{ CLOUD.pending[k]=true; cloudFlush(k); }); toast('🔄 Syncing…'); close(); };
+}
+
+/* wrap savers so every change also saves to the cloud */
+const _savePF0=savePF, _savePlan0=savePlan, _saveRcpt0=saveRcpt, _saveBest0=saveBest, _setLevel0=setLevel;
+savePF=function(){ _savePF0(); cloudMark('profile'); };
+savePlan=function(){ _savePlan0(); cloudMark('planner'); };
+saveRcpt=function(){ _saveRcpt0(); cloudMark('receipt'); };
+saveBest=function(g,pct){ const b=store('best_'+g)||0; _saveBest0(g,pct); if(pct>b) cloudMark('scores'); };
+setLevel=function(l){ _setLevel0(l); if(!CLOUD.applying) cloudMark('prefs'); };
+document.getElementById('lvlTop').innerHTML=levelSwitch(); updateMeBtn(); drawCloudBadge(); initCloud();
+if(location.hash==='#enhancer') enhancerView(); else if(location.hash==='#detective') videoDetectiveView(); else if(location.hash==='#tools') toolsView(); else if(location.hash==='#planner') plannerView(); else if(location.hash==='#studio'||location.hash==='#realestate') studioView(); else if(location.hash==='#library') libraryView(); else if(location.hash==='#games') gamesView(); else home();
 </script>
 </body>
 </html>
