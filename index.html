@@ -386,6 +386,10 @@
     .hdr-center{margin:6px 0 4px!important}
   }
   @media (max-width:420px){ .hdr-center .logo{font-size:40px;white-space:nowrap} }
+  .vdhow{margin-top:12px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--C) 8%,var(--card));border:2px solid color-mix(in srgb,var(--C) 35%,var(--line))}
+  .vdsteps li{margin:6px 0;line-height:1.5}
+  .vdfix{margin-top:12px}.vdfixbody{padding:4px 2px 2px;line-height:1.55}.vdfixbody h3{margin:14px 0 4px;font-size:16px}.vdfixbody a{color:var(--link,#1a5fd0);font-weight:600}
+  .vdbad{display:block;padding:8px 10px;border-radius:10px;background:color-mix(in srgb,var(--bad) 10%,var(--card));border:1px solid color-mix(in srgb,var(--bad) 45%,var(--line));color:var(--ink)}.vdbad a{color:var(--link,#1a5fd0)}
   .skip{position:absolute;left:8px;top:-60px;z-index:100;background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none}
   .skip:focus{top:8px}
   :focus-visible{outline:3px solid #1a5fd0;outline-offset:2px}
@@ -3207,6 +3211,47 @@ async function vdRunShots(){
   VD.result=null; await vdRun(true);
 }
 
+/* ---- Video Detective: simple steps + "wrong format" fix ---- */
+const VD_BAD_EXT=/\.(mkv|avi|wmv|flv|3gp|3g2|mpg|mpeg|ts|mts|m2ts|vob|ogv|divx|asf|rm|rmvb|f4v|hevc|h265)$/i;
+function vdStepsHTML(){
+  return `<div class="vdhow"><h2 style="margin:0 0 8px;font-size:20px">👣 How to use it — 3 easy steps</h2>
+    <ol class="steps vdsteps">
+      <li><b>Get the video onto your computer or phone.</b> Use a video you made, or one you have permission to use. It should be an <b>MP4</b> file (most phones and apps save MP4).</li>
+      <li><b>Add it below.</b> Drag the video into the box, or click the box and pick the file.</li>
+      <li><b>Click “🤖 Figure out the prompts.”</b> Wait about a minute. You’ll get the camera moves, lighting, style and ready-to-copy prompts to make a video like it.</li>
+    </ol>
+    ${LEVEL==='new'?'<p class="muted" style="font-size:13.5px;margin:6px 0 0">💡 Tip: short videos (under 60 seconds) work best. If the video won’t open, see <b>“🛠️ Video won’t open?”</b> just below the upload box.</p>':''}</div>`;
+}
+function vdFixHTML(){
+  return `<details class="presetbox vdfix" id="vdFix"><summary>🛠️ Video won’t open? Fix the format</summary>
+    <div class="vdfixbody">
+      <p><b>Why this happens:</b> Video Detective works in your web browser, and browsers can only open certain video types — <b>MP4</b> (best), <b>WebM</b> and some <b>MOV</b> files. Files like <b>MKV, AVI, WMV</b>, and some iPhone “HEVC” videos won’t open. The fix is simple: <b>convert the video to MP4</b> with a free program, then add the new MP4 here.</p>
+      <h3>✅ Easiest fix on Windows: HandBrake (free)</h3>
+      <ol class="steps">
+        <li>Go to <a href="https://handbrake.fr/downloads.php" target="_blank" rel="noopener">handbrake.fr/downloads ↗</a> and click <b>Download (Windows)</b>. Open the file you downloaded and follow the install steps.</li>
+        <li>Open <b>HandBrake</b> and drag your video into its window (or click <b>File</b> and pick the video).</li>
+        <li>In <b>Preset</b>, choose <b>General → Fast 1080p30</b>. Make sure <b>Format</b> says <b>MP4</b>.</li>
+        <li>Click the green <b>Start Encode</b> button at the top. When it says “Queue Finished,” your new MP4 is saved — by default in your <b>Videos</b> folder.</li>
+        <li>Come back here and add the new MP4 file.</li>
+      </ol>
+      <h3>🌐 No install? Use an online converter</h3>
+      <p><a href="https://cloudconvert.com/mp4-converter" target="_blank" rel="noopener">CloudConvert MP4 converter ↗</a> — click <b>Select File</b>, pick your video, click <b>Convert</b>, then <b>Download</b>. <span class="muted">(Your video is uploaded to their website, so don’t use this for private videos.)</span></p>
+      <h3>🔗 Is the video on a website (YouTube, TikTok, Instagram…)?</h3>
+      <ul class="steps">
+        <li><b>If it’s your own video,</b> use that app’s own <b>Download</b> or <b>Save video</b> button (for example YouTube Studio → ⋮ → <b>Download</b>, or TikTok → Share → <b>Save video</b>). These save as MP4.</li>
+        <li><b>If it’s someone else’s video,</b> don’t download it — use the <b>🔗 From a link</b> option above instead. It lets you take screenshots, which is all Video Detective needs.</li>
+        <li><b>Or record your screen:</b> press <b>Windows key + Shift + R</b> (Windows 11 Snipping Tool), drag a box around the playing video, then click <b>Start</b>. It saves an MP4 you can add here.</li>
+      </ul>
+      <p class="muted" style="font-size:12.5px">Only use videos you made or have permission to use. HandBrake and CloudConvert are free outside tools, not part of Prompt CRAFT.</p>
+    </div></details>`;
+}
+function vdBadFormat(name){
+  const m=$('#vdMeta'); if(m) m.innerHTML=`<span class="vdbad">⚠️ <b>This video’s format can’t be opened in a browser.</b> Convert it to <b>MP4</b> first — the steps are in <a href="#vdFix" id="vdFixLink">🛠️ Video won’t open?</a> below.</span>`;
+  const g=$('#vdGo'); if(g){ g.disabled=true; g.title='Convert the video to MP4 first'; }
+  const fx=$('#vdFix'); if(fx){ fx.open=true; }
+  const l=$('#vdFixLink'); if(l) l.onclick=e=>{ e.preventDefault(); const x=$('#vdFix'); x.open=true; x.scrollIntoView({behavior:'smooth',block:'start'}); x.querySelector('summary').focus(); };
+  toast('⚠️ That video format won’t open — see “Video won’t open?” for a free fix');
+}
 function videoDetectiveView(){
   reShell('detect');
   $('#reBody').innerHTML = `
@@ -3214,13 +3259,14 @@ function videoDetectiveView(){
       <div class="top"><h1 style="margin:0">🔍 Video Detective</h1></div>
       ${discHTML('video')}
       <p class="muted" style="margin:8px 0 0">Upload any video — a listing video, a Reel you love, an AI clip — and find out the prompts most likely used to make it: camera type, angle, movement, speed, lighting, look and tone. Then copy ready-made prompts to recreate that style.</p>
-      ${lvlNote({new:'Tap the box below, pick a video from your computer or phone, then tap <b>🤖 Figure out the prompts</b>.', some:'Short clips (under 60 seconds) give the clearest results. Each scene change is detected as a separate shot.', adv:'Expert mode: the analysis adds lens, frame-rate, depth-of-field, grading and edit-pacing estimates, plus per-shot image-to-video prompts.'})}
+      ${vdStepsHTML()}
     </div>
     <div class="card">
       <h2>Step 1 · Upload a video</h2>
-      <label class="drop" id="vdDrop"><input type="file" id="vdFile" accept="video/*" hidden>
-        <span style="font-size:40px">🎞️</span><br><b>Drag & drop a video here</b><br><span class="muted">or tap to choose · MP4, MOV or WebM · your video stays on your device</span></label>
+      <label class="drop" id="vdDrop"><input type="file" id="vdFile" accept="video/*,.mkv,.avi,.wmv,.flv,.3gp,.mpg,.mpeg,.mts,.m2ts,.ts,.vob" hidden>
+        <span style="font-size:40px">🎞️</span><br><b>Drag & drop a video here</b><br><span class="muted">or tap to choose · MP4 works best (WebM and some MOV files work too) · your video stays on your device</span></label>
       <div id="vdPrev"></div>
+      ${vdFixHTML()}
       <details class="presetbox lstbox" id="vdLinkBox">
         <summary>🔗 From a link (YouTube, TikTok, Instagram, Facebook, Vimeo…)</summary>
         <label class="fld" style="display:block;margin-top:10px"><span>Paste the video’s web address</span><input id="vdUrl" type="url" placeholder="e.g. https://www.youtube.com/watch?v=…" autocomplete="off"></label>
@@ -3234,7 +3280,7 @@ function videoDetectiveView(){
   const drop=$('#vdDrop'), f=$('#vdFile');
   f.onchange=()=>f.files[0]&&vdLoad(f.files[0]);
   drop.ondragover=e=>{e.preventDefault();drop.classList.add('over');}; drop.ondragleave=()=>drop.classList.remove('over');
-  drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over'); const x=[...e.dataTransfer.files].find(z=>z.type.startsWith('video/')); if(x) vdLoad(x); else toast('Please drop a video file (MP4, MOV or WebM)'); };
+  drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over'); const x=[...e.dataTransfer.files].find(z=>z.type.startsWith('video/')||VD_BAD_EXT.test(z.name)); if(x) vdLoad(x); else toast('Please drop a video file (MP4 works best)'); };
   const u=$('#vdUrl'), o=$('#vdOpen');
   u.oninput=()=>{ const v=u.value.trim(); const ok=/^https?:\/\/\S+\.\S+/i.test(v)||/^[\w-]+\.[\w.-]+\/\S*/.test(v); o.href=ok?(/^https?:/i.test(v)?v:'https://'+v):'#'; o.style.pointerEvents=ok?'auto':'none'; o.style.opacity=ok?1:.45; $('#vdLinkSteps').innerHTML=ok?vdLinkSteps(v):''; };
   const pz=$('#vdPaste'); pz.onclick=()=>pz.focus();
@@ -3249,7 +3295,7 @@ function videoDetectiveView(){
   window.scrollTo(0,0);
 }
 function vdLoad(file){
-  if(!file.type.startsWith('video/')){ toast('That isn’t a video file'); return; }
+  if(!file.type.startsWith('video/')&&!VD_BAD_EXT.test(file.name||'')){ toast('That isn’t a video file'); return; }
   if(VD.url) URL.revokeObjectURL(VD.url); VD.frames.forEach(fr=>URL.revokeObjectURL(fr.url));
   Object.assign(VD,{file, url:URL.createObjectURL(file), frames:[], blobs:[], local:null, result:null});
   vdShowPreview();
@@ -3259,7 +3305,9 @@ function vdShowPreview(){
     <div><div class="muted" style="font-size:13px;word-break:break-all">📄 ${esc(VD.file.name)} · ${(VD.file.size/1048576).toFixed(1)} MB</div><div id="vdMeta" class="muted" style="font-size:13px;margin-top:4px"></div>
     <div class="actions"><button class="btn" id="vdGo">🤖 Figure out the prompts</button></div><div id="vdProg" class="muted" style="font-size:13px"></div></div></div>`;
   const v=$('#vdVideo'); v.onloadedmetadata=()=>{ $('#vdMeta').textContent=`${v.videoWidth}×${v.videoHeight} · ${v.duration.toFixed(1)} seconds`; };
-  v.onerror=()=>{ $('#vdMeta').innerHTML='⚠️ This browser can’t play that video format. Try an MP4 (H.264) version.'; };
+  v.onerror=()=>vdBadFormat(VD.file&&VD.file.name);
+  v.onloadeddata=()=>{ if(!v.videoWidth&&v.duration) vdBadFormat(VD.file&&VD.file.name); };
+  if(VD.file&&VD_BAD_EXT.test(VD.file.name)) setTimeout(()=>{ if(!v.videoWidth) vdBadFormat(VD.file.name); },1500);
   $('#vdGo').onclick=vdRun;
   if(VD.result||VD.local) vdRender();
 }
@@ -3269,7 +3317,7 @@ async function vdRun(fromShots){
   const btn=$('#vdGo')||{set disabled(v){},set textContent(v){}};
   if(fromShots!==true){ btn.disabled=true; btn.textContent='⏳ Analyzing…';
     try{ $('#vdProg').textContent='Reading the video…'; await vdAnalyze(); }
-    catch(e){ VD.busy=false; btn.disabled=false; btn.textContent='🤖 Figure out the prompts'; $('#vdProg').textContent='⚠️ Couldn’t read that video. Try an MP4 (H.264) file.'; return; } }
+    catch(e){ VD.busy=false; btn.disabled=false; btn.textContent='🤖 Figure out the prompts'; vdBadFormat(VD.file&&VD.file.name); $('#vdProg').textContent=''; return; } }
   VD.result=null; vdRender();
   const sample=await getSample(); let caps=null; if(sample) caps=await sample.limits().catch(()=>null);
   if(!sample||!caps||!caps.images){ VD.busy=false; btn.disabled=false; btn.textContent='🔄 Analyze again'; const sb3=$('#vdShotsGo'); if(sb3){ sb3.disabled=false; sb3.textContent='🤖 Analyze my screenshots'; } vdRender(true); return; }
