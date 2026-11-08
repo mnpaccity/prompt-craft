@@ -169,7 +169,9 @@
   .hrow{padding:6px 2px;border-bottom:1px solid var(--line);cursor:pointer;font-size:15px}
   .gtag{font-size:12px;font-weight:600;color:#4285F4;background:color-mix(in srgb,#4285F4 12%,var(--card));border-radius:8px;padding:3px 8px}
   .gbtn{background:var(--card);cursor:pointer;font:inherit;font-size:13px;font-weight:600}
-  .askrow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px;font-size:13px;background:color-mix(in srgb,var(--bad) 10%,var(--card));border-radius:8px;padding:6px 8px}
+  .realbox{margin-top:12px;padding:12px;border-radius:14px;background:rgba(46,160,67,.08);border:1.5px solid rgba(46,160,67,.35);text-align:left}
+#clipVid{width:100%;aspect-ratio:9/16;object-fit:cover;background:#000;border-radius:18px}
+.askrow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px;font-size:13px;background:color-mix(in srgb,var(--bad) 10%,var(--card));border-radius:8px;padding:6px 8px}
   .xbtn.danger{border-color:var(--bad);color:var(--bad)}
   .hdr{display:block;margin-bottom:16px}
   .hdr-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
@@ -488,7 +490,7 @@ function home(){
     </div>
     <button class="gbtn libbtn" onclick="libraryView()"><span class="em" style="font-size:40px">📚</span><span><span class="n">Prompt Library — ${Object.values(LIB).reduce((a,x)=>a+x.items.length,0)} ready-to-use prompts</span><span class="muted">Detailed CRAFT prompts for home, office, problem-solving, business strategy, local lead generation, video creation and conflict resolution — plus a cold-calling script. Copy, fill in the blanks, and paste into Claude.</span></span></button>`;
   document.querySelectorAll('[data-howpick]').forEach(b=>b.onclick=()=>showHowto(+b.dataset.howpick));
-  document.querySelectorAll('[data-clip]').forEach(li=>{ li.onclick=()=>openClip(+li.dataset.clip); li.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openClip(+li.dataset.clip); } }; });
+  document.querySelectorAll('[data-clip]').forEach(li=>{ if(LEVEL==='adv'){ const w=li.querySelector('.watch'); if(w) w.textContent=REAL[li.dataset.clip]?'🎬 Watch real clip':'▶ Watch clip · 🌳 make it real'; } li.onclick=()=>openClip(+li.dataset.clip); li.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openClip(+li.dataset.clip); } }; });
   window.scrollTo(0,0);
 }
 function gamesView(){
@@ -2661,6 +2663,30 @@ function showHowto(i){
   box.querySelector('#howWatch').onclick=()=>openClip(i);
 }
 
+/* --- "I got this": real-people clip prompts + upload your own clip --- */
+const REAL_SUFFIX=' Photorealistic, natural skin tones and realistic movement, cinematic 24 fps, vertical 9:16, about 4 seconds. All people are fictional adults (children appear only from behind or as hands). No text, logos or watermarks.';
+const REAL_PROMPTS=[
+ ['A busy mom in her 30s rushes through a sunlit family kitchen past backpacks and lunchboxes while kids run to the door seen only from behind; handheld camera with slight energy, warm sunrise light, shallow depth of field.',
+  'Macro close-up in slow motion: a woman’s hand drops a scoop of chocolate protein powder into a blender, then the creamy shake swirls; bright morning window light, modern kitchen.',
+  'Medium shot, smooth gimbal tracking from behind: a smiling parent grabs car keys and a protein shake and steps out the front door into golden sunlight.'],
+ ['Dim, cozy hallway: a parent gently closes a nursery door and gives a quiet, knowing smile to the camera; soft warm light, locked-off tripod shot.',
+  'Wide shot of a bright living room: a fit dad in his 30s does squats and push-ups on a yoga mat beside a baby monitor; energetic speed-ramp feel, natural daylight.',
+  'Medium shot from a slightly low angle: the dad finishes his workout, flexes playfully and sips a protein shake, laughing; bright cheerful light.'],
+ ['Overhead shot: an adult hand opens a kitchen drawer full of colorful kids’ snacks and juice boxes; slow push-in, bright kitchen light.',
+  'Medium shot with a slow left-to-right slider move: a mom in her 30s closes the snack drawer and reaches for a protein shake on the counter with a sticky note that says “FOR YOU,” smiling.',
+  'Medium close-up: she takes a satisfied sip and gives a playful wink to the camera; natural expression, shallow depth of field.'],
+ ['Handheld clip at a sunny kids’ soccer practice: a parent cheers from the sideline (children far away, faces not visible).',
+  'A parent pushes a full grocery cart down a bright store aisle, then a quick overhead shot of the same parent helping with homework at a kitchen table.',
+  'Golden-hour shot on a back porch: the parent sits down, takes a deep relaxed breath and sips a protein shake; slow push-in, warm light.'],
+ ['Dramatic low-angle close-up with a speed ramp: a woman pulls a new tub of chocolate peanut butter protein powder out of a shopping bag; warm light.',
+  'Extreme close-up in slow motion: a thick chocolate peanut butter shake pours into a glass; dark background with warm side light.',
+  'Medium shot in a bright kitchen: a child’s hand (only the hand) reaches toward the shake while the mom playfully pulls it away and hides the tub behind cereal boxes, grinning at the camera.']
+];
+let REAL=(()=>{ try{ return JSON.parse(localStorage.getItem('pc_realclips'))||{}; }catch(e){ return {}; } })();
+function saveReal(){ const keep={}; Object.entries(REAL).forEach(([k,v])=>{ if(v&&v.id) keep[k]=v; }); try{ localStorage.setItem('pc_realclips',JSON.stringify(keep)); }catch(e){} if(typeof cloudMark==='function') cloudMark('realclips'); }
+let _assetsP=null; function getAssets(){ if(!_assetsP) _assetsP=(window.claude&&typeof window.claude.use==='function')?window.claude.use('assets').catch(()=>null):Promise.resolve(null); return _assetsP; }
+function realPromptsText(i){ return REAL_PROMPTS[i].map((p,k)=>`SHOT ${k+1}: ${p}${REAL_SUFFIX}`).join('\n\n'); }
+
 let CLIP_PLAYER=null;
 function openClip(i){
   if(CLIP_PLAYER) CLIP_PLAYER.close();
@@ -2668,20 +2694,51 @@ function openClip(i){
   m.innerHTML=`<div class="card pop clipcard">
     <div class="top"><h3 style="margin:0">🎬 Clip <span id="clN"></span> of 5</h3><button class="xbtn" id="clX">✕ Close</button></div>
     <div class="phone"><div class="ph-top"><span class="ph-av">✨</span><b>yourbrand</b><span class="muted" style="font-size:12px">· Reels</span></div>
-      <canvas id="clipCv" width="360" height="640"></canvas></div>
+      <canvas id="clipCv" width="360" height="640"></canvas><video id="clipVid" playsinline loop controls style="display:none"></video></div>
     <p class="clipcap" id="clCap"></p>
     <div class="clipctl"><button class="xbtn" id="clPrev">⏮ Prev</button><button class="btn" id="clPlay">⏸ Pause</button><button class="xbtn" id="clRe">↻ Replay</button><button class="xbtn" id="clNext">Next ⏭</button></div>
     <div class="clipctl" style="margin-top:8px"><button class="xbtn snd" id="clHow">🛠️ How to make this video</button><button class="xbtn snd" id="clMusic"></button>${hasSpeech?'<button class="xbtn snd" id="clVoice"></button>':''}</div>
     ${hasSpeech?'<div class="clipctl" style="margin-top:6px"><label class="muted" style="font-size:12px;display:flex;gap:6px;align-items:center">🎙️ Voice <select id="clVoiceSel" class="vsel"></select></label></div>':''}
+    <div id="realPanel"></div>
     <p class="muted" style="font-size:12px;text-align:center;margin:10px 0 0">Animated preview with music and voice, made in your browser. To make real video clips, try the prompts in 📚 Prompt Library → 🎬 Video Creation.</p>
   </div>`;
   document.body.appendChild(m);
   const cv=m.querySelector('#clipCv'), c=cv.getContext('2d');
   const P={i, t0:performance.now(), off:0, playing:true, raf:0};
-  const set=n=>{ P.i=(n+5)%5; P.off=0; P.t0=performance.now(); P.playing=true; P.iter=-1; if(AUD.ctx&&AUD.ctx.state==='suspended') AUD.ctx.resume(); m.querySelector('#clN').textContent=P.i+1; m.querySelector('#clCap').innerHTML=`<b>yourbrand</b> ${esc(CAPTIONS[P.i])}`; m.querySelector('#clPlay').textContent='⏸ Pause'; };
-  const loop=now=>{ const el=P.playing?((now-P.t0)/1000+P.off):P.off, t=el%CLIP_D, it=Math.floor(el/CLIP_D); if(P.playing&&it!==P.iter){ P.iter=it; playMusicLoop(P.i); speakLine(P.i); } drawClipFrame(c,P.i,t,cv.width,cv.height); P.raf=requestAnimationFrame(loop); };
+  const vid=m.querySelector('#clipVid'); P.preferReal=true;
+  const applyReal=()=>{ const rc=LEVEL==='adv'&&REAL[P.i]&&REAL[P.i].url; P.real=!!(rc&&P.preferReal);
+    if(P.real){ stopAudio(); cv.style.display='none'; vid.style.display='block'; if(vid.dataset.src!==rc){ vid.src=rc; vid.dataset.src=rc; } vid.play().catch(()=>{}); }
+    else { vid.pause(); vid.style.display='none'; cv.style.display='block'; }
+    renderRealPanel(); };
+  const renderRealPanel=()=>{ const rp=m.querySelector('#realPanel'); if(!rp) return; if(LEVEL!=='adv'){ rp.innerHTML=''; return; }
+    const rc=REAL[P.i];
+    rp.innerHTML=`<div class="realbox"><div class="fp-head" style="font-size:15px">🌳 Real-people version</div>
+      ${rc?`<p style="margin:4px 0 8px;font-size:14px">✅ Your real clip for this caption${rc.id?' is saved to your account':' (this visit only)'}: <span class="muted">${esc(rc.name||'video')}</span></p>
+        <div class="clipctl" style="margin-top:0"><button class="xbtn snd ${P.real?'on':''}" id="rvReal">🎞️ Real clip</button><button class="xbtn snd ${!P.real?'on':''}" id="rvAnim">🎨 Animated preview</button><button class="xbtn snd" id="rvDel">🗑️ Remove my clip</button></div><div id="rvAsk"></div>`
+      :`<p style="margin:4px 0 6px;font-size:14px">Make this clip with <b>photorealistic people</b>: paste these 3 shot prompts into an AI video tool (Google Veo, Kling or Runway — text-to-video, 9:16, ~4 s each), join them in CapCut with the voiceover, then upload the finished clip here.</p>
+        ${REAL_PROMPTS[P.i].map((t,k)=>`<div class="quote" style="font-size:13px"><b>Shot ${k+1}:</b> ${esc(t)}</div>`).join('')}
+        <div class="clipctl" style="margin-top:6px"><button class="xbtn snd" id="rvCopy">📋 Copy all 3 prompts</button><label class="xbtn snd" style="cursor:pointer">⬆️ Upload my real clip<input type="file" id="rvUp" accept="video/*" hidden></label></div>
+        <p class="muted" style="font-size:11.5px;margin:6px 0 0">AI-generated people are fictional — label ads that use them as AI-generated where required, and never use a real person’s face or voice without permission.</p>`}
+      <div id="rvMsg" class="muted" style="font-size:12px;margin-top:4px"></div></div>`;
+    const q=s=>rp.querySelector(s);
+    if(q('#rvCopy')) q('#rvCopy').onclick=async()=>{ const t=realPromptsText(P.i); (await copyText(t))?toast('✅ Copied all 3 prompts'):showCopyBox(t); };
+    if(q('#rvUp')) q('#rvUp').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; if(!f.type.startsWith('video/')){ toast('Please choose a video file'); return; }
+      const msg=q('#rvMsg'); const assets=await getAssets();
+      if(assets&&f.size<=20*1048576){ msg.textContent='⏳ Uploading to your account…';
+        try{ const r=await assets.upload(f); REAL[P.i]={id:r.id,url:r.url||('/_blob/'+r.id),name:f.name}; saveReal(); toast('✅ Real clip saved'); }
+        catch(err){ REAL[P.i]={url:URL.createObjectURL(f),name:f.name}; toast('⚠️ Couldn’t save to your account — showing it for this visit only'); } }
+      else { REAL[P.i]={url:URL.createObjectURL(f),name:f.name}; toast(f.size>20*1048576?'⚠️ Clips over 20 MB play for this visit only — export a smaller 1080p version to save it':'Showing your clip for this visit (saving needs the Claude app)'); }
+      P.preferReal=true; applyReal(); };
+    if(q('#rvReal')) q('#rvReal').onclick=()=>{ P.preferReal=true; applyReal(); };
+    if(q('#rvAnim')) q('#rvAnim').onclick=()=>{ P.preferReal=false; applyReal(); set(P.i); };
+    if(q('#rvDel')) q('#rvDel').onclick=()=>{ q('#rvAsk').innerHTML=`<div class="askrow">Remove your real clip for this caption? <button class="xbtn danger" id="rvYes">Remove</button><button class="xbtn" id="rvNo">Cancel</button></div>`;
+      q('#rvNo').onclick=()=>q('#rvAsk').innerHTML='';
+      q('#rvYes').onclick=async()=>{ const rc=REAL[P.i]; if(rc&&rc.id){ const a=await getAssets(); if(a) try{ await a.delete(rc.id); }catch(e){} } delete REAL[P.i]; saveReal(); P.preferReal=true; applyReal(); set(P.i); toast('🗑️ Clip removed'); }; };
+  };
+  const set=n=>{ P.i=(n+5)%5; P.off=0; P.t0=performance.now(); P.playing=true; P.iter=-1; if(AUD.ctx&&AUD.ctx.state==='suspended') AUD.ctx.resume(); m.querySelector('#clN').textContent=P.i+1; m.querySelector('#clCap').innerHTML=`<b>yourbrand</b> ${esc(CAPTIONS[P.i])}`; m.querySelector('#clPlay').textContent='⏸ Pause';  if(typeof applyReal==='function') applyReal(); };
+  const loop=now=>{ if(P.real){ P.raf=requestAnimationFrame(loop); return; } const el=P.playing?((now-P.t0)/1000+P.off):P.off, t=el%CLIP_D, it=Math.floor(el/CLIP_D); if(P.playing&&it!==P.iter){ P.iter=it; playMusicLoop(P.i); speakLine(P.i); } drawClipFrame(c,P.i,t,cv.width,cv.height); P.raf=requestAnimationFrame(loop); };
   set(i); P.raf=requestAnimationFrame(loop);
-  m.querySelector('#clPlay').onclick=()=>{ if(P.playing){ P.off+=(performance.now()-P.t0)/1000; P.playing=false; m.querySelector('#clPlay').textContent='▶ Play'; if(AUD.ctx) AUD.ctx.suspend(); if(hasSpeech) try{ speechSynthesis.pause(); }catch(e){} } else { P.t0=performance.now(); P.playing=true; m.querySelector('#clPlay').textContent='⏸ Pause'; if(AUD.ctx) AUD.ctx.resume(); if(hasSpeech) try{ speechSynthesis.resume(); }catch(e){} } };
+  m.querySelector('#clPlay').onclick=()=>{ if(P.real){ if(vid.paused){ vid.play(); m.querySelector('#clPlay').textContent='⏸ Pause'; } else { vid.pause(); m.querySelector('#clPlay').textContent='▶ Play'; } return; } if(P.playing){ P.off+=(performance.now()-P.t0)/1000; P.playing=false; m.querySelector('#clPlay').textContent='▶ Play'; if(AUD.ctx) AUD.ctx.suspend(); if(hasSpeech) try{ speechSynthesis.pause(); }catch(e){} } else { P.t0=performance.now(); P.playing=true; m.querySelector('#clPlay').textContent='⏸ Pause'; if(AUD.ctx) AUD.ctx.resume(); if(hasSpeech) try{ speechSynthesis.resume(); }catch(e){} } };
   const sndLbl=()=>{ m.querySelector('#clMusic').textContent=AUD.music?'🎵 Music: On':'🔇 Music: Off'; const v=m.querySelector('#clVoice'); if(v) v.textContent=AUD.voice?'🗣️ Voice: On':'🤐 Voice: Off'; };
   m.querySelector('#clMusic').onclick=()=>{ AUD.music=!AUD.music; try{ localStorage.setItem('pc_music',AUD.music?'1':'0'); }catch(e){} cloudMark('prefs'); ensureCtx(); if(AUD.ctx){ AUD.ctx.resume(); AUD.bus.gain.setTargetAtTime(AUD.music?0.7:0,AUD.ctx.currentTime,0.05); } sndLbl(); };
   if(m.querySelector('#clVoice')) m.querySelector('#clVoice').onclick=()=>{ AUD.voice=!AUD.voice; try{ localStorage.setItem('pc_voice',AUD.voice?'1':'0'); }catch(e){} cloudMark('prefs'); if(!AUD.voice&&hasSpeech) try{ speechSynthesis.cancel(); duck(false); }catch(e){} else speakLine(P.i); sndLbl(); };
@@ -2695,7 +2752,7 @@ function openClip(i){
   m.querySelector('#clRe').onclick=()=>set(P.i);
   m.querySelector('#clPrev').onclick=()=>set(P.i-1);
   m.querySelector('#clNext').onclick=()=>set(P.i+1);
-  const close=()=>{ cancelAnimationFrame(P.raf); stopAudio(); m.remove(); CLIP_PLAYER=null; document.removeEventListener('keydown',key); };
+  const close=()=>{ cancelAnimationFrame(P.raf); stopAudio(); try{ vid.pause(); }catch(e){} m.remove(); CLIP_PLAYER=null; document.removeEventListener('keydown',key); };
   const key=e=>{ if(e.key==='Escape') close(); else if(e.key==='ArrowRight') set(P.i+1); else if(e.key==='ArrowLeft') set(P.i-1); };
   document.addEventListener('keydown',key);
   m.querySelector('#clX').onclick=close; m.onclick=e=>{ if(e.target===m) close(); };
@@ -3372,6 +3429,7 @@ const CLOUD_KEYS={
   receipt:{ get:()=>RCPT, set:v=>{ RCPT=v&&Array.isArray(v.items)?v:{items:[],tax:0,disc:0,tip:0,title:''}; _saveRcpt0(); } },
   prefs:{ get:()=>({level:LEVEL, music:AUD.music, voice:AUD.voice, voicename:lsGet('pc_voicename',''), gauto:GC.auto}),
           set:v=>{ if(!v) return; if(v.level&&v.level!==LEVEL){ CLOUD.applying=true; setLevel(v.level); CLOUD.applying=false; } if(typeof v.music==='boolean'){ AUD.music=v.music; lsSet('pc_music',v.music?'1':'0'); } if(typeof v.voice==='boolean'){ AUD.voice=v.voice; lsSet('pc_voice',v.voice?'1':'0'); } if(v.voicename) lsSet('pc_voicename',v.voicename); if(typeof v.gauto==='boolean'){ GC.auto=v.gauto; lsSet('pc_gauto',v.gauto?'1':'0'); } } },
+  realclips:{ get:()=>{ const k={}; Object.entries(REAL).forEach(([i,v])=>{ if(v&&v.id) k[i]=v; }); return k; }, set:v=>{ if(v&&typeof v==='object'){ Object.keys(REAL).forEach(i=>{ if(REAL[i]&&REAL[i].id&&!v[i]) delete REAL[i]; }); Object.assign(REAL,v); try{ localStorage.setItem('pc_realclips',JSON.stringify(v)); }catch(e){} } } },
   enhancer:{ get:()=>ENH.hist.slice(0,15), set:v=>{ if(Array.isArray(v)){ ENH.hist=v; try{ localStorage.setItem('pc_enh_hist',JSON.stringify(v)); }catch(e){} } } },
   scores:{ get:()=>{ const o={}; ['match','sort','scramble','build','recall'].forEach(g=>{ const b=store('best_'+g); if(b) o[g]=b; }); return o; },
            set:v=>{ if(!v) return; Object.entries(v).forEach(([g,b])=>{ const cur=store('best_'+g)||0; if(b>cur) store('best_'+g,b); }); } }
