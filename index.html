@@ -526,7 +526,7 @@ function results(game, got, max, lesson){
 
 /* ---------- Game 1: Letter Match ---------- */
 /* ---------- Site-wide skill levels ---------- */
-const LVL_NAME = ()=>({new:'🌱 Just starting',some:'🌿 Not completely lost',adv:'🌳 Almost there'})[LEVEL];
+const LVL_NAME = ()=>({new:'🌱 Just starting',some:'🌿 Not completely lost',adv:'🌳 I got this'})[LEVEL];
 function lvlNote(map){ const t=map[LEVEL]; return t?`<div class="lvlnote lv-${LEVEL}"><b>${LVL_NAME()}:</b> ${t}</div>`:''; }
 const PLUS_Q = [
   {q:'Adding “If anything is unclear, ask me 1–2 questions first” helps because…', a:'The AI fills in missing info before it starts', o:['The AI fills in missing info before it starts','It makes the answer longer','It changes the tone','The AI requires it'], why:'Missing details are the #1 reason for so-so answers. Letting the AI ask first fixes that.'},
@@ -2749,7 +2749,7 @@ function openProfile(){
 }
 function updateMeBtn(){ const b=document.getElementById('nav-me'); if(b) b.innerHTML = pfCount()? `👤 ${esc((PF.name||'My Info').split(' ')[0])} <span class="mecheck">✓</span>` : '👤 My Info'; }
 
-/* ---------- Expert ("Almost there") prompt upgrades ---------- */
+/* ---------- Expert ("I got this") prompt upgrades ---------- */
 const EXPERT_COMMON = {
   C:'Success looks like: [DESCRIBE THE IDEAL RESULT — who will use it, what decision or action it should lead to]. Constraints: [BUDGET / DEADLINE / BRAND OR LEGAL RULES / THINGS TO AVOID].',
   R:'Bring the judgment of a senior specialist with 15+ years of experience: use proven frameworks and current best practices, and point out anything a professional would do differently.',
@@ -2800,8 +2800,8 @@ function getSegs(it, tab){
 }
 function expertBanner(){
   if(LEVEL==='adv') return `<div class="xbanner on">🌳 <b>Expert mode is on.</b> Every prompt below includes extra professional-level instructions (marked <span class="xchip">PRO</span>) — success criteria, self-critique, frameworks and detailed specs — for polished, professional results.</div>`;
-  if(LEVEL==='some') return `<div class="xbanner mid">🌿 <b>Plus mode is on.</b> Prompts include a few helpful extras (marked <span class="xchip plus">PLUS</span>) for better results. For the full professional version, switch to <b>🌳 Almost there</b>.</div>`;
-  return `<div class="xbanner">💡 Want better results? Switch <b>🎓 Skill level</b> to <b>🌿 Not completely lost</b> for a few helpful extras, or <b>🌳 Almost there</b> for full expert-level prompts.</div>`; }
+  if(LEVEL==='some') return `<div class="xbanner mid">🌿 <b>Plus mode is on.</b> Prompts include a few helpful extras (marked <span class="xchip plus">PLUS</span>) for better results. For the full professional version, switch to <b>🌳 I got this</b>.</div>`;
+  return `<div class="xbanner">💡 Want better results? Switch <b>🎓 Skill level</b> to <b>🌿 Not completely lost</b> for a few helpful extras, or <b>🌳 I got this</b> for full expert-level prompts.</div>`; }
 
 
 /* ---------- Video Detective: reverse-engineer prompts from a video ---------- */
@@ -3185,7 +3185,7 @@ function enhRender(){
 }
 
 /* ---------- Help & experience levels ---------- */
-const LEVELS = {new:['🌱','Just starting'], some:['🌿','Not completely lost'], adv:['🌳','Almost there']};
+const LEVELS = {new:['🌱','Just starting'], some:['🌿','Not completely lost'], adv:['🌳','I got this']};
 let LEVEL = (()=>{ try{ return localStorage.getItem('pc_level')||'new'; }catch(e){ return 'new'; } })();
 function setLevel(l){ const changed=LEVEL!==l; LEVEL=l; setTimeout(()=>{ if(changed&&!window._rerender&&document.querySelector('#app .bar')) toast('🎓 Your new level starts with the next game you play'); if(changed&&window._rerender&&!document.querySelector('.modal')) window._rerender(); if(changed&&l==='adv') toast('🌳 Expert mode on — prompts now include pro-level details'); else if(changed&&l==='some') toast('🌿 Plus mode on — prompts now include a few helpful extras'); },0); const lt=document.getElementById('lvlTop'); if(lt) lt.innerHTML=levelSwitch(); try{ localStorage.setItem('pc_level',l); }catch(e){} document.querySelectorAll('[data-level]').forEach(b=>b.classList.toggle('on',b.dataset.level===l)); }
 function levelSwitch(){ return `<div class="lvl" role="group" aria-label="Instruction level">${Object.entries(LEVELS).map(([k,v])=>`<button data-level="${k}" class="${LEVEL===k?'on':''}" onclick="setLevel('${k}');if(window._helpRedraw)window._helpRedraw()">${v[0]} ${v[1]}</button>`).join('')}</div>`; }

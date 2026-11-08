@@ -10,7 +10,7 @@ An interactive web app for learning and memorizing the **CRAFT** prompting metho
 - **🧮 Tools** – calculator, running receipt, mortgage and auto loan calculators
 - **📅 Planner** – calendar, to-dos, Google Calendar sync (inside claude.ai), Apple Calendar setup guide
 - **👤 My Info** – autofill your details into prompts (saved only in your browser)
-- **🎓 Skill level** – Just starting / Not completely lost / Almost there changes the games' difficulty, prompt detail (PLUS and PRO versions), tool tips and help instructions across the whole site
+- **🎓 Skill level** – Just starting / Not completely lost / I got this changes the games' difficulty, prompt detail (PLUS and PRO versions), tool tips and help instructions across the whole site
 
 ## How to use
 Open `index.html` in any web browser. Everything runs in a single file — no install needed.
