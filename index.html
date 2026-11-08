@@ -179,6 +179,7 @@
 .ccbig{font-family:Consolas,Menlo,monospace;font-size:22px;font-weight:800;color:var(--R);word-break:break-all}
 .ccsec{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--bg);border:2px solid var(--line)}
 .ccsec h4{margin:0 0 4px;font-family:Fredoka;font-size:16px}.ccsec p{margin:0;line-height:1.55}.ccsec .steps{margin:2px 0 0}
+.docchip{display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px;background:var(--bg);border:2px solid var(--line)}
 .dlbox{border:2px solid color-mix(in srgb,var(--A) 45%,var(--line));background:color-mix(in srgb,var(--A) 6%,var(--card))}
 .realbox{margin-top:12px;padding:12px;border-radius:14px;background:rgba(46,160,67,.08);border:1.5px solid rgba(46,160,67,.35);text-align:left}
 #clipVid{width:100%;aspect-ratio:9/16;object-fit:cover;background:#000;border-radius:18px}
@@ -3596,9 +3597,14 @@ function openClaudeCode(){
 }
 
 /* ---------- 💾 My Files: personal saved prompts, plans and videos ---------- */
-const MF_TYPES={prompt:['🧩','Prompt'],plan:['🎬','Video plan'],video:['🎞️','Video'],breakdown:['🕵️','Video breakdown'],guide:['📝','How-to guide'],note:['🗒️','Note']};
+const MF_TYPES={prompt:['🧩','Prompt'],plan:['🎬','Video plan'],video:['🎞️','Video'],photo:['🖼️','Photo'],doc:['📄','Document'],breakdown:['🕵️','Video breakdown'],guide:['📝','How-to guide'],note:['🗒️','Note']};
 let MYF=(()=>{ try{ const v=JSON.parse(localStorage.getItem('pc_myfiles')); return Array.isArray(v)?v:[]; }catch(e){ return []; } })();
 const MFV={q:'',type:'all',open:null};
+const MF_FILE=x=>x.type==='video'||x.type==='photo'||x.type==='doc';
+const MF_DOC_ACCEPT='.pdf,.docx,.txt,.md,.csv,.xlsx,.pptx,.json,.html,.epub';
+const MF_DL_OK=['gif','png','jpg','jpeg','webp','mp4','webm','mov','txt','json','md','docx','pptx','epub','csv','html','svg','pdf','xlsx','zip'];
+function mfExt(x){ return (((x.name||'').match(/\.([a-z0-9]+)$/i)||[])[1]||'').toLowerCase(); }
+function mfSize(n){ return n>1048576?(n/1048576).toFixed(1)+' MB':Math.max(1,Math.round(n/1024))+' KB'; }
 function saveMyFiles(){ try{ localStorage.setItem('pc_myfiles',JSON.stringify(MYF)); }catch(e){ toast('⚠️ This device is out of space — try deleting a few old files'); } if(typeof cloudMark==='function') cloudMark('myfiles'); }
 function mfId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 function mfDate(t){ try{ return new Date(t).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}); }catch(e){ return ''; } }
@@ -3632,12 +3638,14 @@ function myFilesView(){
   $('#app').innerHTML=`
     <div class="card pop">
       <h1>💾 My Files</h1>
-      <p class="muted" style="margin:6px 0 0">Your personal folder. Anything you save — prompts, video plans, video breakdowns, how-to guides and your finished videos — stays here so you never lose it.</p>
-      ${lvlNote({new:'To save something, look for the <b>💾 Save to My Files</b> button next to any <b>📋 Copy</b> button in the app. Then come back to this tab to find it. Click a file’s name to open it.',some:'You can edit a saved prompt right here and click <b>✅ Save changes</b>. Use the search box and the colored buttons to find things fast.',adv:'Files sync to your Claude account, so they show up on every device. Upload finished videos (up to 20 MB each) to keep your whole library in one place.'})}
+      <p class="muted" style="margin:6px 0 0">Your personal folder. Anything you save — prompts, video plans, how-to guides, photos, documents and finished videos — stays here so you never lose it.</p>
+      ${lvlNote({new:'To save something, look for the <b>💾 Save to My Files</b> button next to any <b>📋 Copy</b> button in the app. Then come back to this tab to find it. Click a file’s name to open it.',some:'You can edit a saved prompt right here and click <b>✅ Save changes</b>. Use the search box and the colored buttons to find things fast.',adv:'Files sync to your Claude account, so they show up on every device. Upload photos, documents (PDF, Word, Excel, PowerPoint, text) and finished videos — up to 20 MB each — to keep your whole library in one place.'})}
       <p class="muted" style="font-size:12.5px;margin:8px 0 0">${CLOUD.state==='on'||CLOUD.state==='saving'?'☁️ Saved to your Claude account — it’s on every device where you open this app.':'💻 Saved in this browser. Open the app inside claude.ai to save to your account too.'}</p>
       <div class="actions">
         <button class="btn" id="mfNew">➕ New note or prompt</button>
-        <label class="btn ghost" style="cursor:pointer">⬆️ Add a video<input type="file" id="mfVid" accept="video/*" hidden></label>
+        <label class="btn ghost" style="cursor:pointer">🖼️ Add a photo<input type="file" id="mfPhoto" accept="image/*" multiple hidden></label>
+        <label class="btn ghost" style="cursor:pointer">📄 Add a document<input type="file" id="mfDoc" accept="${MF_DOC_ACCEPT}" multiple hidden></label>
+        <label class="btn ghost" style="cursor:pointer">🎞️ Add a video<input type="file" id="mfVid" accept="video/*" hidden></label>
       </div>
     </div>
     ${MYF.length?`<div class="card dlbox">
@@ -3665,6 +3673,8 @@ function myFilesView(){
   if($('#mfDlAll')) $('#mfDlAll').onclick=()=>mfDownloadAll(MYF);
   if($('#mfDlShown')) $('#mfDlShown').onclick=()=>mfDownloadAll(list);
   $('#mfNew').onclick=()=>{ const it=mfAdd({type:'note',title:'My new prompt',text:'',src:'Written by me'}); MFV.open=it.id; MFV.type='all'; MFV.q=''; myFilesView(); const t=document.querySelector(`[data-mfedit="${it.id}"]`); if(t) t.focus(); };
+  $('#mfPhoto').onchange=async e=>{ await mfUploadMany(e.target.files,'photo'); e.target.value=''; };
+  $('#mfDoc').onchange=async e=>{ await mfUploadMany(e.target.files,'doc'); e.target.value=''; };
   $('#mfVid').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; await mfUploadVideo(f); e.target.value=''; };
   bindMyFiles();
   window.scrollTo(0,0);
@@ -3678,15 +3688,18 @@ function mfCard(x){
       ${x.text?`<button class="qcopy" data-mfcopy="${x.id}">📋 Copy</button>`:''}<button class="qcopy" data-mfdl="${x.id}" title="Download this file">⬇️</button>
     </div>
     <div class="body">
-      ${x.type==='video'?(x.url?`<video src="${esc(x.url)}" controls playsinline style="width:100%;max-height:480px;border-radius:12px;background:#000"></video>${x.assetId?'':'<p class="warnnote" style="margin-top:6px">⚠️ This video is only here until you close the page (it was too big, or you’re not signed in to Claude). Export a smaller version (under 20 MB) and add it again to keep it.</p>'}`:'<p class="muted">Video not available.</p>'):''}
+      ${x.type==='video'?(x.url?`<video src="${esc(x.url)}" controls playsinline style="width:100%;max-height:480px;border-radius:12px;background:#000"></video>`:'<p class="muted">Video not available.</p>')
+        :x.type==='photo'?(x.url?`<img src="${esc(x.url)}" alt="${esc(x.title)}" style="width:100%;max-height:520px;object-fit:contain;border-radius:12px;background:var(--bg);display:block">`:'<p class="muted">Photo not available.</p>')
+        :x.type==='doc'?`<div class="docchip"><span style="font-size:34px">${{pdf:'📕',docx:'📘',xlsx:'📗',csv:'📗',pptx:'📙'}[mfExt(x)]||'📄'}</span><div><b>${esc(x.name||x.title)}</b><div class="muted" style="font-size:12px">${(mfExt(x)||'file').toUpperCase()}${x.size?' · '+mfSize(x.size):''} — click ⬇️ Download to open it on your computer</div></div></div>`:''}
+      ${MF_FILE(x)&&x.url&&!x.assetId&&!x.shared?'<p class="warnnote" style="margin-top:6px">⚠️ This file is only here until you close the page (it was over 20 MB, or you’re not signed in to Claude). Add a smaller version to keep it.</p>':''}
       <label class="fld" style="margin-top:6px"><span>Name</span><input data-mfname="${x.id}" value="${esc(x.title)}" maxlength="120"></label>
-      ${x.type!=='video'||x.text?`<label class="fld"><span>${x.type==='video'?'Notes':'Text — you can edit it'}</span><textarea data-mfedit="${x.id}" class="enhout" rows="${Math.min(16,Math.max(5,(x.text.match(/\n/g)||[]).length+2))}">${esc(x.text)}</textarea></label>`
-        :`<label class="fld"><span>Notes (optional)</span><textarea data-mfedit="${x.id}" class="enhout" rows="3" placeholder="e.g. which AI tool and settings you used"></textarea></label>`}
+      ${!MF_FILE(x)||x.text?`<label class="fld"><span>${MF_FILE(x)?(x.type==='doc'?'Text from the document — you can edit it':'Notes'):'Text — you can edit it'}</span><textarea data-mfedit="${x.id}" class="enhout" rows="${Math.min(16,Math.max(5,(x.text.match(/\n/g)||[]).length+2))}">${esc(x.text)}</textarea></label>`
+        :`<label class="fld"><span>Notes (optional)</span><textarea data-mfedit="${x.id}" class="enhout" rows="3" placeholder="${x.type==='photo'?'e.g. which listing or room this is':x.type==='doc'?'e.g. what this document is for':'e.g. which AI tool and settings you used'}"></textarea></label>`}
       <div class="actions">
         <button class="btn" data-mfsave="${x.id}">✅ Save changes</button>
         ${x.text?`<button class="btn ghost" data-mfcopy="${x.id}">📋 Copy</button>`:''}
-        <button class="btn ghost" data-mfdl="${x.id}">⬇️ Download ${x.type==='video'?'video':'.txt'}</button>
-        ${x.type!=='video'?`<button class="btn ghost" data-mfenh="${x.id}">✨ Improve in Enhancer</button>`:''}
+        <button class="btn ghost" data-mfdl="${x.id}">⬇️ Download ${MF_FILE(x)?({video:'video',photo:'photo',doc:'document'})[x.type]:'.txt'}</button>
+        ${!MF_FILE(x)||(x.type==='doc'&&x.text)?`<button class="btn ghost" data-mfenh="${x.id}">✨ Improve in Enhancer</button>`:''}
         <button class="btn ghost" data-mfdup="${x.id}">📄 Make a copy</button>
         <button class="btn ghost" data-mfdel="${x.id}">🗑️ Delete</button>
       </div>
@@ -3699,7 +3712,7 @@ function bindMyFiles(){
   document.querySelectorAll('[data-mfcopy]').forEach(b=>b.onclick=async e=>{ e.stopPropagation(); const x=get(b.dataset.mfcopy); if(!x) return; const ta=document.querySelector(`[data-mfedit="${x.id}"]`); const t=ta?ta.value:x.text; (await copyText(t))?toast('✅ Copied! Paste it into Claude'):showCopyBox(t); });
   document.querySelectorAll('[data-mfdl]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); const x=get(b.dataset.mfdl); if(x) mfDownload(x); });
   document.querySelectorAll('[data-mfsave]').forEach(b=>b.onclick=()=>{ const x=get(b.dataset.mfsave); if(!x) return; const n=document.querySelector(`[data-mfname="${x.id}"]`), ta=document.querySelector(`[data-mfedit="${x.id}"]`); x.title=(n.value.trim()||'Untitled').slice(0,120); if(ta) x.text=ta.value; x.updated=Date.now(); saveMyFiles(); toast('✅ Changes saved'); myFilesView(); });
-  document.querySelectorAll('[data-mfdup]').forEach(b=>b.onclick=()=>{ const x=get(b.dataset.mfdup); if(!x) return; const c={...x,id:mfId(),title:x.title+' (copy)',created:Date.now(),updated:Date.now()}; if(c.type==='video'){ delete c.assetId; c.shared=true; } MYF.splice(MYF.indexOf(x)+1,0,c); saveMyFiles(); MFV.open=c.id; myFilesView(); toast('📄 Copy made'); });
+  document.querySelectorAll('[data-mfdup]').forEach(b=>b.onclick=()=>{ const x=get(b.dataset.mfdup); if(!x) return; const c={...x,id:mfId(),title:x.title+' (copy)',created:Date.now(),updated:Date.now()}; if(MF_FILE(c)&&c.assetId){ delete c.assetId; c.shared=true; } MYF.splice(MYF.indexOf(x)+1,0,c); saveMyFiles(); MFV.open=c.id; myFilesView(); toast('📄 Copy made'); });
   document.querySelectorAll('[data-mfenh]').forEach(b=>b.onclick=()=>{ const x=get(b.dataset.mfenh); if(!x) return; ENH.input=x.text; ENH.out=null; enhancerView(); toast('✨ Loaded into the Enhancer — click “Enhance my prompt”'); });
   document.querySelectorAll('[data-mfdel]').forEach(b=>b.onclick=()=>{ const id=b.dataset.mfdel, box=document.querySelector(`[data-mfask="${id}"]`);
     box.innerHTML=`<div class="askrow">Delete this file for good? <button class="xbtn danger" data-mfyes="${id}">Delete</button><button class="xbtn" data-mfno="${id}">Cancel</button></div>`;
@@ -3727,8 +3740,10 @@ async function mfSave(filename,data){
 }
 async function mfVideoBlob(x){ if(!x.url) return null; try{ const r=await fetch(x.url); if(!r.ok) return null; return await r.blob(); }catch(e){ return null; } }
 async function mfDownload(x){
-  if(x.type==='video'){ toast('⏳ Getting your video ready…'); const b=await mfVideoBlob(x); if(!b){ toast('⚠️ This video isn’t available anymore — add it again'); return; }
-    await mfSave(mfSafeName(x.title)+'.'+mfVidExt(x,b.type), b); return; }
+  if(MF_FILE(x)){ toast('⏳ Getting your file ready…'); const b=await mfVideoBlob(x); if(!b){ toast('⚠️ This file isn’t available anymore — add it again'); return; }
+    const ext=x.type==='video'?mfVidExt(x,b.type):(mfExt(x)||(x.type==='photo'?'jpg':'pdf'));
+    if(!MF_DL_OK.includes(ext)){ toast(`⚠️ .${ext} files can’t be downloaded here — save it as PDF, Word (.docx), JPG or PNG and add it again`); return; }
+    await mfSave(mfSafeName(x.title)+'.'+ext, b); return; }
   await mfSave(mfSafeName(x.title)+'.txt', mfTxt(x));
 }
 async function mfDownloadAll(items){
@@ -3737,14 +3752,32 @@ async function mfDownloadAll(items){
   toast('⏳ Packing your files…'); const zip=new JSZip(); const used={}; let skipped=0;
   const uniq=(folder,base,ext)=>{ let n=base, k=2; while(used[folder+'/'+n+'.'+ext]) n=base+' ('+(k++)+')'; used[folder+'/'+n+'.'+ext]=1; return folder+'/'+n+'.'+ext; };
   for(const x of items){ const t=MF_TYPES[x.type]||MF_TYPES.prompt, folder=t[1]+'s';
-    if(x.type==='video'){ const b=await mfVideoBlob(x); if(!b){ skipped++; continue; } zip.file(uniq(folder,mfSafeName(x.title),mfVidExt(x,b.type)), b); if(x.text&&x.text.trim()) zip.file(uniq(folder,mfSafeName(x.title)+' - notes','txt'), mfTxt(x)); }
+    if(MF_FILE(x)){ const b=await mfVideoBlob(x); if(!b){ skipped++; continue; } zip.file(uniq(folder,mfSafeName(x.title),x.type==='video'?mfVidExt(x,b.type):(mfExt(x)||'bin')), b); if(x.text&&x.text.trim()) zip.file(uniq(folder,mfSafeName(x.title)+' - notes','txt'), mfTxt(x)); }
     else zip.file(uniq(folder,mfSafeName(x.title),'txt'), mfTxt(x)); }
-  zip.file('READ ME.txt','Your Prompt CRAFT files\r\n\r\nPrompts, plans and guides are .txt files - open them with Notepad, then copy and paste the text into Claude, Veo, Kling, Runway or CapCut.\r\nVideos can be uploaded straight into CapCut or any video editor.\r\n');
+  zip.file('READ ME.txt','Your Prompt CRAFT files\r\n\r\nPrompts, plans and guides are .txt files - open them with Notepad, then copy and paste the text into Claude, Veo, Kling, Runway or CapCut.\r\nVideos and photos can be uploaded straight into CapCut, Canva or any editor. Documents open in Word, Excel or your PDF reader.\r\n');
   const blob=await zip.generateAsync({type:'blob'});
   await mfSave('Prompt CRAFT - My Files '+new Date().toISOString().slice(0,10)+'.zip', blob);
-  if(skipped) toast(`⚠️ ${skipped} video${skipped>1?'s were':' was'} no longer available and was left out`);
+  if(skipped) toast(`⚠️ ${skipped} file${skipped>1?'s were':' was'} no longer available and was left out`);
 }
 
+async function mfUploadFile(f,kind){
+  if(kind==='photo'&&!f.type.startsWith('image/')){ toast('Please choose a photo (JPG, PNG…)'); return null; }
+  const ext=(f.name.match(/\.([a-z0-9]+)$/i)||[])[1]||'';
+  let text='';
+  if(kind==='doc'&&/^(txt|md|csv|json|html)$/i.test(ext)&&f.size<300000){ try{ text=await f.text(); }catch(e){} }
+  const base={type:kind,title:f.name.replace(/\.[^.]+$/,''),src:'Uploaded by me',name:f.name,size:f.size,text};
+  const label=kind==='photo'?'Photo':'Document';
+  const a=await getAssets(); let it;
+  if(a&&f.size<=20*1048576){ try{ const r=await a.upload(f); it=mfAdd({...base,url:r.url||('/_blob/'+r.id),assetId:r.id}); }catch(e){ it=mfAdd({...base,url:URL.createObjectURL(f)}); toast(`⚠️ Couldn’t save “${f.name}” to your account — kept for this visit only`); } }
+  else { it=mfAdd({...base,url:URL.createObjectURL(f)}); toast(f.size>20*1048576?`⚠️ “${f.name}” is over 20 MB — kept for this visit only`:'Kept for this visit (saving files needs the Claude app)'); }
+  return it;
+}
+async function mfUploadMany(files,kind){
+  const list=[...files]; if(!list.length) return; toast(`⏳ Saving ${list.length} ${kind==='photo'?'photo':'document'}${list.length>1?'s':''}…`);
+  let ok=0; for(const f of list){ const it=await mfUploadFile(f,kind); if(it) ok++; }
+  if(ok) toast(`✅ ${ok} ${kind==='photo'?'photo':'document'}${ok>1?'s':''} saved to My Files`);
+  updateFilesBtn(); if(document.getElementById('nav-files')&&document.getElementById('nav-files').classList.contains('on')) myFilesView();
+}
 async function mfUploadVideo(f,extra){
   if(!f.type.startsWith('video/')){ toast('Please choose a video file'); return null; }
   const base={type:'video',title:(extra&&extra.title)||f.name.replace(/\.[^.]+$/,''),src:(extra&&extra.src)||'Uploaded by me',name:f.name,text:(extra&&extra.text)||''};
@@ -3761,7 +3794,7 @@ const CLOUD_KEYS={
   prefs:{ get:()=>({level:LEVEL, music:AUD.music, voice:AUD.voice, voicename:lsGet('pc_voicename',''), gauto:GC.auto}),
           set:v=>{ if(!v) return; if(v.level&&v.level!==LEVEL){ CLOUD.applying=true; setLevel(v.level); CLOUD.applying=false; } if(typeof v.music==='boolean'){ AUD.music=v.music; lsSet('pc_music',v.music?'1':'0'); } if(typeof v.voice==='boolean'){ AUD.voice=v.voice; lsSet('pc_voice',v.voice?'1':'0'); } if(v.voicename) lsSet('pc_voicename',v.voicename); if(typeof v.gauto==='boolean'){ GC.auto=v.gauto; lsSet('pc_gauto',v.gauto?'1':'0'); } } },
   realclips:{ get:()=>{ const k={}; Object.entries(REAL).forEach(([i,v])=>{ if(v&&v.id) k[i]=v; }); return k; }, set:v=>{ if(v&&typeof v==='object'){ Object.keys(REAL).forEach(i=>{ if(REAL[i]&&REAL[i].id&&!v[i]) delete REAL[i]; }); Object.assign(REAL,v); try{ localStorage.setItem('pc_realclips',JSON.stringify(v)); }catch(e){} } } },
-  myfiles:{ get:()=>MYF.filter(x=>x.type!=='video'||x.assetId||x.shared), set:v=>{ if(Array.isArray(v)){ const local=MYF.filter(x=>x.type==='video'&&!x.assetId&&!x.shared); MYF=local.concat(v); try{ localStorage.setItem('pc_myfiles',JSON.stringify(MYF)); }catch(e){} updateFilesBtn(); if(document.getElementById('nav-files')&&document.getElementById('nav-files').classList.contains('on')) myFilesView(); } } },
+  myfiles:{ get:()=>MYF.filter(x=>!MF_FILE(x)||x.assetId||x.shared), set:v=>{ if(Array.isArray(v)){ const local=MYF.filter(x=>MF_FILE(x)&&!x.assetId&&!x.shared); MYF=local.concat(v); try{ localStorage.setItem('pc_myfiles',JSON.stringify(MYF)); }catch(e){} updateFilesBtn(); if(document.getElementById('nav-files')&&document.getElementById('nav-files').classList.contains('on')) myFilesView(); } } },
   enhancer:{ get:()=>ENH.hist.slice(0,15), set:v=>{ if(Array.isArray(v)){ ENH.hist=v; try{ localStorage.setItem('pc_enh_hist',JSON.stringify(v)); }catch(e){} } } },
   scores:{ get:()=>{ const o={}; ['match','sort','scramble','build','recall'].forEach(g=>{ const b=store('best_'+g); if(b) o[g]=b; }); return o; },
            set:v=>{ if(!v) return; Object.entries(v).forEach(([g,b])=>{ const cur=store('best_'+g)||0; if(b>cur) store('best_'+g,b); }); } }
