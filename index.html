@@ -180,6 +180,16 @@
 .ccsec{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--bg);border:2px solid var(--line)}
 .ccsec h4{margin:0 0 4px;font-family:Fredoka;font-size:16px}.ccsec p{margin:0;line-height:1.55}.ccsec .steps{margin:2px 0 0}
 .docchip{display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px;background:var(--bg);border:2px solid var(--line)}
+.msbrief{margin-top:8px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--T) 10%,var(--card));border:2px solid color-mix(in srgb,var(--T) 45%,var(--line));font-size:14.5px;line-height:1.5}
+.msteps,.msres{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.msres{justify-content:center;margin:14px 0}
+.mstep{font:inherit;font-size:13px;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.mstep.on{border-color:var(--ink);font-weight:700}.mstep.done{border-color:color-mix(in srgb,var(--F) 60%,var(--line))}.mstep small{color:var(--muted)}
+.msn{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--bg);font-size:11px;font-weight:800}.mstep.done .msn{background:var(--F);color:#fff}
+.mshint{margin-top:8px;padding:8px 12px;border-radius:12px;background:var(--bg);border:2px solid var(--line)}.mshint summary{cursor:pointer;font-weight:700}
+.mslive{margin-top:8px;padding:10px 12px;border-radius:12px;border:2px dashed var(--line)}
+.mschecks{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 6px}.mscheck{font-size:12.5px;padding:3px 9px;border-radius:999px;background:var(--bg);border:1px solid var(--line)}.mscheck.ok{background:color-mix(in srgb,var(--F) 14%,var(--card));border-color:color-mix(in srgb,var(--F) 50%,var(--line))}
+.msfb{margin-top:12px;padding:12px 14px;border-radius:14px;border:2px solid color-mix(in srgb,var(--A) 45%,var(--line));background:color-mix(in srgb,var(--A) 6%,var(--card))}
+.mslock{border:2px dashed var(--line)}
 .dlbox{border:2px solid color-mix(in srgb,var(--A) 45%,var(--line));background:color-mix(in srgb,var(--A) 6%,var(--card))}
 .realbox{margin-top:12px;padding:12px;border-radius:14px;background:rgba(46,160,67,.08);border:1.5px solid rgba(46,160,67,.35);text-align:left}
 #clipVid{width:100%;aspect-ratio:9/16;object-fit:cover;background:#000;border-radius:18px}
@@ -505,9 +515,189 @@ function home(){
   document.querySelectorAll('[data-clip]').forEach(li=>{ if(LEVEL==='adv'){ const w=li.querySelector('.watch'); if(w) w.textContent=REAL[li.dataset.clip]?'🎬 Watch real clip':'▶ Watch clip · 🌳 make it real'; } li.onclick=()=>openClip(+li.dataset.clip); li.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openClip(+li.dataset.clip); } }; });
   window.scrollTo(0,0);
 }
+/* ---------- 🌳 Pro Missions: multi-step real-world projects, coached and graded ---------- */
+const MISSIONS=[
+ {id:'campaign',em:'📣',n:'Launch a full marketing campaign',d:'A protein-shake brand is launching a new flavor. Build the whole campaign: strategy, budget spreadsheet, Google Ads, social calendar, pitch deck and tracking.',time:'45–60 min',
+  brief:'You’re the marketing lead for a small protein-shake brand launching a Chocolate Peanut Butter flavor. Budget: $5,000 for 6 weeks. Audience: busy parents 28–45 in Southern California. Goal: 400 online orders.',
+  steps:[
+   {t:'Campaign strategy brief',g:'Get Claude to write a one-page campaign strategy.',hint:'Give Claude the full brief (product, audience, budget, timeline, goal) and ask for positioning, key message, channels and a week-by-week plan.',
+    req:[['Audience described','parent|audience|28|45|mom|dad'],['Budget stated','\\$\\s?5,?000|5k|budget'],['Timeline (6 weeks)','6.?week|six.?week|timeline|week.by.week'],['Measurable goal','400|orders|goal|kpi|target'],['Channels requested','channel|instagram|google|tiktok|email|facebook']]},
+   {t:'Budget spreadsheet',g:'Get a budget spreadsheet that splits the $5,000 across channels and weeks.',hint:'Ask for exact columns, totals and formulas — and say the output should paste into Google Sheets or Excel.',
+    req:[['Total budget','\\$\\s?5,?000|5k|total'],['Columns named','column|rows?\\b|header'],['Totals or formulas','formula|sum|total|subtotal'],['Spreadsheet format','spreadsheet|sheet|excel|csv|table'],['Split by channel or week','channel|week|category|line item']]},
+   {t:'Google Ads campaign',g:'Get a ready-to-build Google Ads search campaign.',hint:'Ask for ad groups, keywords (with match types), negative keywords, 3 headlines and 2 descriptions per group within Google’s character limits, plus daily budget and bidding.',
+    req:[['Ad groups','ad group'],['Keywords + match types','keyword|match type|phrase|exact'],['Negative keywords','negative'],['Headlines/descriptions','headline|description'],['Character limits','30|90|character'],['Location targeting','location|southern california|radius|geo|zip']]},
+   {t:'Social media content calendar',g:'Get a 6-week posting calendar for Instagram and TikTok.',hint:'Ask for a table with date, platform, post type, hook, caption, hashtags and call to action.',
+    req:[['Platforms','instagram|tiktok|facebook|reels'],['Calendar / dates','calendar|date|day|week'],['Table format','table|columns?'],['Hooks or captions','hook|caption'],['Call to action','call to action|cta|link in bio|order']]},
+   {t:'Pitch presentation',g:'Get a slide-by-slide presentation to pitch the campaign to the owner.',hint:'Say how many slides, what each must cover, speaker notes, and the audience (the business owner).',
+    req:[['Slide count','\\d+\\s*slides?|slide.by.slide'],['Slide contents','title|agenda|budget|timeline|results'],['Speaker notes','speaker notes|talking points|notes'],['Audience of deck','owner|stakeholder|boss|ceo|investor|team'],['Visual direction','chart|visual|image|design|layout']]},
+   {t:'Results tracking',g:'Get a KPI tracking sheet and a weekly report template.',hint:'Name the metrics (CTR, cost per order, ROAS…), targets, and how the weekly report should read.',
+    req:[['Metrics named','ctr|cpc|cpa|roas|conversion|cost per|click'],['Targets','target|goal|benchmark'],['Weekly cadence','weekly|each week|every week'],['Template/table','template|table|sheet|columns?'],['Next actions','recommend|action|optimi[sz]e|adjust|next step']]},
+  ]},
+ {id:'listing',em:'🏡',n:'Real estate listing launch',d:'Launch a $1.2M listing: description, video plan, social posts, open-house email and a one-page flyer.',time:'35–45 min',
+  brief:'You’re helping an agent launch a 4-bed, 3-bath, 2,600 sq ft modern farmhouse in Temecula, CA listed at $1,200,000. Highlights: vineyard views, chef’s kitchen, pool, solar. Open house: Saturday 1–4 pm.',
+  steps:[
+   {t:'MLS listing description',g:'Get a compelling, fair-housing-safe listing description.',hint:'Include all property facts, a word limit, the buyer you’re writing for, and ask Claude to avoid fair-housing violations.',
+    req:[['Property facts','4.?bed|bedroom|bath|sq|2,?600'],['Price/location','1,?200,?000|\\$1\\.2|temecula'],['Highlights','vineyard|kitchen|pool|solar'],['Word/character limit','\\d+\\s*(words|characters)'],['Fair housing','fair.housing|compliant|discriminat']]},
+   {t:'Photo-to-video plan',g:'Get a shot-by-shot plan to turn listing photos into a cinematic video.',hint:'Name each room shot, camera move, clip length, transitions, music mood and aspect ratio.',
+    req:[['Shot list','shot|clip|scene'],['Camera movement','push|pan|dolly|orbit|drone|camera'],['Clip length','second|duration|length'],['Aspect ratio','9:16|16:9|vertical|aspect'],['Music/mood','music|mood|tone|cinematic']]},
+   {t:'Social posts',g:'Get 5 posts for Instagram, Facebook and TikTok.',hint:'Ask for platform-specific captions, hooks, hashtags and a clear call to action to the open house.',
+    req:[['Number of posts','\\b(3|4|5|6|7|five|three)\\b'],['Platforms','instagram|facebook|tiktok'],['Hooks','hook|first line|attention'],['Hashtags','hashtag|#'],['Open house CTA','open house|saturday|rsvp|call to action|cta']]},
+   {t:'Open house email',g:'Get an invitation email to the agent’s past clients and leads.',hint:'Give the subject line count you want, the date/time, and tone; ask for a P.S. and RSVP link placeholder.',
+    req:[['Subject line','subject'],['Date and time','saturday|1.?(–|-|to)\\s?4|pm|time'],['Who receives it','past client|leads|sphere|list|subscribers'],['RSVP/CTA','rsvp|register|reply|call to action|cta'],['Tone','tone|warm|friendly|professional|excited']]},
+   {t:'One-page flyer',g:'Get the copy and layout for a printable flyer.',hint:'Ask for headline, sections, bullet highlights, agent contact block, QR code placement and print size.',
+    req:[['Headline','headline|title'],['Layout/sections','layout|section|column|top|bottom'],['Highlights as bullets','bullet|highlights|features'],['Contact info','contact|phone|agent|[NAME]'],['Print size','8\\.5|letter|a4|print|size']]},
+  ]},
+ {id:'leadgen',em:'📞',n:'Win a local business client',d:'Find, pitch and sign a local business that has no online presence: audit, cold-call script, follow-up emails, proposal and CRM sheet.',time:'40–50 min',
+  brief:'You run a small lead-generation agency. Target: a family-owned taco shop in Riverside with 4.6★ word-of-mouth but no website, no Google Business Profile and an inactive Instagram.',
+  steps:[
+   {t:'Online presence audit',g:'Get an audit of what the business is missing and what it costs them.',hint:'Describe the business and ask for a gap list, quick wins, and an estimate of missed customers.',
+    req:[['Business described','taco|restaurant|shop|riverside'],['Gaps to check','website|google business|profile|reviews|instagram|seo'],['Quick wins','quick win|first step|priority|easy'],['Impact/estimate','missed|lost|revenue|customers|estimate'],['Format','table|bullet|list|score|checklist']]},
+   {t:'Cold-call script',g:'Get a friendly cold-call script with objection handling.',hint:'Ask for an opener under 15 seconds, discovery questions, 3–5 common objections with replies, and a close for a short meeting.',
+    req:[['Opener','opener|intro|opening'],['Questions','question|discovery|ask'],['Objections','objection|not interested|no time|too expensive|already'],['Close/next step','close|meeting|appointment|next step|book'],['Tone','tone|friendly|not pushy|casual|respectful']]},
+   {t:'Follow-up email sequence',g:'Get a 3-email follow-up sequence after the call.',hint:'Specify spacing (days), subject lines, length, and the goal of each email.',
+    req:[['Number of emails','\\b(3|three)\\b|sequence|series'],['Timing','day|week|after|spacing|follow.up'],['Subject lines','subject'],['Length limit','\\d+\\s*words|short|under'],['Goal per email','goal|purpose|cta|call to action']]},
+   {t:'Proposal with pricing',g:'Get a one-page proposal with three pricing packages.',hint:'Ask for packages (good/better/best), deliverables, timeline, monthly price, and what results to expect.',
+    req:[['Packages/tiers','package|tier|option|good|better|best|basic|premium'],['Prices','\\$|price|pricing|monthly|per month'],['Deliverables','deliverable|includes|website|profile|posts'],['Timeline','timeline|week|days|launch'],['Format/length','one.page|page|table|sections']]},
+   {t:'CRM tracking sheet',g:'Get a simple CRM spreadsheet to track this and future leads.',hint:'Name the columns (status, last contact, next step, value…), dropdown options and any formulas.',
+    req:[['Columns','column|field|header'],['Status stages','status|stage|pipeline|new|contacted|won|lost'],['Follow-up dates','date|follow.up|next contact|reminder'],['Spreadsheet format','spreadsheet|sheet|excel|csv|table'],['Formulas/dropdowns','formula|dropdown|validation|count|sum']]},
+  ]},
+ {id:'retreat',em:'🏕️',n:'Plan a team retreat',d:'A fun one: plan a 2-day team retreat with agenda, budget, invite, team games and a backup plan.',time:'30–40 min',
+  brief:'Plan a 2-day retreat for a 12-person sales team near Lake Arrowhead in May. Budget: $6,000 total. Goals: reconnect, plan Q3, and have fun. Two people are vegetarian; one uses a wheelchair.',
+  steps:[
+   {t:'Agenda',g:'Get an hour-by-hour agenda for both days.',hint:'Include goals, group size, location, meals, work sessions vs. fun, and accessibility needs.',
+    req:[['Two days','2.?day|two.?day|day 1|day 2'],['Hour-by-hour','hour|schedule|time|am|pm'],['Goals','goal|q3|plan|reconnect'],['Accessibility','wheelchair|accessib'],['Group size','12|twelve|team']]},
+   {t:'Budget spreadsheet',g:'Get a budget that stays under $6,000.',hint:'Ask for categories (lodging, food, transport, activities, buffer), per-person cost, and totals.',
+    req:[['Total cap','\\$\\s?6,?000|6k|under|budget'],['Categories','lodging|food|transport|activit|venue'],['Per-person','per.person|each person|per head'],['Buffer/contingency','buffer|contingency|extra|misc'],['Table format','table|spreadsheet|sheet|columns?']]},
+   {t:'Invitation message',g:'Get an exciting invite for the team.',hint:'Give date, location, what to bring, RSVP deadline and dietary question; set the tone.',
+    req:[['Date/location','may|lake arrowhead|date|location'],['What to bring','bring|pack|packing'],['RSVP','rsvp|reply|deadline'],['Dietary question','diet|vegetarian|allerg|food'],['Tone','tone|fun|excit|upbeat|friendly']]},
+   {t:'Team-building games',g:'Get 5 inclusive team games.',hint:'Ask for name, rules, time needed, materials, and how each one is wheelchair-friendly.',
+    req:[['Number of games','\\b(3|4|5|five)\\b'],['Rules/steps','rule|how to|step|instruction'],['Time/materials','minute|time|material|supplies'],['Inclusive','inclusive|wheelchair|accessib|everyone'],['Purpose','purpose|goal|trust|communication|fun']]},
+   {t:'Backup plan',g:'Get a rain/emergency plan.',hint:'Ask for indoor alternatives, cancellation policy questions, emergency contacts and a checklist.',
+    req:[['Weather alternative','rain|weather|indoor'],['Emergencies','emergency|first aid|medical|contact'],['Checklist','checklist|list|steps'],['Cancellation','cancel|refund|policy'],['Format','table|bullet|list']]},
+  ]},
+ {id:'crisis',em:'🔥',n:'Handle a viral complaint',d:'A customer’s angry video is going viral. Respond fast: public reply, internal plan, FAQ, and a follow-up post.',time:'25–35 min',
+  brief:'A customer posted a TikTok (180k views) saying your supplement shipment arrived late and the tub was damaged, and support ignored them for a week. Comments are piling up. You’re the account manager.',
+  steps:[
+   {t:'Public reply',g:'Get a short, sincere public reply for the comments.',hint:'Ask for empathy, ownership without legal admissions, a fix, and a way to continue privately — with a character limit.',
+    req:[['Empathy/apology','sorry|apolog|empath|understand'],['Fix offered','refund|replace|make it right|fix|resolve'],['Move to private','dm|message|email|private|reach out'],['Length limit','\\d+\\s*(characters|words)|short'],['Tone','tone|sincere|calm|human|not defensive']]},
+   {t:'Internal action plan',g:'Get a 48-hour action plan for the team.',hint:'Ask for owners, deadlines, steps for support and shipping, and what to monitor.',
+    req:[['Timeline','48|hour|today|tomorrow|deadline'],['Owners/roles','owner|who|team|responsible|role'],['Steps','step|action|task'],['Root cause','cause|why|investigat|shipping|support'],['Monitoring','monitor|track|watch|metric']]},
+   {t:'Customer FAQ',g:'Get an FAQ for support to answer other customers.',hint:'Ask for 6–8 likely questions with short, consistent answers and escalation rules.',
+    req:[['FAQ format','faq|question'],['Number','\\b(5|6|7|8|ten|10)\\b'],['Consistent answers','answer|reply|script'],['Escalation','escalat|manager|when to'],['Tone','tone|friendly|clear|calm']]},
+   {t:'Follow-up post',g:'Get a follow-up video script showing how you fixed it.',hint:'Ask for a 30-second script, what changed, the customer’s permission, and a positive close.',
+    req:[['Length','30.?second|seconds|short'],['What changed','change|improve|fix|new'],['Permission','permission|consent|ok with'],['Script format','script|scene|shot|voiceover'],['Tone','tone|honest|warm|grateful']]},
+  ]},
+];
+const MS=(()=>{ try{ return JSON.parse(localStorage.getItem('pc_missions'))||{}; }catch(e){ return {}; } })();
+function msSave(){ try{ localStorage.setItem('pc_missions',JSON.stringify(MS)); }catch(e){} if(typeof cloudMark==='function') cloudMark('missions'); }
+function msState(id){ if(!MS[id]) MS[id]={steps:{},best:0}; return MS[id]; }
+function msLocalScore(step,txt,res){
+  const t=txt||''; const c=enhCheck(t); const craftN=Object.values(c).filter(Boolean).length;
+  const hits=step.req.map(r=>new RegExp(r[1],'i').test(t)); const reqN=hits.filter(Boolean).length;
+  const detail=Math.min(1,t.trim().length/450);
+  let s=Math.round(craftN/5*40 + reqN/step.req.length*50 + detail*10);
+  if(res&&res.trim().length>200) s=Math.min(100,s+5);
+  return {score:t.trim()?s:0,c,hits,craftN,reqN};
+}
+function msStepScore(st){ if(!st||!st.p||!st.p.trim()) return 0; return st.ai!=null?Math.round((st.local+st.ai)/2):st.local; }
+function msTotal(m){ const S=msState(m.id); const scores=m.steps.map((_,i)=>msStepScore(S.steps[i])); return Math.round(scores.reduce((a,b)=>a+b,0)/m.steps.length); }
+function msGrade(p){ return p>=93?'A+':p>=85?'A':p>=78?'B+':p>=70?'B':p>=60?'C':p>=50?'D':'F'; }
+function missionsCardHTML(){
+  if(LEVEL!=='adv') return `<div class="card pop mslock"><h2 style="margin:0">🔒 Pro Missions</h2><p class="muted" style="margin:6px 0 10px">Real-world projects — like a complete marketing campaign with a budget spreadsheet, Google Ads and a presentation — coached step by step and graded on completeness. Made for the 🌳 <b>I got this</b> level.</p><button class="btn" onclick="setLevel('adv')">🌳 Switch to “I got this” to unlock</button></div>`;
+  return `<div class="card pop"><h1 style="margin:0">🌳 Pro Missions</h1><p class="muted" style="margin:6px 0 0">Real projects, step by step. For each step you write the prompt you’d give Claude. Your coach checks it live, gives hints, and grades you on completeness. Finish every step to earn your mission grade.</p></div>
+    <div class="games">${MISSIONS.map(m=>{ const S=MS[m.id], done=S?m.steps.filter((_,i)=>S.steps[i]&&S.steps[i].p&&S.steps[i].p.trim()).length:0; return `<button class="gbtn pop" onclick="missionView('${m.id}')"><span class="em">${m.em}</span><span class="n">${m.n}</span><span class="muted">${m.d}</span><div class="muted" style="font-size:12px;margin-top:6px">⏱️ ${m.time} · ${m.steps.length} steps</div>${done?`<div class="best">${done}/${m.steps.length} steps · ${S.best?`best grade ${msGrade(S.best)} (${S.best}%)`:'in progress'}</div>`:''}</button>`; }).join('')}</div>`;
+}
+function missionView(id,stepIdx){
+  const m=MISSIONS.find(x=>x.id===id); if(!m) return gamesView(); setNav('games'); window._rerender=()=>missionView(id,MSV.i);
+  const S=msState(id); MSV.id=id; MSV.i=stepIdx!=null?stepIdx:(m.steps.findIndex((_,i)=>!(S.steps[i]&&S.steps[i].p&&S.steps[i].p.trim()))+1||1)-1; if(MSV.i<0) MSV.i=0;
+  const i=MSV.i, step=m.steps[i], st=S.steps[i]||(S.steps[i]={p:'',r:'',local:0,ai:null,fb:null});
+  const total=msTotal(m);
+  $('#app').innerHTML=`
+    <div class="card pop">
+      <button class="xbtn" onclick="gamesView()">← All games</button>
+      <h1 style="margin:8px 0 4px">${m.em} ${esc(m.n)}</h1>
+      <div class="msbrief"><b>📋 The brief:</b> ${esc(m.brief)}</div>
+      <div class="msteps">${m.steps.map((s,k)=>{ const sc=msStepScore(S.steps[k]); return `<button class="mstep ${k===i?'on':''} ${sc?'done':''}" data-ms="${k}"><span class="msn">${sc?'✓':k+1}</span><span>${esc(s.t)}</span>${sc?`<small>${sc}%</small>`:''}</button>`; }).join('')}</div>
+      <div class="muted" id="msProg" style="font-size:13px;margin-top:8px">Mission progress: <b>${total}%</b> · grade so far <b>${msGrade(total)}</b></div>
+    </div>
+    <div class="card">
+      <div class="top"><h2 style="margin:0">Step ${i+1} of ${m.steps.length}: ${esc(step.t)}</h2><span class="badge">Goal</span></div>
+      <p style="margin:6px 0 10px">${esc(step.g)}</p>
+      <details class="mshint"><summary>🧭 Coach hint</summary><p style="margin:6px 0 0">${esc(step.hint)}</p></details>
+      <label class="fld" style="margin-top:10px"><span>✍️ Your prompt for Claude</span><textarea id="msP" class="enhout" rows="10" placeholder="Write the full prompt you would give Claude for this step. Use CRAFT: Context, Role, Action, Format, Tone.">${esc(st.p)}</textarea></label>
+      <div id="msLive"></div>
+      <details class="mshint" ${st.r?'open':''}><summary>📦 Optional: paste what Claude gave you</summary><p class="muted" style="font-size:13px;margin:6px 0">Run your prompt in Claude (<a href="https://claude.ai/new" target="_blank" rel="noopener">open Claude ↗</a>), then paste the result here. It earns a small bonus, and the AI grader checks whether the result is complete too.</p><textarea id="msR" class="enhout" rows="6">${esc(st.r)}</textarea></details>
+      <div class="actions">
+        <button class="btn" id="msGrade">🎯 Grade this step</button>
+        <button class="btn ghost" id="msCopy">📋 Copy my prompt</button>
+        ${i>0?`<button class="btn ghost" id="msPrev">← Previous step</button>`:''}
+        ${i<m.steps.length-1?`<button class="btn ghost" id="msNext">Next step →</button>`:`<button class="btn ghost" id="msFinish">🏁 Finish mission</button>`}
+      </div>
+      <div id="msFb">${st.fb?msFbHTML(st):''}</div>
+    </div>`;
+  document.querySelectorAll('[data-ms]').forEach(b=>b.onclick=()=>{ msStore(); missionView(id,+b.dataset.ms); });
+  const pi=$('#msP'), ri=$('#msR');
+  const live=()=>{ const L=msLocalScore(step,pi.value,ri.value);
+    $('#msLive').innerHTML=`<div class="mslive"><div class="escore-row">${CRAFT.map(x=>`<span class="echip ${L.c[x.L]?'ok':''}" style="--c:${COLOR[x.L]}" title="${x.w}">${x.L}</span>`).join('')}<span class="muted" style="font-size:12px;margin-left:6px">CRAFT ${L.craftN}/5</span></div>
+      <div class="mschecks">${step.req.map((r,k)=>`<span class="mscheck ${L.hits[k]?'ok':''}">${L.hits[k]?'✅':'⬜'} ${esc(r[0])}</span>`).join('')}</div>
+      <div class="muted" style="font-size:12px">Live score: <b>${L.score}%</b> — the checklist fills in as your prompt covers each must-have.</div></div>`; };
+  pi.oninput=()=>{ live(); }; ri.oninput=live; live();
+  const msStore=()=>{ st.p=pi.value; st.r=ri.value; const L=msLocalScore(step,st.p,st.r); st.local=L.score; msSave(); };
+  window._msStore=msStore;
+  $('#msCopy').onclick=async()=>{ (await copyText(pi.value))?toast('✅ Copied — paste it into Claude'):showCopyBox(pi.value); };
+  if($('#msPrev')) $('#msPrev').onclick=()=>{ msStore(); missionView(id,i-1); };
+  if($('#msNext')) $('#msNext').onclick=()=>{ msStore(); missionView(id,i+1); };
+  if($('#msFinish')) $('#msFinish').onclick=()=>{ msStore(); missionResults(id); };
+  $('#msGrade').onclick=async()=>{
+    msStore(); if(!st.p.trim()){ toast('Write your prompt first'); return; }
+    const L=msLocalScore(step,st.p,st.r);
+    st.fb={missing:step.req.filter((_,k)=>!L.hits[k]).map(r=>r[0]).concat(CRAFT.filter(x=>!L.c[x.L]).map(x=>`CRAFT: add ${x.w}`)),good:step.req.filter((_,k)=>L.hits[k]).map(r=>r[0]),note:''}; st.ai=null;
+    $('#msFb').innerHTML=msFbHTML(st,true); msSave();
+    const sample=await getSample(); if(!sample){ $('#msFb').innerHTML=msFbHTML(st); updateTop(); return; }
+    try{
+      const r=await sample.json(`You are a strict but encouraging marketing/operations coach grading a student's PROMPT (the instructions they would give an AI assistant), and optionally the AI's RESULT.
+Mission brief: ${m.brief}
+This step: ${step.t} — ${step.g}
+Must-haves for a complete prompt: ${step.req.map(r=>r[0]).join('; ')}; plus CRAFT (Context, Role, Action, Format, Tone).
+STUDENT PROMPT:\n"""${st.p.slice(0,6000)}"""
+${st.r&&st.r.trim()?`AI RESULT THEY GOT:\n"""${st.r.slice(0,6000)}"""`:'(no result pasted)'}
+Grade completeness and quality 0-100. Return JSON: {"score":number,"strengths":["..."],"missing":["specific things to add"],"tip":"one coaching tip","better_line":"one sentence they could add to improve the prompt most"}`,{cache:false});
+      if(r&&typeof r.score==='number'){ st.ai=Math.max(0,Math.min(100,Math.round(r.score))); st.fb={missing:(r.missing||[]).slice(0,6),good:(r.strengths||[]).slice(0,5),note:r.tip||'',better:r.better_line||''}; msSave(); }
+    }catch(e){}
+    $('#msFb').innerHTML=msFbHTML(st); updateTop();
+  };
+  const updateTop=()=>{ msStore(); const sc=msStepScore(st); const b=document.querySelector(`[data-ms="${i}"]`); if(b){ b.classList.add('done'); b.querySelector('.msn').textContent='✓'; let s=b.querySelector('small'); if(!s){ s=document.createElement('small'); b.appendChild(s); } s.textContent=sc+'%'; } const t=msTotal(m), pr=document.getElementById('msProg'); if(pr) pr.innerHTML=`Mission progress: <b>${t}%</b> · grade so far <b>${msGrade(t)}</b>`; };
+  window.scrollTo(0,0);
+}
+const MSV={id:null,i:0};
+function msFbHTML(st,loading){
+  const sc=msStepScore(st);
+  return `<div class="msfb"><div class="top"><h3 style="margin:0">🎯 Step grade: ${sc}% <span class="badge">${msGrade(sc)}</span></h3>${st.ai!=null?'<span class="muted" style="font-size:12px">checklist + Claude coach</span>':'<span class="muted" style="font-size:12px">checklist grade</span>'}</div>
+    ${loading?'<p class="muted">⏳ Your coach is reading your prompt…</p>':''}
+    ${st.fb.good&&st.fb.good.length?`<p style="margin:8px 0 2px"><b>✅ Strong:</b></p><ul class="steps" style="margin:0">${st.fb.good.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:''}
+    ${st.fb.missing&&st.fb.missing.length?`<p style="margin:8px 0 2px"><b>➕ Add this to make it complete:</b></p><ul class="steps" style="margin:0">${st.fb.missing.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'<p class="fb good" style="margin-top:8px">🏆 Complete — nothing missing!</p>'}
+    ${st.fb.better?`<div class="quote" style="margin-top:8px"><b>💡 Try adding:</b> ${esc(st.fb.better)}</div>`:''}
+    ${st.fb.note?`<p class="muted" style="margin:8px 0 0">🧭 ${esc(st.fb.note)}</p>`:''}
+    <p class="muted" style="font-size:12px;margin:8px 0 0">Improve your prompt and click 🎯 Grade again — your best work counts.</p></div>`;
+}
+function missionResults(id){
+  const m=MISSIONS.find(x=>x.id===id), S=msState(id); const total=msTotal(m); const done=m.steps.filter((_,i)=>msStepScore(S.steps[i])>0).length;
+  if(total>(S.best||0)){ S.best=total; msSave(); }
+  const text=[`PRO MISSION: ${m.n}`,`Grade: ${msGrade(total)} (${total}%)`,'',`BRIEF: ${m.brief}`,''].concat(m.steps.map((s,i)=>{ const st=S.steps[i]||{}; return `== STEP ${i+1}: ${s.t} (${msStepScore(st)}%) ==\n${st.p||'(not done)'}${st.r?`\n\n-- Result from Claude --\n${st.r}`:''}\n`; })).join('\n');
+  $('#app').innerHTML=`<div class="card pop" style="text-align:center">
+      <div style="font-size:54px">${total>=85?'🏆':total>=70?'🌟':total>=50?'👍':'🌱'}</div>
+      <h1 style="margin:4px 0">${esc(m.n)}</h1>
+      <div class="big">${msGrade(total)}</div><p class="muted">${total}% · ${done} of ${m.steps.length} steps complete${S.best&&S.best>total?` · your best: ${S.best}%`:''}</p>
+      ${done<m.steps.length?`<p class="warnnote">⚠️ ${m.steps.length-done} step${m.steps.length-done>1?'s count':' counts'} as 0 until you finish ${m.steps.length-done>1?'them':'it'} — completeness matters!</p>`:''}
+      <div class="msres">${m.steps.map((s,i)=>{ const sc=msStepScore(S.steps[i]); return `<button class="mstep ${sc?'done':''}" onclick="missionView('${id}',${i})"><span class="msn">${sc?'✓':i+1}</span><span>${esc(s.t)}</span><small>${sc}% ${msGrade(sc)}</small></button>`; }).join('')}</div>
+      <div class="actions" style="justify-content:center"><button class="btn" id="msSv">💾 Save my mission to My Files</button><button class="btn ghost" onclick="missionView('${id}',0)">✏️ Improve my answers</button><button class="btn ghost" onclick="gamesView()">🎮 More missions</button></div></div>`;
+  $('#msSv').onclick=()=>saveToFiles({type:'plan',title:`Mission: ${m.n} — ${msGrade(total)}`,text,src:'Pro Missions'});
+  window.scrollTo(0,0);
+}
+
 function gamesView(){
   setNav('games'); window._rerender=gamesView;
-  $('#app').innerHTML = `
+  $('#app').innerHTML = (LEVEL==='adv'?missionsCardHTML()+'<div style="height:14px"></div>':'')+`
     <div class="card pop">
       <h1>🎮 Pick a game</h1>
       <p class="muted" style="margin:0">Play them in order — each one gets a little harder. Your best score is saved for each game.</p>
@@ -515,7 +705,8 @@ function gamesView(){
     </div>
     <div class="games">
       ${GAMES.map(g=>{const b=store('best_'+g.id); return `<button class="gbtn pop" onclick="start('${g.id}')"><span class="em">${g.em}</span><span class="n">${g.n}</span><span class="muted">${g.d}</span>${b?`<div class="best">Your best: ${b}%</div>`:''}</button>`}).join('')}
-    </div>`;
+    </div>
+    ${LEVEL==='adv'?'':'<div style="height:12px"></div>'+missionsCardHTML()}`;
   window.scrollTo(0,0);
 }
 function start(id){ setNav('games'); ({match:matchGame,sort:sortGame,scramble:scrambleGame,build:buildGame,recall:recallGame})[id](); window.scrollTo(0,0); }
@@ -3795,6 +3986,7 @@ const CLOUD_KEYS={
           set:v=>{ if(!v) return; if(v.level&&v.level!==LEVEL){ CLOUD.applying=true; setLevel(v.level); CLOUD.applying=false; } if(typeof v.music==='boolean'){ AUD.music=v.music; lsSet('pc_music',v.music?'1':'0'); } if(typeof v.voice==='boolean'){ AUD.voice=v.voice; lsSet('pc_voice',v.voice?'1':'0'); } if(v.voicename) lsSet('pc_voicename',v.voicename); if(typeof v.gauto==='boolean'){ GC.auto=v.gauto; lsSet('pc_gauto',v.gauto?'1':'0'); } } },
   realclips:{ get:()=>{ const k={}; Object.entries(REAL).forEach(([i,v])=>{ if(v&&v.id) k[i]=v; }); return k; }, set:v=>{ if(v&&typeof v==='object'){ Object.keys(REAL).forEach(i=>{ if(REAL[i]&&REAL[i].id&&!v[i]) delete REAL[i]; }); Object.assign(REAL,v); try{ localStorage.setItem('pc_realclips',JSON.stringify(v)); }catch(e){} } } },
   myfiles:{ get:()=>MYF.filter(x=>!MF_FILE(x)||x.assetId||x.shared), set:v=>{ if(Array.isArray(v)){ const local=MYF.filter(x=>MF_FILE(x)&&!x.assetId&&!x.shared); MYF=local.concat(v); try{ localStorage.setItem('pc_myfiles',JSON.stringify(MYF)); }catch(e){} updateFilesBtn(); if(document.getElementById('nav-files')&&document.getElementById('nav-files').classList.contains('on')) myFilesView(); } } },
+  missions:{ get:()=>MS, set:v=>{ if(v&&typeof v==='object'){ Object.keys(MS).forEach(k=>delete MS[k]); Object.assign(MS,v); try{ localStorage.setItem('pc_missions',JSON.stringify(MS)); }catch(e){} } } },
   enhancer:{ get:()=>ENH.hist.slice(0,15), set:v=>{ if(Array.isArray(v)){ ENH.hist=v; try{ localStorage.setItem('pc_enh_hist',JSON.stringify(v)); }catch(e){} } } },
   scores:{ get:()=>{ const o={}; ['match','sort','scramble','build','recall'].forEach(g=>{ const b=store('best_'+g); if(b) o[g]=b; }); return o; },
            set:v=>{ if(!v) return; Object.entries(v).forEach(([g,b])=>{ const cur=store('best_'+g)||0; if(b>cur) store('best_'+g,b); }); } }
@@ -3889,7 +4081,7 @@ saveBest=function(g,pct){ const b=store('best_'+g)||0; _saveBest0(g,pct); if(pct
 setLevel=function(l){ _setLevel0(l); if(!CLOUD.applying) cloudMark('prefs'); };
 document.getElementById('lvlTop').innerHTML=levelSwitch(); updateMeBtn(); drawCloudBadge(); initCloud();
 updateFilesBtn();
-if(location.hash==='#claudecode'){ home(); openClaudeCode(); } else if(location.hash==='#files') myFilesView(); else if(location.hash==='#enhancer') enhancerView(); else if(location.hash==='#detective') videoDetectiveView(); else if(location.hash==='#tools') toolsView(); else if(location.hash==='#planner') plannerView(); else if(location.hash==='#studio'||location.hash==='#realestate') studioView(); else if(location.hash==='#library') libraryView(); else if(location.hash==='#games') gamesView(); else home();
+if(location.hash==='#missions'){ gamesView(); } else if(location.hash==='#claudecode'){ home(); openClaudeCode(); } else if(location.hash==='#files') myFilesView(); else if(location.hash==='#enhancer') enhancerView(); else if(location.hash==='#detective') videoDetectiveView(); else if(location.hash==='#tools') toolsView(); else if(location.hash==='#planner') plannerView(); else if(location.hash==='#studio'||location.hash==='#realestate') studioView(); else if(location.hash==='#library') libraryView(); else if(location.hash==='#games') gamesView(); else home();
 </script>
 </body>
 </html>

@@ -19,3 +19,4 @@ Open `index.html` in any web browser. Everything runs in a single file — no in
 
 - **💾 My Files** — save prompts, video plans, video breakdowns, how-to guides, photos, documents and your own videos to a personal folder; edit, search, copy, download (single files or everything as a .zip) and sync them to your Claude account.
 - **⌨️ Claude Code cheat sheet** — button in the toolbar with 300+ Claude Code commands, terminal commands, flags and keyboard shortcuts; search, copy, save or download.
+- **🌳 Pro Missions** — advanced multi-step projects (marketing campaign, listing launch, client pitch, team retreat, crisis response) with live coaching and completeness grading.
