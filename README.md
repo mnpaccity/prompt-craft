@@ -16,3 +16,5 @@ An interactive web app for learning and memorizing the **CRAFT** prompting metho
 Open `index.html` in any web browser. Everything runs in a single file — no install needed.
 
 > Live Google Calendar sync works when the page is opened as an artifact inside claude.ai with the Google Calendar connector enabled. Everywhere else, the planner uses "Add to Google Calendar" links.
+
+- **💾 My Files** — save prompts, video plans, video breakdowns, how-to guides and your own videos to a personal folder; edit, search, copy and sync them to your Claude account.

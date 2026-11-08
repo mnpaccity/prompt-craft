@@ -345,7 +345,7 @@
 <div class="wrap">
   <header class="hdr">
     <div class="toolbar">
-      <nav class="nav"><button class="tab" id="nav-home" onclick="home()">🏠 Home</button><button class="tab" id="nav-games" onclick="gamesView()">🎮 Games</button><button class="tab" id="nav-lib" onclick="libraryView()">📚 Prompt Library</button><button class="tab entab" id="nav-enh" onclick="enhancerView()">✨ Enhancer</button><button class="tab" id="nav-studio" onclick="studioView()">🏡 Real Estate</button><button class="tab" id="nav-tools" onclick="toolsView()">🧮 Tools</button><button class="tab" id="nav-planner" onclick="plannerView()">📅 Planner</button><button class="tab metab" id="nav-me" onclick="openProfile()">👤 My Info</button></nav>
+      <nav class="nav"><button class="tab" id="nav-home" onclick="home()">🏠 Home</button><button class="tab" id="nav-games" onclick="gamesView()">🎮 Games</button><button class="tab" id="nav-lib" onclick="libraryView()">📚 Prompt Library</button><button class="tab entab" id="nav-enh" onclick="enhancerView()">✨ Enhancer</button><button class="tab" id="nav-studio" onclick="studioView()">🏡 Real Estate</button><button class="tab" id="nav-tools" onclick="toolsView()">🧮 Tools</button><button class="tab" id="nav-planner" onclick="plannerView()">📅 Planner</button><button class="tab" id="nav-files" onclick="myFilesView()">💾 My Files</button><button class="tab metab" id="nav-me" onclick="openProfile()">👤 My Info</button></nav>
       <div class="tb-skill"><span class="hb-label">🎓 Skill level:</span><span id="lvlTop"></span><span id="cloudBox"></span></div>
     </div>
     <div class="hdr-center">
@@ -1709,7 +1709,7 @@ ${allText}`;
       <div class="top"><h2 style="margin:0">Step 3 · Your video plan</h2><span class="badge">${N} clips · about ${total} seconds</span></div>
       <p class="muted">Every clip uses the same look, speed and lens, so they blend together like one continuous camera move.</p>
       <div class="actions" style="margin-top:6px">
-        <button class="btn" id="cpAll">📋 Copy all ${N} clip prompts</button>
+        <button class="btn" id="cpAll">📋 Copy all ${N} clip prompts</button><button class="btn ghost" id="svPlan">💾 Save to My Files</button>
         <button class="btn ghost" id="cpMaster">🤖 Copy “improve with Claude” prompt</button>
       </div>
       <p class="muted" style="font-size:13px;margin-top:8px">🤖 Optional: paste the “improve with Claude” prompt into Claude <b>and attach your photos</b>. Claude will look at each photo and add the real details it sees.</p>
@@ -1753,6 +1753,7 @@ ${allText}`;
         <li>Label the video “AI-enhanced from listing photos” if your MLS or brokerage requires it.</li>
       </ul>
     </div>`;
+  $('#svPlan').onclick=()=>saveToFiles({type:'plan',title:`Listing video plan · ${N} clips`,text:allText,src:'Real Estate · Photo-to-video'});
   $('#cpAll').onclick=async()=>{ (await copyText(allText))?toast(`✅ Copied all ${N} prompts`):showCopyBox(allText); };
   $('#cpMaster').onclick=async()=>{ (await copyText(master))?toast('✅ Copied! Paste into Claude and attach your photos'):showCopyBox(master); };
   document.querySelectorAll('[data-cp]').forEach(b=>b.onclick=async()=>{ const t=prompts[+b.dataset.cp]; (await copyText(t))?(b.textContent='✅ Copied!',setTimeout(()=>b.textContent='📋 Copy',1800)):showCopyBox(t); });
@@ -2643,7 +2644,7 @@ function howtoHTML(i){
     <li>Keep it honest: no health or weight-loss promises, and add #ad if it’s a paid partnership.</li></ul></div></div>
   <div class="hstep"><div class="hnum">✓</div><div><h4>Final check before posting</h4>
     <ul class="steps"><li>Does the first 1–2 seconds grab attention?</li><li>Watch it once with the sound <b>off</b> — does it still make sense?</li><li>Is the music quieter than the voice? Is the text easy to read and not covered by Instagram’s buttons on the right?</li></ul></div></div>
-  <div class="actions"><button class="btn ghost" id="howAll">📋 Copy all instructions</button><button class="btn ghost" id="howWatch">▶ Watch the example clip</button></div>`;
+  <div class="actions"><button class="btn ghost" id="howAll">📋 Copy all instructions</button><button class="btn ghost" id="howSave">💾 Save to My Files</button><button class="btn ghost" id="howWatch">▶ Watch the example clip</button></div>`;
 }
 function howtoText(i){ const g=HOWTO[i]; return [`HOW TO MAKE: ${g.n.toUpperCase()} ${g.e}`,'',
   '1) GET READY: gather props, film near a window in daylight, install CapCut. Only film people who agreed; show kids’ hands, not faces.','',
@@ -2659,6 +2660,7 @@ function showHowto(i){
   box.querySelectorAll('[data-cpai]').forEach(b=>b.onclick=()=>{ const [a,k]=b.dataset.cpai.split('-').map(Number); cp(HOWTO[a].shots[k][3]); });
   box.querySelector('[data-cpvo]').onclick=()=>cp(VO_LINES[i]);
   box.querySelector('[data-cpcap]').onclick=()=>cp(CAPTIONS[i]+' #momlife #dadlife #busyparents #proteinshake');
+  box.querySelector('#howSave').onclick=()=>saveToFiles({type:'guide',title:'How to make: '+HOWTO[i].n,text:howtoText(i),src:'Home · Show me how'});
   box.querySelector('#howAll').onclick=()=>cp(howtoText(i));
   box.querySelector('#howWatch').onclick=()=>openClip(i);
 }
@@ -2717,15 +2719,16 @@ function openClip(i){
         <div class="clipctl" style="margin-top:0"><button class="xbtn snd ${P.real?'on':''}" id="rvReal">🎞️ Real clip</button><button class="xbtn snd ${!P.real?'on':''}" id="rvAnim">🎨 Animated preview</button><button class="xbtn snd" id="rvDel">🗑️ Remove my clip</button></div><div id="rvAsk"></div>`
       :`<p style="margin:4px 0 6px;font-size:14px">Make this clip with <b>photorealistic people</b>: paste these 3 shot prompts into an AI video tool (Google Veo, Kling or Runway — text-to-video, 9:16, ~4 s each), join them in CapCut with the voiceover, then upload the finished clip here.</p>
         ${REAL_PROMPTS[P.i].map((t,k)=>`<div class="quote" style="font-size:13px"><b>Shot ${k+1}:</b> ${esc(t)}</div>`).join('')}
-        <div class="clipctl" style="margin-top:6px"><button class="xbtn snd" id="rvCopy">📋 Copy all 3 prompts</button><label class="xbtn snd" style="cursor:pointer">⬆️ Upload my real clip<input type="file" id="rvUp" accept="video/*" hidden></label></div>
+        <div class="clipctl" style="margin-top:6px"><button class="xbtn snd" id="rvCopy">📋 Copy all 3 prompts</button><button class="xbtn snd" id="rvSave">💾 Save</button><label class="xbtn snd" style="cursor:pointer">⬆️ Upload my real clip<input type="file" id="rvUp" accept="video/*" hidden></label></div>
         <p class="muted" style="font-size:11.5px;margin:6px 0 0">AI-generated people are fictional — label ads that use them as AI-generated where required, and never use a real person’s face or voice without permission.</p>`}
       <div id="rvMsg" class="muted" style="font-size:12px;margin-top:4px"></div></div>`;
     const q=s=>rp.querySelector(s);
+    if(q('#rvSave')) q('#rvSave').onclick=()=>saveToFiles({type:'plan',title:'Real-people clip '+(P.i+1)+' prompts',text:realPromptsText(P.i),src:'Home · Example clips'});
     if(q('#rvCopy')) q('#rvCopy').onclick=async()=>{ const t=realPromptsText(P.i); (await copyText(t))?toast('✅ Copied all 3 prompts'):showCopyBox(t); };
     if(q('#rvUp')) q('#rvUp').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; if(!f.type.startsWith('video/')){ toast('Please choose a video file'); return; }
       const msg=q('#rvMsg'); const assets=await getAssets();
       if(assets&&f.size<=20*1048576){ msg.textContent='⏳ Uploading to your account…';
-        try{ const r=await assets.upload(f); REAL[P.i]={id:r.id,url:r.url||('/_blob/'+r.id),name:f.name}; saveReal(); toast('✅ Real clip saved'); }
+        try{ const r=await assets.upload(f); REAL[P.i]={id:r.id,url:r.url||('/_blob/'+r.id),name:f.name}; saveReal(); mfAdd({type:'video',title:'Real clip '+(P.i+1)+' · '+f.name.replace(/\.[^.]+$/,''),url:REAL[P.i].url,assetId:r.id,name:f.name,src:'Home · Example clips'}); updateFilesBtn(); toast('✅ Real clip saved'); }
         catch(err){ REAL[P.i]={url:URL.createObjectURL(f),name:f.name}; toast('⚠️ Couldn’t save to your account — showing it for this visit only'); } }
       else { REAL[P.i]={url:URL.createObjectURL(f),name:f.name}; toast(f.size>20*1048576?'⚠️ Clips over 20 MB play for this visit only — export a smaller 1080p version to save it':'Showing your clip for this visit (saving needs the Claude app)'); }
       P.preferReal=true; applyReal(); };
@@ -3072,12 +3075,13 @@ function vdRender(manual){
       ${Array.isArray(R.image_to_video_prompts)&&R.image_to_video_prompts.length?`<h3 style="margin-top:16px">📸 Photo-to-video prompts (one per shot)</h3>${R.image_to_video_prompts.map((t,i)=>`<div class="quote"><b>Shot ${i+1}:</b> ${esc(t)}</div>${cp(t)}`).join('')}`:''}
       ${R.craft_prompt?`<h3 style="margin-top:16px">🧩 CRAFT prompt to plan a similar video</h3><div class="quote" style="white-space:pre-wrap">${esc(R.craft_prompt)}</div>${cp(R.craft_prompt)}`:''}
       ${Array.isArray(R.tips)&&R.tips.length?`<h3 style="margin-top:16px">💡 Tips to recreate it</h3><ul class="steps">${R.tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}
-      <div class="actions"><button class="btn ghost" id="vdAll">📋 Copy the full breakdown</button></div>
+      <div class="actions"><button class="btn ghost" id="vdAll">📋 Copy the full breakdown</button><button class="btn ghost" id="vdSave">💾 Save to My Files</button></div>
       <p class="muted" style="font-size:12px;margin:8px 0 0">These are educated guesses from the frames — no tool can see the exact prompt that was used. Only recreate styles, not someone else’s actual footage, branding or people.</p></div>`;
   }
   if(manual&&L) html+=`<div class="card"><h2>🤖 Ask Claude yourself</h2><p class="muted" style="font-size:14px">Automatic analysis isn’t available in this view. Copy this request, paste it into a Claude chat, then copy-and-paste 4–8 of the key frames above into the same message.</p><div class="quote" style="white-space:pre-wrap">${esc(vdManualPrompt())}</div>${cp(vdManualPrompt())}</div>`;
   out.innerHTML=html;
   out.querySelectorAll('[data-vdcp]').forEach(b=>b.onclick=async()=>{ const t=decodeURIComponent(b.dataset.vdcp); (await copyText(t))?toast('✅ Copied'):showCopyBox(t); });
+  if($('#vdSave')) $('#vdSave').onclick=()=>{ const parts=[R.summary?'SUMMARY: '+R.summary:'',R.text_to_video_prompt?'TEXT-TO-VIDEO PROMPT:\n'+R.text_to_video_prompt:'',Array.isArray(R.image_to_video_prompts)&&R.image_to_video_prompts.length?'PHOTO-TO-VIDEO PROMPTS:\n'+R.image_to_video_prompts.map((t,i)=>`Shot ${i+1}: ${t}`).join('\n'):'',R.craft_prompt?'CRAFT PROMPT:\n'+R.craft_prompt:'',Array.isArray(R.tips)&&R.tips.length?'TIPS:\n- '+R.tips.join('\n- '):''].filter(Boolean); saveToFiles({type:'breakdown',title:'Video breakdown · '+new Date().toLocaleDateString(),text:parts.length?parts.join('\n\n'):JSON.stringify(R,null,2),src:'Video Detective'}); };
   if($('#vdAll')) $('#vdAll').onclick=async()=>{ const t=JSON.stringify(R,null,2); (await copyText(t))?toast('✅ Copied'):showCopyBox(t); };
 }
 
@@ -3223,7 +3227,7 @@ function enhRender(){
       <h3 style="margin-top:16px">✏️ Your prompt <span class="muted" style="font-size:13px;font-family:Inter;font-weight:400">— you can edit it right here</span></h3>
       <textarea id="enhOutTxt" class="enhout" rows="12">${esc(enhFilled())}</textarea>
       <div class="actions">
-        <button class="btn" id="enhCopy">📋 Copy prompt</button>
+        <button class="btn" id="enhCopy">📋 Copy prompt</button><button class="btn ghost" id="enhSave">💾 Save to My Files</button>
         <a class="btn ghost" href="https://claude.ai/new" target="_blank" rel="noopener" style="text-decoration:none">↗ Open Claude</a>
         <button class="btn ghost" id="enhAgain">🔁 Make it even better</button>
         <button class="btn ghost" id="enhReset">🗑️ Start over</button>
@@ -3236,6 +3240,7 @@ function enhRender(){
   out.querySelectorAll('[data-fill]').forEach(inp=>inp.oninput=()=>{ ENH.fills[blanks[+inp.dataset.fill]]=inp.value; ta.value=enhFilled(); left(); });
   ta.oninput=()=>{ ENH.prompt=ta.value; ENH.fills={}; left(); out.querySelectorAll('[data-fill]').forEach(i=>i.value=''); };
   left();
+  $('#enhSave').onclick=()=>{ const t=ta.value; const first=(ENH.input||t).replace(/\s+/g,' ').trim(); saveToFiles({type:'prompt',title:first.slice(0,60)+(first.length>60?'…':''),text:t,src:'Prompt Enhancer'}); };
   $('#enhCopy').onclick=async()=>{ const t=ta.value; const n=enhBlanks(t).length; (await copyText(t))?toast(n?`✅ Copied — ${n} blank${n>1?'s':''} still to fill in`:'✅ Copied! Paste it into Claude'):showCopyBox(t); };
   $('#enhAgain').onclick=()=>{ ENH.prompt=ta.value; ENH.fills={}; enhRun(true); };
   $('#enhReset').onclick=()=>{ Object.assign(ENH,{input:'',out:null,prompt:'',fills:{}}); enhancerView(); };
@@ -3385,6 +3390,7 @@ function libraryView(tab){
   window.scrollTo(0,0);
 }
 function bindCards(){
+  document.querySelectorAll('.libsave').forEach(b=>b.onclick=e=>{ e.stopPropagation(); const it=LIB[b.dataset.tab].items[+b.dataset.n]; const txt=applyPF(it.script?scriptText(it):getSegs(it,b.dataset.tab).map(x=>x[1]).join('\n\n')); saveToFiles({type:'prompt',title:it.t,text:txt,src:'Prompt Library'+(LIB[b.dataset.tab].name?' · '+LIB[b.dataset.tab].name:'')}); });
   document.querySelectorAll('.qhelp').forEach(b=>b.onclick=e=>{ e.stopPropagation(); openHelp(LIB[b.dataset.helpTab].items[+b.dataset.helpN], b.dataset.helpTab); });
   $('#q').oninput = e=>{ const v=e.target.value.toLowerCase(); document.querySelectorAll('.pcard').forEach(c=>c.style.display=c.dataset.s.includes(v)?'':'none'); };
   document.querySelectorAll('.pcard .head').forEach(h=>h.onclick=()=>h.parentElement.classList.toggle('open'));
@@ -3405,7 +3411,7 @@ function promptCard(it,tab,n){
       <div class="body">
         ${it.note?`<div class="fb" style="background:var(--bg);border:2px solid var(--T);margin:0 0 10px"><b>${it.noteLabel||'⚖️ Calling rules'}:</b> ${esc(it.note)}</div>`:''}
         ${it.secs.map(x=>`<div class="pl" style="display:block"><b style="font-family:Fredoka;font-size:16px">${esc(x[0])}</b><div style="white-space:pre-wrap;margin-top:4px">${hl(x[1])}</div></div>`).join('')}
-        <div class="actions"><button class="btn copy" data-tab="${tab}" data-n="${n}">📋 Copy ${it.badge?'':'whole script'}</button></div>
+        <div class="actions"><button class="btn copy" data-tab="${tab}" data-n="${n}">📋 Copy ${it.badge?'':'whole script'}</button><button class="btn ghost libsave" data-tab="${tab}" data-n="${n}">💾 Save to My Files</button></div>
       </div></div>`;
   }
   const segs=getSegs(it,tab);
@@ -3415,7 +3421,7 @@ function promptCard(it,tab,n){
       <span class="dots">${it.p.map(x=>`<i style="background:${COLOR[x[0]]}" title="${WORD[x[0]]}"></i>`).join('')}</span><button class="qcopy qhelp" data-help-tab="${tab}" data-help-n="${n}" title="Step-by-step help">❓ How to use</button><button class="qcopy copy" data-tab="${tab}" data-n="${n}" title="Copy this prompt">📋 Copy</button><span class="arrow">▾</span></div>
     <div class="body">
       ${segs.map(x=>`<div class="pl ${x[2]==='x'?'xpro':x[2]==='p'?'xplus':''}"><span class="chip" style="background:${COLOR[x[0]]}" title="${WORD[x[0]]}">${x[0]}</span><div><small style="color:${COLOR[x[0]]};font-weight:700">${WORD[x[0]]}</small>${x[2]==='x'?' <span class="xchip">PRO</span>':x[2]==='p'?' <span class="xchip plus">PLUS</span>':''}<br>${hl(x[1])}</div></div>`).join('')}
-      <div class="actions"><button class="btn copy" data-tab="${tab}" data-n="${n}">📋 Copy</button></div>
+      <div class="actions"><button class="btn copy" data-tab="${tab}" data-n="${n}">📋 Copy</button><button class="btn ghost libsave" data-tab="${tab}" data-n="${n}">💾 Save to My Files</button></div>
     </div></div>`;
 }
 
@@ -3423,6 +3429,116 @@ function promptCard(it,tab,n){
 const CLOUD={db:null, uid:null, state:'checking', pending:{}, writing:{}, timers:{}, unsubs:[], device:(()=>{ try{ let d=localStorage.getItem('pc_device'); if(!d){ d=Math.random().toString(36).slice(2,10); localStorage.setItem('pc_device',d); } return d; }catch(e){ return 'x'+Math.random().toString(36).slice(2,8); } })(), applying:false, lastSync:null};
 const lsGet=(k,d)=>{ try{ const v=localStorage.getItem(k); return v==null?d:v; }catch(e){ return d; } };
 const lsSet=(k,v)=>{ try{ localStorage.setItem(k,v); }catch(e){} };
+/* ---------- 💾 My Files: personal saved prompts, plans and videos ---------- */
+const MF_TYPES={prompt:['🧩','Prompt'],plan:['🎬','Video plan'],video:['🎞️','Video'],breakdown:['🕵️','Video breakdown'],guide:['📝','How-to guide'],note:['🗒️','Note']};
+let MYF=(()=>{ try{ const v=JSON.parse(localStorage.getItem('pc_myfiles')); return Array.isArray(v)?v:[]; }catch(e){ return []; } })();
+const MFV={q:'',type:'all',open:null};
+function saveMyFiles(){ try{ localStorage.setItem('pc_myfiles',JSON.stringify(MYF)); }catch(e){ toast('⚠️ This device is out of space — try deleting a few old files'); } if(typeof cloudMark==='function') cloudMark('myfiles'); }
+function mfId(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function mfDate(t){ try{ return new Date(t).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}); }catch(e){ return ''; } }
+function mfAdd(o){ const it={id:mfId(),type:o.type||'prompt',title:(o.title||'Untitled').slice(0,120),text:o.text||'',src:o.src||'',created:Date.now(),updated:Date.now()};
+  if(o.url){ it.url=o.url; } if(o.assetId) it.assetId=o.assetId; if(o.name) it.name=o.name;
+  MYF.unshift(it); saveMyFiles(); return it; }
+/* Opens a small "Save to My Files" window so the user can name the item first */
+function saveToFiles(o){
+  const m=document.createElement('div'); m.className='modal';
+  const t=MF_TYPES[o.type]||MF_TYPES.prompt;
+  m.innerHTML=`<div class="card pop helpcard" style="max-width:520px"><div class="top"><h2 style="margin:0">💾 Save to My Files</h2><button class="xbtn" id="sfX">✕ Close</button></div>
+    <label class="fld" style="margin-top:10px"><span>Name it so you can find it later</span><input id="sfName" value="${esc(o.title||'')}" maxlength="120"></label>
+    <p class="muted" style="font-size:13px;margin:8px 0 4px">${t[0]} Type: <b>${t[1]}</b>${o.src?` · From: ${esc(o.src)}`:''}</p>
+    ${o.text?`<div class="quote" style="max-height:160px;overflow:auto;white-space:pre-wrap;font-size:13px">${esc(o.text.slice(0,1200))}${o.text.length>1200?'…':''}</div>`:''}
+    <div class="actions"><button class="btn" id="sfOk">💾 Save</button><button class="btn ghost" id="sfNo">Cancel</button></div></div>`;
+  document.body.appendChild(m);
+  const close=()=>m.remove(); m.querySelector('#sfX').onclick=close; m.querySelector('#sfNo').onclick=close;
+  m.onclick=e=>{ if(e.target===m) close(); };
+  const inp=m.querySelector('#sfName'); setTimeout(()=>{ inp.focus(); inp.select(); },50);
+  const ok=()=>{ const it=mfAdd({...o,title:inp.value.trim()||o.title||'Untitled'}); close(); toast(`💾 Saved “${it.title}” to My Files`); updateFilesBtn(); };
+  m.querySelector('#sfOk').onclick=ok; inp.onkeydown=e=>{ if(e.key==='Enter') ok(); };
+}
+function saveBtn(id,label){ return `<button class="btn ghost savebtn" id="${id}">💾 ${label||'Save to My Files'}</button>`; }
+function updateFilesBtn(){ const b=document.getElementById('nav-files'); if(b) b.innerHTML=`💾 My Files${MYF.length?` <span class="mecheck">${MYF.length}</span>`:''}`; }
+
+function myFilesView(){
+  setNav('files'); window._rerender=myFilesView; try{ history.replaceState(null,'','#files'); }catch(e){}
+  const counts={}; MYF.forEach(x=>counts[x.type]=(counts[x.type]||0)+1);
+  const q=MFV.q.toLowerCase();
+  const list=MYF.filter(x=>(MFV.type==='all'||x.type===MFV.type)&&(!q||(x.title+' '+x.text+' '+x.src).toLowerCase().includes(q)));
+  $('#app').innerHTML=`
+    <div class="card pop">
+      <h1>💾 My Files</h1>
+      <p class="muted" style="margin:6px 0 0">Your personal folder. Anything you save — prompts, video plans, video breakdowns, how-to guides and your finished videos — stays here so you never lose it.</p>
+      ${lvlNote({new:'To save something, look for the <b>💾 Save to My Files</b> button next to any <b>📋 Copy</b> button in the app. Then come back to this tab to find it. Click a file’s name to open it.',some:'You can edit a saved prompt right here and click <b>✅ Save changes</b>. Use the search box and the colored buttons to find things fast.',adv:'Files sync to your Claude account, so they show up on every device. Upload finished videos (up to 20 MB each) to keep your whole library in one place.'})}
+      <p class="muted" style="font-size:12.5px;margin:8px 0 0">${CLOUD.state==='on'||CLOUD.state==='saving'?'☁️ Saved to your Claude account — it’s on every device where you open this app.':'💻 Saved in this browser. Open the app inside claude.ai to save to your account too.'}</p>
+      <div class="actions">
+        <button class="btn" id="mfNew">➕ New note or prompt</button>
+        <label class="btn ghost" style="cursor:pointer">⬆️ Add a video<input type="file" id="mfVid" accept="video/*" hidden></label>
+      </div>
+    </div>
+    <div class="card">
+      <input id="mfQ" class="search" placeholder="🔍 Search my files…" value="${esc(MFV.q)}" style="width:100%">
+      <div class="tabs" style="margin-top:10px;flex-wrap:wrap">
+        <button class="tab ${MFV.type==='all'?'on':''}" data-mft="all">📁 All (${MYF.length})</button>
+        ${Object.entries(MF_TYPES).filter(([k])=>counts[k]).map(([k,v])=>`<button class="tab ${MFV.type===k?'on':''}" data-mft="${k}">${v[0]} ${v[1]}s (${counts[k]})</button>`).join('')}
+      </div>
+      <div id="mfList" style="margin-top:12px">
+      ${!MYF.length?`<div class="fb" style="text-align:center;padding:24px"><div style="font-size:40px">📂</div><b>Nothing saved yet.</b><br><span class="muted">Go to the 📚 Prompt Library, ✨ Enhancer or 🏡 Real Estate tab and click <b>💾 Save to My Files</b>.</span></div>`
+        :!list.length?`<p class="muted">No files match your search.</p>`
+        :list.map(x=>mfCard(x)).join('')}
+      </div>
+    </div>`;
+  $('#mfQ').oninput=e=>{ MFV.q=e.target.value; const pos=e.target.selectionStart; myFilesView(); const n=$('#mfQ'); n.focus(); try{ n.setSelectionRange(pos,pos); }catch(_){} };
+  document.querySelectorAll('[data-mft]').forEach(b=>b.onclick=()=>{ MFV.type=b.dataset.mft; myFilesView(); });
+  $('#mfNew').onclick=()=>{ const it=mfAdd({type:'note',title:'My new prompt',text:'',src:'Written by me'}); MFV.open=it.id; MFV.type='all'; MFV.q=''; myFilesView(); const t=document.querySelector(`[data-mfedit="${it.id}"]`); if(t) t.focus(); };
+  $('#mfVid').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; await mfUploadVideo(f); e.target.value=''; };
+  bindMyFiles();
+  window.scrollTo(0,0);
+}
+function mfCard(x){
+  const t=MF_TYPES[x.type]||MF_TYPES.prompt, open=MFV.open===x.id;
+  const blanks=x.text?enhBlanks(x.text).length:0;
+  return `<div class="pcard card mfcard ${open?'open':''}" data-mfid="${x.id}" style="margin:0 0 10px">
+    <div class="head" data-mfhead="${x.id}"><span style="font-size:24px">${t[0]}</span>
+      <div style="flex:1;min-width:0"><h3 style="margin:0">${esc(x.title)}</h3><div class="muted" style="font-size:12px">${t[1]} · ${mfDate(x.updated||x.created)}${x.src?' · '+esc(x.src):''}${blanks?` · <span class="ph" style="font-size:11px">${blanks} blank${blanks>1?'s':''} to fill</span>`:''}</div></div>
+      ${x.text?`<button class="qcopy" data-mfcopy="${x.id}">📋 Copy</button>`:''}
+    </div>
+    <div class="body">
+      ${x.type==='video'?(x.url?`<video src="${esc(x.url)}" controls playsinline style="width:100%;max-height:480px;border-radius:12px;background:#000"></video>${x.assetId?'':'<p class="warnnote" style="margin-top:6px">⚠️ This video is only here until you close the page (it was too big, or you’re not signed in to Claude). Export a smaller version (under 20 MB) and add it again to keep it.</p>'}`:'<p class="muted">Video not available.</p>'):''}
+      <label class="fld" style="margin-top:6px"><span>Name</span><input data-mfname="${x.id}" value="${esc(x.title)}" maxlength="120"></label>
+      ${x.type!=='video'||x.text?`<label class="fld"><span>${x.type==='video'?'Notes':'Text — you can edit it'}</span><textarea data-mfedit="${x.id}" class="enhout" rows="${Math.min(16,Math.max(5,(x.text.match(/\n/g)||[]).length+2))}">${esc(x.text)}</textarea></label>`
+        :`<label class="fld"><span>Notes (optional)</span><textarea data-mfedit="${x.id}" class="enhout" rows="3" placeholder="e.g. which AI tool and settings you used"></textarea></label>`}
+      <div class="actions">
+        <button class="btn" data-mfsave="${x.id}">✅ Save changes</button>
+        ${x.text?`<button class="btn ghost" data-mfcopy="${x.id}">📋 Copy</button>`:''}
+        ${x.type!=='video'?`<button class="btn ghost" data-mfenh="${x.id}">✨ Improve in Enhancer</button>`:''}
+        <button class="btn ghost" data-mfdup="${x.id}">📄 Make a copy</button>
+        <button class="btn ghost" data-mfdel="${x.id}">🗑️ Delete</button>
+      </div>
+      <div data-mfask="${x.id}"></div>
+    </div></div>`;
+}
+function bindMyFiles(){
+  const get=id=>MYF.find(x=>x.id===id);
+  document.querySelectorAll('[data-mfhead]').forEach(h=>h.onclick=e=>{ if(e.target.closest('button')) return; const id=h.dataset.mfhead; MFV.open=MFV.open===id?null:id; h.parentElement.classList.toggle('open',MFV.open===id); document.querySelectorAll('.mfcard').forEach(c=>{ if(c.dataset.mfid!==MFV.open) c.classList.remove('open'); }); });
+  document.querySelectorAll('[data-mfcopy]').forEach(b=>b.onclick=async e=>{ e.stopPropagation(); const x=get(b.dataset.mfcopy); if(!x) return; const ta=document.querySelector(`[data-mfedit="${x.id}"]`); const t=ta?ta.value:x.text; (await copyText(t))?toast('✅ Copied! Paste it into Claude'):showCopyBox(t); });
+  document.querySelectorAll('[data-mfsave]').forEach(b=>b.onclick=()=>{ const x=get(b.dataset.mfsave); if(!x) return; const n=document.querySelector(`[data-mfname="${x.id}"]`), ta=document.querySelector(`[data-mfedit="${x.id}"]`); x.title=(n.value.trim()||'Untitled').slice(0,120); if(ta) x.text=ta.value; x.updated=Date.now(); saveMyFiles(); toast('✅ Changes saved'); myFilesView(); });
+  document.querySelectorAll('[data-mfdup]').forEach(b=>b.onclick=()=>{ const x=get(b.dataset.mfdup); if(!x) return; const c={...x,id:mfId(),title:x.title+' (copy)',created:Date.now(),updated:Date.now()}; if(c.type==='video'){ delete c.assetId; c.shared=true; } MYF.splice(MYF.indexOf(x)+1,0,c); saveMyFiles(); MFV.open=c.id; myFilesView(); toast('📄 Copy made'); });
+  document.querySelectorAll('[data-mfenh]').forEach(b=>b.onclick=()=>{ const x=get(b.dataset.mfenh); if(!x) return; ENH.input=x.text; ENH.out=null; enhancerView(); toast('✨ Loaded into the Enhancer — click “Enhance my prompt”'); });
+  document.querySelectorAll('[data-mfdel]').forEach(b=>b.onclick=()=>{ const id=b.dataset.mfdel, box=document.querySelector(`[data-mfask="${id}"]`);
+    box.innerHTML=`<div class="askrow">Delete this file for good? <button class="xbtn danger" data-mfyes="${id}">Delete</button><button class="xbtn" data-mfno="${id}">Cancel</button></div>`;
+    box.querySelector('[data-mfno]').onclick=()=>box.innerHTML='';
+    box.querySelector('[data-mfyes]').onclick=async()=>{ const x=get(id); if(!x) return;
+      if(x.assetId){ const inUse=MYF.some(o=>o!==x&&o.url===x.url)||Object.values(REAL).some(r=>r&&r.id===x.assetId); if(!inUse){ const a=await getAssets(); if(a) try{ await a.delete(x.assetId); }catch(e){} } }
+      MYF=MYF.filter(o=>o!==x); saveMyFiles(); updateFilesBtn(); myFilesView(); toast('🗑️ Deleted'); }; });
+}
+async function mfUploadVideo(f,extra){
+  if(!f.type.startsWith('video/')){ toast('Please choose a video file'); return null; }
+  const base={type:'video',title:(extra&&extra.title)||f.name.replace(/\.[^.]+$/,''),src:(extra&&extra.src)||'Uploaded by me',name:f.name,text:(extra&&extra.text)||''};
+  const a=await getAssets(); let it;
+  if(a&&f.size<=20*1048576){ toast('⏳ Saving your video…'); try{ const r=await a.upload(f); it=mfAdd({...base,url:r.url||('/_blob/'+r.id),assetId:r.id}); toast('✅ Video saved to My Files'); }catch(e){ it=mfAdd({...base,url:URL.createObjectURL(f)}); toast('⚠️ Couldn’t save to your account — kept for this visit only'); } }
+  else { it=mfAdd({...base,url:URL.createObjectURL(f)}); toast(f.size>20*1048576?'⚠️ Over 20 MB — kept for this visit only. Export a smaller version to save it.':'Kept for this visit (saving videos needs the Claude app)'); }
+  updateFilesBtn(); if(document.getElementById('nav-files')&&document.getElementById('nav-files').classList.contains('on')) myFilesView(); return it;
+}
+
 const CLOUD_KEYS={
   profile:{ get:()=>PF, set:v=>{ PF=v||{auto:true}; if(PF.auto===undefined) PF.auto=true; _savePF0(); updateMeBtn(); } },
   planner:{ get:()=>PLAN, set:v=>{ PLAN=(v&&Array.isArray(v.events)&&Array.isArray(v.tasks))?v:{events:[],tasks:[]}; _savePlan0(); } },
@@ -3430,6 +3546,7 @@ const CLOUD_KEYS={
   prefs:{ get:()=>({level:LEVEL, music:AUD.music, voice:AUD.voice, voicename:lsGet('pc_voicename',''), gauto:GC.auto}),
           set:v=>{ if(!v) return; if(v.level&&v.level!==LEVEL){ CLOUD.applying=true; setLevel(v.level); CLOUD.applying=false; } if(typeof v.music==='boolean'){ AUD.music=v.music; lsSet('pc_music',v.music?'1':'0'); } if(typeof v.voice==='boolean'){ AUD.voice=v.voice; lsSet('pc_voice',v.voice?'1':'0'); } if(v.voicename) lsSet('pc_voicename',v.voicename); if(typeof v.gauto==='boolean'){ GC.auto=v.gauto; lsSet('pc_gauto',v.gauto?'1':'0'); } } },
   realclips:{ get:()=>{ const k={}; Object.entries(REAL).forEach(([i,v])=>{ if(v&&v.id) k[i]=v; }); return k; }, set:v=>{ if(v&&typeof v==='object'){ Object.keys(REAL).forEach(i=>{ if(REAL[i]&&REAL[i].id&&!v[i]) delete REAL[i]; }); Object.assign(REAL,v); try{ localStorage.setItem('pc_realclips',JSON.stringify(v)); }catch(e){} } } },
+  myfiles:{ get:()=>MYF.filter(x=>x.type!=='video'||x.assetId||x.shared), set:v=>{ if(Array.isArray(v)){ const local=MYF.filter(x=>x.type==='video'&&!x.assetId&&!x.shared); MYF=local.concat(v); try{ localStorage.setItem('pc_myfiles',JSON.stringify(MYF)); }catch(e){} updateFilesBtn(); if(document.getElementById('nav-files')&&document.getElementById('nav-files').classList.contains('on')) myFilesView(); } } },
   enhancer:{ get:()=>ENH.hist.slice(0,15), set:v=>{ if(Array.isArray(v)){ ENH.hist=v; try{ localStorage.setItem('pc_enh_hist',JSON.stringify(v)); }catch(e){} } } },
   scores:{ get:()=>{ const o={}; ['match','sort','scramble','build','recall'].forEach(g=>{ const b=store('best_'+g); if(b) o[g]=b; }); return o; },
            set:v=>{ if(!v) return; Object.entries(v).forEach(([g,b])=>{ const cur=store('best_'+g)||0; if(b>cur) store('best_'+g,b); }); } }
@@ -3523,7 +3640,8 @@ saveRcpt=function(){ _saveRcpt0(); cloudMark('receipt'); };
 saveBest=function(g,pct){ const b=store('best_'+g)||0; _saveBest0(g,pct); if(pct>b) cloudMark('scores'); };
 setLevel=function(l){ _setLevel0(l); if(!CLOUD.applying) cloudMark('prefs'); };
 document.getElementById('lvlTop').innerHTML=levelSwitch(); updateMeBtn(); drawCloudBadge(); initCloud();
-if(location.hash==='#enhancer') enhancerView(); else if(location.hash==='#detective') videoDetectiveView(); else if(location.hash==='#tools') toolsView(); else if(location.hash==='#planner') plannerView(); else if(location.hash==='#studio'||location.hash==='#realestate') studioView(); else if(location.hash==='#library') libraryView(); else if(location.hash==='#games') gamesView(); else home();
+updateFilesBtn();
+if(location.hash==='#files') myFilesView(); else if(location.hash==='#enhancer') enhancerView(); else if(location.hash==='#detective') videoDetectiveView(); else if(location.hash==='#tools') toolsView(); else if(location.hash==='#planner') plannerView(); else if(location.hash==='#studio'||location.hash==='#realestate') studioView(); else if(location.hash==='#library') libraryView(); else if(location.hash==='#games') gamesView(); else home();
 </script>
 </body>
 </html>
