@@ -23,7 +23,8 @@
   }
   @media (prefers-color-scheme: dark){
     :root{ --bg:#16181f; --card:#1f222b; --ink:#eef0f5; --muted:#a3a9b8; --line:#30343f; --C:#67a0e9; --R:#b58be4; --A:#e88266; --F:#23b379; --T:#e0a21f; --E:#e27ead; --good:#23b379; --bad:#e4837b; --link:#8ab4ff; }
-    .chip,.echip.ok,.lword>span,.watch,.mstep.done .msn,.lvl button.on,.lt .lword span,.xchip,.badge.on,.lt,.lt small{color:#111!important}
+    .chip,.echip.ok,.lword>span,.watch,.mstep.done .msn,.lvl button.on,.xchip,.badge.on{color:#111!important}
+    .lt{--C:#1c64c1;--R:#833ed2;--A:#b43b1b;--F:#17734e;--T:#846012;--E:#b9296e;color:#fff!important} .lt .lword,.lt .lword span,.lt small{color:#fff!important}
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.5}
@@ -416,6 +417,16 @@
   .pkitem img,.pkitem video{width:100%;height:96px;object-fit:cover;border-radius:8px;background:var(--bg)}
   .pkitem span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pkitem.on{border-color:var(--good);box-shadow:0 0 0 2px color-mix(in srgb,var(--good) 30%,transparent)}
   .pkitem.on::after{content:'✓ Selected';font-weight:700;color:var(--good)}
+  .sndsrc{display:flex;gap:16px;flex-wrap:wrap;margin:4px 0 8px;font-weight:600}.sndsrc input{width:18px;height:18px;vertical-align:-3px}
+  .sndcat h4{margin:10px 0 6px;font-size:14px}.sndgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px}
+  .snd{display:flex;align-items:stretch;border-radius:12px;border:2px solid var(--line);background:var(--card);overflow:hidden}.snd.on{border-color:var(--good);box-shadow:0 0 0 2px color-mix(in srgb,var(--good) 25%,transparent)}
+  .sndplay{flex:none;width:40px;border:0;border-right:2px solid var(--line);background:var(--bg);color:var(--ink);font-size:15px;cursor:pointer}
+  .sndpick{flex:1;text-align:left;border:0;background:none;color:var(--ink);font:inherit;padding:6px 8px;cursor:pointer;display:flex;flex-direction:column;gap:1px}.sndpick b{font-size:13.5px}.sndpick span{font-size:11.5px;color:var(--muted)}
+  .snd.on .sndpick b::after{content:'  ✓';color:var(--good)}
+  .sndfile{padding:8px 10px;border-radius:12px;background:var(--bg);border:2px solid var(--line)}
+  .sndvol{display:block;margin-top:10px;max-width:360px}.sndvol input,#sndStart{width:100%;accent-color:var(--C)}
+  .pkaud{display:grid;place-items:center;height:96px;border-radius:8px;background:var(--bg);font-size:40px}
+  .capin{width:100%;box-sizing:border-box;margin-top:4px;font:inherit;font-size:12.5px;padding:5px 7px;border-radius:8px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
   .skip{position:absolute;left:8px;top:-60px;z-index:100;background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none}
   .skip:focus{top:8px}
   :focus-visible{outline:3px solid #1a5fd0;outline-offset:2px}
@@ -1721,16 +1732,15 @@ const TRANS_CAPCUT={dissolve:'“Mix” / “Dissolve”',light:'“Light leak�
 const LENS={auto:['Auto — by room',null],'16':['16mm ultra-wide (small rooms)','16mm ultra-wide rectilinear lens — keep verticals straight, no fisheye',1],'24':['24mm wide (recommended)','wide 24mm cinema lens, no fisheye'],'35':['35mm natural perspective','35mm natural-perspective lens, true-to-life proportions',1],'50':['50mm detail / vignette shots','50mm lens for detail and vignette shots',1],'85':['85mm telephoto compression','85mm telephoto lens with flattering compression and soft background',1],'100':['100mm macro (finishes & textures)','100mm macro lens for close-up finishes and textures',1]};
 const FPS={'24':['24 fps — cinematic (recommended)','24 fps with a 180° shutter for natural cinematic motion blur'],'30':['30 fps — standard video','30 fps standard video'],'60':['60 fps — smooth slow motion',`60 fps, conformed to 24 fps for a smooth 40% slow-motion feel`,1],'120':['120 fps — super slow motion','120 fps for super-slow-motion details (water, fire, fabric)',1]};
 const DOF={f8:['Deep focus f/8 (everything sharp)','deep focus around f/8 — the whole room sharp, as buyers expect'],f4:['Balanced f/4','balanced depth of field around f/4',1],f2:['Shallow f/2 (cinematic background blur)','shallow depth of field around f/2 with soft background blur — best for detail shots',1]};
-const MUSIC={piano:['Ambient piano (~70 BPM)','soft ambient piano, about 70 BPM'],strings:['Cinematic strings (~80 BPM)','cinematic strings that slowly build, about 80 BPM'],acoustic:['Upbeat acoustic (~100 BPM)','bright upbeat acoustic, about 100 BPM'],lofi:['Lo-fi chill (~85 BPM)','warm lo-fi chill beat, about 85 BPM',1],house:['Modern luxury house (~110 BPM)','sleek modern deep-house groove, about 110 BPM',1],orch:['Orchestral swell (~90 BPM)','orchestral piece with a big emotional swell at the finale, about 90 BPM',1]};
 const EXPORT={hd:['1080p · 30 fps · H.264 (social media)','1080p, 30 fps, H.264, about 16 Mbps'],k4:['4K · 24 fps · H.264 (MLS & YouTube)','4K (3840×2160), 24 fps, H.264, about 45 Mbps',1],prores:['4K · ProRes 422 HQ (master/archive)','4K ProRes 422 HQ master file for archiving and re-editing',1]};
 const AR_SIZES={'16:9':[960,540],'9:16':[540,960],'1:1':[720,720],'4:5':[640,800],'21:9':[1050,450]};
 const proList=obj=>Object.entries(obj).map(([k,v])=>[k,v.n,v.pro?1:0]);
 const proList2=obj=>Object.entries(obj).map(([k,v])=>[k,v[0],v[2]?1:0]);
-const ST = { lens:'auto', fps:'24', dof:'f8', music:'piano', export:'k4', light:'auto', motion:'auto', amount:10, energy:'calm', keep:Object.fromEntries(KEEP.map(k=>[k[0],true])), photos:[], tool:'Runway', ar:'16:9', len:5, look:'warm', trans:'dissolve', area:'', price:'', beds:'', feature:'', agent:'', phone:'', style:'', lookId:null, projId:null };
+const ST = { lens:'auto', fps:'24', dof:'f8', music:'piano', export:'k4', light:'auto', motion:'auto', amount:10, energy:'calm', keep:Object.fromEntries(KEEP.map(k=>[k[0],true])), photos:[], tool:'Runway', ar:'16:9', len:5, look:'warm', trans:'dissolve', area:'', price:'', beds:'', feature:'', agent:'', phone:'', style:'', lookId:null, projId:null, musicVol:70, audio:null, audioStart:0 };
 let PREV = null;
 /* ---------- 📁 Choose from My Files (photo / video picker) ---------- */
 function mfPicker({kind,multi,onPick}){
-  const label=kind==='photo'?'photo':'video';
+  const label=kind==='photo'?'photo':kind==='audio'?'music file':'video';
   const fromProjects=kind==='photo'?PROJ.flatMap(p=>(p.photos||[]).map(ph=>({pid:p.id,pname:p.name,ph}))):[];
   const m=document.createElement('div'); m.className='modal';
   const sel=new Set(); let q='';
@@ -1742,9 +1752,9 @@ function mfPicker({kind,multi,onPick}){
       <input id="pkQ" class="search" placeholder="🔍 Search by name, room, notes or project…" value="${esc(q)}" style="width:100%;margin-top:10px">
       <div class="pklist">
       ${F.length?`<h3 class="pkh">💾 My Files</h3><div class="pkgrid">${F.map(x=>`<button class="pkitem ${sel.has('f:'+x.id)?'on':''}" data-pk="f:${x.id}" aria-pressed="${sel.has('f:'+x.id)}">
-          ${kind==='photo'?`<img src="${esc(x.url)}" alt="">`:`<video src="${esc(x.url)}" muted preload="metadata"></video>`}<span>${esc(x.title)}</span></button>`).join('')}</div>`:''}
+          ${kind==='photo'?`<img src="${esc(x.url)}" alt="">`:kind==='audio'?`<span class="pkaud" aria-hidden="true">🎵</span>`:`<video src="${esc(x.url)}" muted preload="metadata"></video>`}<span>${esc(x.title)}</span></button>`).join('')}</div>`:''}
       ${P.length?`<h3 class="pkh">📁 From my projects</h3><div class="pkgrid" id="pkProj">${P.map(o=>`<button class="pkitem ${sel.has('p:'+o.ph.id)?'on':''}" data-pk="p:${o.ph.id}" data-pp="${o.pid}" aria-pressed="${sel.has('p:'+o.ph.id)}"><img data-ph="${o.ph.id}" data-au="${esc(o.ph.assetUrl||'')}" alt=""><span>${esc(o.pname)} · ${esc(ROOMS[o.ph.room]?ROOMS[o.ph.room].n:o.ph.name)}</span></button>`).join('')}</div>`:''}
-      ${!F.length&&!P.length?`<div class="fb" style="text-align:center;padding:20px">${q?'Nothing matches your search.':`No ${label}s saved yet. Add some in <b>💾 My Files → ${kind==='photo'?'🖼️ Add a photo':'🎞️ Add a video'}</b>${kind==='photo'?', or work on a project in the Studio':''}.`}</div>`:''}
+      ${!F.length&&!P.length?`<div class="fb" style="text-align:center;padding:20px">${q?'Nothing matches your search.':`No ${label}s saved yet. Add some in <b>💾 My Files → ${kind==='photo'?'🖼️ Add a photo':kind==='audio'?'🎵 Add music':'🎞️ Add a video'}</b>${kind==='photo'?', or work on a project in the Studio':''}.`}</div>`:''}
       </div>
       <div class="actions"><button class="btn" id="pkOk" ${sel.size?'':'disabled'}>✅ Use ${sel.size?sel.size+' ':''}selected</button><button class="btn ghost" id="pkNo">Cancel</button>${multi&&(F.length+P.length)>1?`<button class="xbtn" id="pkAll">Select all shown</button>`:''}</div></div>`;
     const qi=m.querySelector('#pkQ'); qi.oninput=()=>{ q=qi.value.toLowerCase().trim(); const pos=qi.selectionStart; draw(); const n=m.querySelector('#pkQ'); n.focus(); try{ n.setSelectionRange(pos,pos); }catch(e){} };
@@ -1754,7 +1764,7 @@ function mfPicker({kind,multi,onPick}){
     m.querySelector('#pkX').onclick=m.querySelector('#pkNo').onclick=()=>m.remove();
     m.querySelector('#pkOk').onclick=async()=>{ const out=[]; m.querySelector('#pkOk').textContent='⏳ Loading…';
       for(const k of sel){ const [t,id]=[k[0],k.slice(2)]; try{
-        if(t==='f'){ const x=MYF.find(y=>y.id===id); const r=await fetch(x.url); const bl=await r.blob(); const nm=x.name||(mfSafeName(x.title)+(kind==='photo'?'.jpg':'.mp4')); out.push(new File([bl],nm,{type:bl.type||(kind==='photo'?'image/jpeg':'video/mp4')})); }
+        if(t==='f'){ const x=MYF.find(y=>y.id===id); const r=await fetch(x.url); const bl=await r.blob(); const nm=x.name||(mfSafeName(x.title)+(kind==='photo'?'.jpg':kind==='audio'?'.mp3':'.mp4')); out.push(new File([bl],nm,{type:bl.type||(kind==='photo'?'image/jpeg':kind==='audio'?'audio/mpeg':'video/mp4')})); }
         else { const o=fromProjects.find(z=>z.ph.id===id); let bl=await idbGet(id); if(!bl&&o.ph.assetUrl){ const r=await fetch(o.ph.assetUrl); bl=await r.blob(); } if(bl) out.push(new File([bl],o.ph.name||'photo.jpg',{type:bl.type||'image/jpeg'})); }
       }catch(e){} }
       m.remove(); if(!out.length){ toast('⚠️ Those files aren’t available on this device anymore'); return; } onPick(out); };
@@ -1903,9 +1913,9 @@ function studioView(){
         ${sel('lens','Lens / focal length',proList2(LENS))}
         ${sel('fps','Frame rate',proList2(FPS))}
         ${sel('dof','Depth of field',proList2(DOF))}
-        ${sel('music','Music style & tempo',proList2(MUSIC))}
         ${sel('export','Export quality',proList2(EXPORT))}
       </div>
+      <div id="sndBox">${soundtrackHTML()}</div>
       <p class="muted" style="font-size:13px;margin:6px 0 0">Options under <b>⭐ Professional</b> in each menu are what high-end real estate videographers use.</p>
       <p class="muted" style="font-size:13px;margin:6px 0 0">Example: “a slow push forward of about 10 percent” with “gentle, calm walkthrough energy” and “soft natural light shifting gently.” You can also change the motion for a single photo in Step 1.</p>
       <details class="presetbox">
@@ -1933,7 +1943,7 @@ function studioView(){
   function sel(k,l,opts){ const op=o=>`<option value="${o[0]}" ${String(ST[k])===String(o[0])?'selected':''}>${o[1]}</option>`; const std=opts.filter(o=>!o[2]), pro=opts.filter(o=>o[2]);
     return `<label class="fld"><span>${l}</span><select data-k="${k}">${std.map(op).join('')}${pro.length?`<optgroup label="⭐ Professional">${pro.map(op).join('')}</optgroup>`:''}</select></label>`; }
   function inp(k,l,ph){ return `<label class="fld"><span>${l}</span><input data-k="${k}" value="${esc(ST[k])}" placeholder="${ph}"></label>`; }
-  $('#looksSlot').outerHTML=looksPanelHTML(); bindLooks(); drawProjBar();
+  $('#looksSlot').outerHTML=looksPanelHTML(); bindLooks(); drawProjBar(); bindSoundtrack(); sndRestoreFile().then(()=>{ if(ST.audio&&SND.src==='file'){ const b=document.getElementById('sndBox'); if(b){ b.innerHTML=soundtrackHTML(); bindSoundtrack(); } } });
   document.querySelectorAll('[data-k]').forEach(el=>el.oninput=el.onchange=()=>{ ST[el.dataset.k]= (el.dataset.k==='len'||el.dataset.k==='amount')? +el.value : el.value; if(el.dataset.k==='motion') renderThumbs(); if(el.tagName==='SELECT'&&(el.dataset.k==='len'||el.dataset.k==='amount')&&window._looksRedraw) window._looksRedraw(); else if(window._looksUpd) window._looksUpd(); });
   document.querySelectorAll('[data-keep]').forEach(c=>c.onchange=()=>{ ST.keep[c.dataset.keep]=c.checked; window._looksUpd&&window._looksUpd(); });
   document.querySelectorAll('[data-preset]').forEach(t=>t.oninput=()=>{ PRESETS[t.dataset.preset].t=t.value; window._looksUpd&&window._looksUpd(); });
@@ -1969,7 +1979,7 @@ const PJ={sig:'',timer:null,savedAt:0,plan:'',uploading:false};
 function saveProjList(){ try{ localStorage.setItem('pc_projects',JSON.stringify(PROJ)); }catch(e){ try{ PROJ.forEach(p=>{ if(p!==projCur()) p.thumb=''; }); localStorage.setItem('pc_projects',JSON.stringify(PROJ)); }catch(_){} } if(typeof cloudMark==='function') cloudMark('projects'); }
 function projCur(){ return PROJ.find(x=>x.id===ST.projId); }
 const PJ_TEXT=['area','price','beds','feature','agent','phone'];
-function projSig(){ return JSON.stringify([lookSnapshot(),ST.lookId,ST.photos.map(p=>[p.id,p.room,p.mv||'']),PJ_TEXT.map(k=>ST[k]),PJ.plan.length]); }
+function projSig(){ return JSON.stringify([lookSnapshot(),ST.lookId,ST.audio&&ST.audio.id,ST.audioStart,ST.musicVol,SND.src,ST.photos.map(p=>[p.id,p.room,p.mv||'',p.cap||'']),PJ_TEXT.map(k=>ST[k]),PJ.plan.length]); }
 function phId(){ return 'ph'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 async function thumbOf(ph){ try{ if(!ph.img.complete) await ph.img.decode(); const w=200, h=Math.round(w*ph.img.naturalHeight/ph.img.naturalWidth)||130; const c=document.createElement('canvas'); c.width=w; c.height=Math.min(h,200); c.getContext('2d').drawImage(ph.img,0,0,w,h); return c.toDataURL('image/jpeg',0.6); }catch(e){ return ''; } }
 async function projSaveNow(){
@@ -1977,7 +1987,8 @@ async function projSaveNow(){
   let p=projCur();
   if(!p){ p={id:'p'+Date.now().toString(36),name:ST.area||('Untitled home · '+new Date().toLocaleDateString()),autoName:!ST.area,created:Date.now()}; PROJ.unshift(p); ST.projId=p.id; }
   p.settings=lookSnapshot(); p.lookId=ST.lookId||null; p.text=Object.fromEntries(PJ_TEXT.map(k=>[k,ST[k]||'']));
-  p.photos=ST.photos.map(x=>({id:x.id,name:x.name,room:x.room,mv:x.mv||'',assetId:x.assetId||'',assetUrl:x.assetUrl||''}));
+  p.audio=ST.audio?{...ST.audio,start:ST.audioStart||0,on:SND.src==='file'}:null; p.musicVol=ST.musicVol;
+  p.photos=ST.photos.map(x=>({id:x.id,cap:x.cap||'',name:x.name,room:x.room,mv:x.mv||'',assetId:x.assetId||'',assetUrl:x.assetUrl||''}));
   if(PJ.plan) p.plan=PJ.plan; p.updated=Date.now();
   if(p.autoName&&ST.area){ p.name=ST.area; }
   const first=ST.photos[0]; if(first&&p.thumbId!==first.id){ p.thumb=await thumbOf(first); p.thumbId=first.id; } if(!first){ p.thumb=''; p.thumbId=''; }
@@ -2008,14 +2019,14 @@ async function projOpen(id){
   toast('📂 Opening “'+p.name+'”…');
   const S=p.settings||{}; LOOK_KEYS.forEach(k=>{ if(S.s&&S.s[k]!=null) ST[k]=S.s[k]; }); if(S.keep) Object.assign(ST.keep,S.keep); ST.style=S.style||'';
   Object.keys(PRESETS).forEach(k=>PRESETS[k].t=(S.presets&&S.presets[k])||PRESET_ORIG[k]);
-  PJ_TEXT.forEach(k=>ST[k]=(p.text&&p.text[k])||''); ST.lookId=p.lookId||null;
+  PJ_TEXT.forEach(k=>ST[k]=(p.text&&p.text[k])||''); ST.lookId=p.lookId||null; ST.musicVol=p.musicVol??70; sndClearFile(); if(p.audio){ ST.audio={id:p.audio.id,name:p.audio.name,size:p.audio.size,dur:p.audio.dur}; ST.audioStart=p.audio.start||0; if(p.audio.on) await sndRestoreFile(); if(!p.audio.on) SND.src='synth'; }
   ST.photos.forEach(x=>{ try{ URL.revokeObjectURL(x.url); }catch(e){} }); ST.photos=[]; let missing=0;
   for(const ph of (p.photos||[])){
     let blob=await idbGet(ph.id);
     if(!blob&&ph.assetUrl){ try{ const r=await fetch(ph.assetUrl); if(r.ok){ blob=await r.blob(); idbPut(ph.id,blob); } }catch(e){} }
     if(!blob){ missing++; continue; }
     const url=URL.createObjectURL(blob), img=new Image(); img.src=url;
-    ST.photos.push({id:ph.id,url,img,name:ph.name,room:ph.room,mv:ph.mv||undefined,assetId:ph.assetId,assetUrl:ph.assetUrl});
+    ST.photos.push({id:ph.id,cap:ph.cap||'',url,img,name:ph.name,room:ph.room,mv:ph.mv||undefined,assetId:ph.assetId,assetUrl:ph.assetUrl});
   }
   ST.projId=id; PJ.plan=p.plan||''; PJ.sig=projSig(); PJ.savedAt=p.updated;
   location.hash='#studio'; studioView();
@@ -2113,6 +2124,7 @@ function renderThumbs(){
       <div class="num">${i+1}</div>${fresh.has(p.url)?'<div class="newtag">NEW</div>':''}<img src="${p.url}" alt="${esc(p.name)}" data-view="${i}" title="${esc(p.name)} — click to view">
       <select data-i="${i}" class="roomsel" aria-label="Room type for photo ${i+1}">${ROOM_ORDER.map(k=>`<option value="${k}" ${p.room===k?'selected':''}>${ROOMS[k].n}</option>`).join('')}</select>
       <select data-pm="${i}" class="roomsel mvsel" title="Camera motion for this photo"><option value="default" ${!p.mv||p.mv==='default'?'selected':''}>🎥 ${ST.motion==='auto'?'Auto: '+MOTIONS[ROOM_MV[p.room]].n:ST.motion==='presets'?'Auto: '+MOTIONS[ROOM_PRESET[p.room]].n:'Default: '+MOTIONS[ST.motion].n}</option>${Object.entries(MOTIONS).map(([k,v])=>`<option value="${k}" ${p.mv===k?'selected':''}>🎥 ${v.n}</option>`).join('')}</select>
+      <input class="capin" data-cap="${i}" value="${esc(p.cap||'')}" maxlength="70" placeholder="✏️ Text on this photo (optional)" aria-label="Optional text shown on photo ${i+1}">
       <div class="thb"><button data-mv="${i}" data-d="-1" title="Move earlier">◀</button><button data-mv="${i}" data-d="1" title="Move later">▶</button><button data-rm="${i}" title="Remove">✕</button></div>
     </div>`).join('')}</div>
     <p class="muted" style="font-size:13px;margin-top:8px">Tip: start with an aerial or front exterior, walk through the inside, go out to the yard/pool, and finish on a twilight exterior.</p>`;
@@ -2120,6 +2132,7 @@ function renderThumbs(){
   if(fresh.size){ const last=t.querySelector('.th.fresh:last-of-type')||t.querySelector('.th.fresh'); const f=$('#folder'); if(f){ f.classList.add('pulse'); setTimeout(()=>f.classList.remove('pulse'),900); } if(last&&last.scrollIntoView) last.scrollIntoView({behavior:'smooth',block:'nearest'}); }
   t.querySelectorAll('.roomsel[data-i]').forEach(s=>s.onchange=()=>{ST.photos[+s.dataset.i].room=s.value; renderThumbs();});
   t.querySelectorAll('[data-pm]').forEach(s=>s.onchange=()=>{ST.photos[+s.dataset.pm].mv=s.value;});
+  t.querySelectorAll('[data-cap]').forEach(c=>c.oninput=()=>{ ST.photos[+c.dataset.cap].cap=c.value; });
   t.querySelectorAll('[data-mv]').forEach(b=>b.onclick=()=>{const i=+b.dataset.mv,j=i+ +b.dataset.d; if(j<0||j>=ST.photos.length) return; [ST.photos[i],ST.photos[j]]=[ST.photos[j],ST.photos[i]]; renderThumbs();});
   t.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{ST.photos.splice(+b.dataset.rm,1); renderThumbs();});
   $('#smart').onclick=()=>{ ST.photos.sort((a,b)=>ROOM_ORDER.indexOf(a.room)-ROOM_ORDER.indexOf(b.room)); renderThumbs(); toast('✨ Sorted into a natural tour order'); };
@@ -2178,7 +2191,9 @@ function overlays(N){
   if(ST.beds) o.push([Math.min(N-1,Math.max(1,Math.floor(N*0.3))),ST.beds]);
   if(ST.feature) o.push([Math.min(N-1,Math.max(1,Math.floor(N*0.6))),ST.feature]);
   if(ST.price||ST.agent||ST.phone) o.push([N-1,[ST.price,ST.agent,ST.phone].filter(Boolean).join(' · ')]);
-  return o.map(x=>({clip:x[0],at:at(x[0]),text:x[1]}));
+  const res=o.map(x=>({clip:x[0],at:at(x[0]),text:x[1]}));
+  ST.photos.slice(0,N).forEach((p,i)=>{ if(p.cap&&p.cap.trim()) res.push({clip:i,at:(Math.max(0,i*(ST.len-0.75))+0.8).toFixed(1),text:p.cap.trim(),cap:1}); });
+  return res;
 }
 function makePlan(){
   const P=ST.photos, N=P.length;
@@ -2214,7 +2229,7 @@ ${allText}`;
       <h2>▶️ Live preview</h2>
       <p class="muted" style="font-size:14px">A quick rough cut made from your still photos, so you can check the order, timing, transitions and text. The AI tool will create the real camera movement.</p>
       <div class="prevwrap"><canvas id="prev"></canvas></div>
-      <div class="actions"><button class="btn" id="pp">⏸ Pause</button><button class="btn ghost" id="rs">⟲ Restart</button><span class="muted" id="ptime" style="align-self:center"></span></div>
+      <div class="actions"><button class="btn" id="pp">⏸ Pause</button><button class="btn ghost" id="rs">⟲ Restart</button><button class="btn ghost" id="pmute">${SND.mute?'🔇 Sound off':'🔊 Sound on'}</button><button class="btn ghost" id="pxp">⬇️ Download video with soundtrack</button><span class="muted" id="ptime" style="align-self:center"></span></div><div id="pxpDone"></div><p class="muted" style="font-size:12.5px;margin:4px 0 0">🎵 Playing: ${ST.audio&&SND.src==='file'?esc(ST.audio.name):esc(SOUNDTRACKS.find(t=>t.k===ST.music).n)} · The download records this preview slideshow (about the same length) with your soundtrack — great for social posts, or as a music guide when you edit the AI clips.</p>
     </div>
     <div class="card">
       <h2>🎞️ Clip prompts (one per photo)</h2>
@@ -2236,7 +2251,7 @@ ${allText}`;
         <li>Trim about <b>0.3 seconds</b> off the start and end of each clip — AI clips often wobble at the very edges.</li>
         <li>Tap the small white square between two clips → <b>Transitions</b> → choose <b>${TRANS_CAPCUT[ST.trans]}</b>. Use the lengths in the stitching table above.</li>
         <li>Select all clips → <b>Filters</b> → pick one ${ST.look==='bright'?'clean, bright':ST.look==='twilight'?'cool, moody':'warm, golden'} filter at about 30–40% strength and apply it to <b>every</b> clip. This makes them look like one video.</li>
-        <li><b>Audio</b> → add ${MUSIC[ST.music][1]} music from CapCut’s library or a licensed stock-music site. Line up cuts with the music beats.</li>
+        <li><b>Audio</b> → ${ST.audio&&SND.src==='file'?`add your own track “${esc(ST.audio.name)}”${ST.audioStart?` starting at ${fmtDur(ST.audioStart)}`:''} (only use music you have the rights to)`:`use the <b>${esc(SOUNDTRACKS.find(t=>t.k===ST.music).n)}</b> soundtrack — click <b>⬇️ Download video with soundtrack</b> below to get it with the preview — or find similar music in CapCut’s library or a licensed stock-music site: “${esc(MUSIC[ST.music][1])}”`}. Music volume about ${ST.musicVol??70}%. Line up cuts with the music beats.</li>
         <li><b>Text</b> → add the on-screen text from the table above. Use “fade in / fade out” animations.</li>
         <li>End with 2–3 seconds on your agent card (name, logo, phone).</li>
         <li><b>Export</b> → ${EXPORT[ST.export][1]}. ${ST.export!=='hd'?'Also export a 1080p copy for social media.':''}</li>
@@ -2293,20 +2308,28 @@ function startPreview(ov){
     ctx.globalCompositeOperation='soft-light'; ctx.fillStyle=L.fx; ctx.fillRect(0,0,W,H); ctx.globalCompositeOperation='source-over';
     const g=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*0.35,W/2,H/2,Math.max(W,H)*0.75); g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(0,0,0,0.5)'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
     if(!vertical){ ctx.fillStyle='#000'; const bh=H*0.06; ctx.fillRect(0,0,W,bh); ctx.fillRect(0,H-bh,W,bh); }
-    ov.forEach(o=>{ const s=o.clip*step+0.6, d=t-s; if(d<0||d>2.8) return;
+    ov.filter(o=>o.cap).forEach(o=>{ const s=o.clip*step+0.8, d=t-s, D=Math.max(1.5,len-1.4); if(d<0||d>D) return;
+      const a=d<0.4?d/0.4:d>D-0.4?(D-d)/0.4:1; const fs=vertical?24:22; ctx.font=`600 ${fs}px Inter, Arial, sans-serif`; ctx.textAlign='left';
+      const tw=ctx.measureText(o.text).width, x=W*0.05, y=H*(vertical?0.90:0.87), padX=14, bh=fs+16;
+      ctx.globalAlpha=a*0.55; ctx.fillStyle='#000'; ctx.fillRect(x-padX,y-fs-6,Math.min(W*0.9,tw+padX*2),bh); ctx.globalAlpha=a; ctx.fillStyle='#fff'; ctx.fillText(o.text,x,y,W*0.9-padX); ctx.globalAlpha=1; });
+    ov.filter(o=>!o.cap).forEach(o=>{ const s=o.clip*step+0.6, d=t-s; if(d<0||d>2.8) return;
       const a=d<0.5?d/0.5:d>2.3?(2.8-d)/0.5:1;
       ctx.globalAlpha=a; ctx.fillStyle='#fff'; ctx.shadowColor='rgba(0,0,0,.6)'; ctx.shadowBlur=12; ctx.textAlign='center';
       const fs = vertical?30:30; ctx.font=`500 ${fs}px Georgia, serif`;
       const txt=o.text.toUpperCase(); const lines = ctx.measureText(txt).width > W*0.86 ? txt.split(' · ') : [txt];
       lines.forEach((ln,k)=>ctx.fillText(ln.split('').join(' '),W/2,H*(vertical?0.78:0.80)+k*(fs+10)-((lines.length-1)*(fs+10))/2));
       ctx.shadowBlur=0; ctx.globalAlpha=1; });
-    const el=$('#ptime'); if(!el){ return; }
+    const el=$('#ptime'); if(!el){ sndStop(true); return; }
     el.textContent=`${t.toFixed(1)}s / ${total.toFixed(0)}s · clip ${Math.min(N,Math.floor(t/step)+1)} of ${N}`;
     PREV.raf=requestAnimationFrame(frame);
   }
   PREV.raf=requestAnimationFrame(frame);
-  $('#pp').onclick=()=>{ if(PREV.playing){ PREV.offset+=(performance.now()-PREV.t0)/1000; PREV.playing=false; $('#pp').textContent='▶ Play'; } else { PREV.t0=performance.now(); PREV.playing=true; $('#pp').textContent='⏸ Pause'; } };
-  $('#rs').onclick=()=>{ PREV.offset=0; PREV.t0=performance.now(); PREV.playing=true; $('#pp').textContent='⏸ Pause'; };
+  const music=on=>{ if(SND.mute) return; if(on){ if(SND.src==='file'&&SND.el){ SND.el.play().catch(()=>{}); SND.playing=true; } else sndStart(ST.music); } else sndStop(true); };
+  music(true);
+  $('#pp').onclick=()=>{ if(PREV.playing){ PREV.offset+=(performance.now()-PREV.t0)/1000; PREV.playing=false; $('#pp').textContent='▶ Play'; music(false); } else { PREV.t0=performance.now(); PREV.playing=true; $('#pp').textContent='⏸ Pause'; music(true); } };
+  $('#rs').onclick=()=>{ PREV.offset=0; PREV.t0=performance.now(); PREV.playing=true; $('#pp').textContent='⏸ Pause'; sndStop(); if(!SND.mute) sndStart(ST.music); };
+  $('#pmute').onclick=()=>{ SND.mute=!SND.mute; $('#pmute').textContent=SND.mute?'🔇 Sound off':'🔊 Sound on'; if(SND.mute) sndStop(true); else if(PREV.playing) sndStart(ST.music); };
+  $('#pxp').onclick=exportPreviewVideo;
 }
 const INTRO_SCRIPTS = [
  {t:"Intro script 1 — Professional, warm & friendly", i:"😊", script:true, badge:"Script", secs:[
@@ -3054,6 +3077,163 @@ function hat(dest,t,vol){
   s.connect(f); f.connect(g); g.connect(dest); s.start(t);
 }
 const KEYS=[0,2,-3,5,-1];
+/* ---------- 🎵 Soundtracks: 25 original, app-generated tracks + your own audio ---------- */
+const MAJ=[[0,'M'],[7,'M'],[9,'m'],[5,'M']], POP2=[[0,'M'],[5,'M'],[9,'m'],[7,'M']], MIN=[[9,'m'],[5,'M'],[0,'M'],[7,'M']], MIN2=[[9,'m'],[2,'m'],[4,'M'],[9,'m']], JAZ=[[2,'m7'],[7,'7'],[0,'M7'],[9,'m7']], DOO=[[0,'M'],[9,'m'],[5,'M'],[7,'M']], SPN=[[9,'m'],[7,'M'],[5,'M'],[4,'M']];
+const SOUNDTRACKS=[
+ {k:'piano',cat:'Calm & elegant',n:'Ambient Piano',bpm:70,mood:'soft, peaceful, airy',p:'soft ambient solo piano with gentle reverb, slow and peaceful',r:{key:0,prog:MAJ,pad:'pad',padV:.05,arp:'piano',arpP:[0,2,1,2,0,2,1,2],arpV:.09,bass:'sine',bassP:'whole',bassV:.12,lead:null,dr:null}},
+ {k:'strings',cat:'Calm & elegant',n:'Cinematic Strings',bpm:80,mood:'emotional, building, grand',p:'cinematic string ensemble that slowly builds, warm cellos and violins',r:{key:2,prog:MIN,pad:'strings',padV:.09,arp:null,bass:'sine',bassP:'whole',bassV:.13,lead:'strings',leadV:.05,dr:null}},
+ {k:'harp',cat:'Calm & elegant',n:'Golden Hour Harp',bpm:72,mood:'dreamy, luxurious, gentle',p:'flowing harp arpeggios over soft pads, dreamy luxury feel',r:{key:5,prog:DOO,pad:'pad',padV:.05,arp:'pluck',arpP:[0,1,2,3,2,1,0,1,2,3,2,1,0,1,2,3],arpV:.08,bass:'sine',bassP:'whole',bassV:.1,dr:null}},
+ {k:'ambient',cat:'Calm & elegant',n:'Airy Ambient Pads',bpm:60,mood:'spacious, calm, modern',p:'slow evolving ambient synth pads, spacious and calm, no drums',r:{key:-3,prog:[[0,'M7'],[5,'M7'],[9,'m7'],[7,'M']],pad:'pad',padV:.1,arp:'bell',arpP:[2,-1,-1,-1,1,-1,-1,-1],arpV:.05,bass:'sine',bassP:'whole',bassV:.08,dr:null}},
+ {k:'classical',cat:'Calm & elegant',n:'Classical Minuet',bpm:96,mood:'refined, classic, graceful',p:'light classical chamber piece with piano and strings, refined and graceful',r:{key:7,prog:[[0,'M'],[5,'M'],[7,'M'],[0,'M']],pad:'strings',padV:.04,arp:'piano',arpP:[0,2,1,2,0,2,1,2],arpV:.08,bass:'piano',bassP:'roots',bassV:.1,lead:'bell',leadV:.04,dr:null}},
+ {k:'chill',cat:'Calm & elegant',n:'Coastal Chillout',bpm:88,mood:'breezy, relaxed, sunny',p:'relaxed coastal chillout with soft electric piano and gentle beat',r:{key:2,prog:[[0,'M7'],[9,'m7'],[2,'m7'],[7,'7']],pad:'epiano',padV:.07,arp:null,bass:'sine',bassP:'roots',bassV:.14,dr:{kick:'half',snare:'rim',hat:'8',v:.5}}},
+ {k:'jazz',cat:'Warm & happy',n:'Smooth Lounge Jazz',bpm:92,mood:'classy, warm, sophisticated',p:'smooth lounge jazz with brushed drums, upright bass and electric piano',r:{key:5,prog:JAZ,pad:'epiano',padV:.07,arp:null,bass:'sine',bassP:'walk',bassV:.16,lead:'sine',leadV:.04,dr:{kick:'half',snare:'brush',hat:'swing',v:.45},swing:.18}},
+ {k:'lofi',cat:'Warm & happy',n:'Lo-fi Chill',bpm:85,mood:'cozy, warm, nostalgic',p:'warm lo-fi hip-hop beat with dusty keys and soft vinyl feel',r:{key:3,prog:[[2,'m7'],[7,'7'],[0,'M7'],[9,'m7']],pad:'epiano',padV:.08,arp:null,bass:'sine',bassP:'roots',bassV:.15,dr:{kick:'boombap',snare:'snare',hat:'8',v:.5},swing:.12}},
+ {k:'acoustic',cat:'Warm & happy',n:'Upbeat Acoustic',bpm:100,mood:'bright, friendly, optimistic',p:'bright upbeat acoustic guitar strums with light claps',r:{key:0,prog:POP2,pad:null,arp:'pluck',arpP:[0,1,2,1,0,1,2,1],arpV:.1,bass:'sine',bassP:'roots',bassV:.13,dr:{kick:'four',snare:'clap',hat:'8',v:.4}}},
+ {k:'folk',cat:'Warm & happy',n:'Sunny Folk Strum',bpm:108,mood:'homey, cheerful, honest',p:'cheerful folk strumming with handclaps and a whistle melody',r:{key:7,prog:DOO,pad:null,arp:'pluck',arpP:[0,2,1,2,0,2,1,2],arpV:.11,bass:'sine',bassP:'roots',bassV:.12,lead:'sine',leadV:.05,dr:{kick:'four',snare:'clap',hat:null,v:.4}}},
+ {k:'uke',cat:'Warm & happy',n:'Happy Ukulele',bpm:112,mood:'playful, sunny, carefree',p:'playful ukulele with glockenspiel and light percussion, sunny and carefree',r:{key:5,prog:MAJ,pad:null,arp:'pluck',arpP:[0,1,2,3,2,1,0,1],arpV:.1,bass:'sine',bassP:'roots',bassV:.11,lead:'bell',leadV:.05,dr:{kick:'four',snare:'clap',hat:'8',v:.35}}},
+ {k:'spanish',cat:'Warm & happy',n:'Spanish Guitar Villa',bpm:100,mood:'romantic, Mediterranean, warm',p:'romantic Spanish nylon guitar with light percussion, Mediterranean villa feel',r:{key:4,prog:SPN,pad:null,arp:'pluck',arpP:[0,1,2,1,2,1,0,1,2,1,2,1,0,1,2,1],arpV:.1,bass:'sine',bassP:'roots',bassV:.12,dr:{kick:'half',snare:'clap',hat:null,v:.35}}},
+ {k:'holiday',cat:'Warm & happy',n:'Holiday Sparkle',bpm:120,mood:'festive, merry, bright',p:'festive holiday pop with sleigh bells and glockenspiel',r:{key:0,prog:DOO,pad:'pad',padV:.04,arp:'bell',arpP:[0,1,2,1,0,1,2,1],arpV:.06,bass:'sine',bassP:'roots',bassV:.12,dr:{kick:'four',snare:'clap',hat:'16',v:.4}}},
+ {k:'house',cat:'Upbeat & modern',n:'Modern Luxury House',bpm:110,mood:'sleek, stylish, upscale',p:'sleek modern deep-house groove, upscale and stylish',r:{key:-2,prog:MIN2,pad:'pad',padV:.06,arp:'pluck',arpP:[-1,0,-1,0,-1,0,-1,0],arpV:.08,bass:'saw',bassP:'offbeat',bassV:.1,dr:{kick:'four',snare:'clap',hat:'off',v:.5}}},
+ {k:'deep',cat:'Upbeat & modern',n:'Deep House Sunset',bpm:118,mood:'smooth, warm, evening',p:'smooth deep house with warm chords and a rolling bassline, sunset rooftop vibe',r:{key:1,prog:[[2,'m7'],[0,'M7'],[9,'m7'],[5,'M7']],pad:'epiano',padV:.07,arp:null,bass:'saw',bassP:'offbeat',bassV:.11,dr:{kick:'four',snare:'clap',hat:'off',v:.5}}},
+ {k:'tropical',cat:'Upbeat & modern',n:'Tropical House',bpm:104,mood:'sunny, beachy, uplifting',p:'tropical house with marimba plucks and a laid-back beat',r:{key:3,prog:POP2,pad:'pad',padV:.04,arp:'marimba',arpP:[0,-1,1,-1,2,-1,1,0],arpV:.1,bass:'sine',bassP:'roots',bassV:.13,dr:{kick:'four',snare:'clap',hat:'off',v:.45}}},
+ {k:'pop',cat:'Upbeat & modern',n:'Feel-Good Pop',bpm:116,mood:'happy, energetic, catchy',p:'feel-good upbeat pop with bright synths and claps',r:{key:2,prog:MAJ,pad:'pad',padV:.05,arp:'pluck',arpP:[0,1,2,1,0,1,2,1],arpV:.09,bass:'saw',bassP:'eighths',bassV:.09,lead:'square',leadV:.03,dr:{kick:'four',snare:'clap',hat:'8',v:.5}}},
+ {k:'funk',cat:'Upbeat & modern',n:'Disco Funk Groove',bpm:112,mood:'groovy, fun, confident',p:'groovy disco funk with slap bass and rhythm guitar',r:{key:-3,prog:[[2,'m7'],[7,'7'],[2,'m7'],[7,'7']],pad:'epiano',padV:.06,arp:null,bass:'square',bassP:'octave',bassV:.08,dr:{kick:'four',snare:'snare',hat:'16',v:.5}}},
+ {k:'synthwave',cat:'Upbeat & modern',n:'Retro Synthwave Drive',bpm:100,mood:'retro, neon, nostalgic',p:'retro 80s synthwave with driving bass and neon synth leads',r:{key:-3,prog:MIN,pad:'pad',padV:.07,arp:'square',arpP:[0,1,2,1,0,1,2,1,0,1,2,1,0,1,2,1],arpV:.04,bass:'saw',bassP:'eighths',bassV:.1,dr:{kick:'four',snare:'snare',hat:'8',v:.5}}},
+ {k:'minimal',cat:'Upbeat & modern',n:'Minimal Tech Pulse',bpm:122,mood:'clean, modern, architectural',p:'minimal tech house pulse, clean and architectural',r:{key:-5,prog:[[9,'m'],[9,'m'],[5,'M'],[7,'M']],pad:null,arp:'pluck',arpP:[0,-1,-1,0,-1,-1,0,-1],arpV:.08,bass:'sine',bassP:'offbeat',bassV:.14,dr:{kick:'four',snare:'rim',hat:'off',v:.55}}},
+ {k:'hiphop',cat:'Bold & dramatic',n:'Boom-Bap Hip-Hop',bpm:90,mood:'confident, cool, urban',p:'classic boom-bap hip-hop beat with piano loop, confident and cool',r:{key:-3,prog:MIN2,pad:null,arp:'piano',arpP:[0,-1,2,-1,1,-1,2,-1],arpV:.09,bass:'sine',bassP:'roots',bassV:.18,dr:{kick:'boombap',snare:'snare',hat:'8',v:.6},swing:.1}},
+ {k:'trap',cat:'Bold & dramatic',n:'Luxury Trap Beat',bpm:140,mood:'bold, flashy, high-end',p:'luxury trap beat with deep 808s, crisp hi-hat rolls and dark bells',r:{key:-4,prog:MIN,pad:'pad',padV:.04,arp:'bell',arpP:[0,-1,-1,1,-1,-1,2,-1],arpV:.05,bass:'808',bassP:'trap',bassV:.22,dr:{kick:'trap',snare:'clap',hat:'trap',v:.55}}},
+ {k:'edm',cat:'Bold & dramatic',n:'Big Room Energy',bpm:126,mood:'huge, exciting, festival',p:'big-room EDM with a rising build and euphoric synth drop',r:{key:0,prog:MIN,pad:'pad',padV:.06,arp:'saw',arpP:[0,1,2,1,0,1,2,1,0,1,2,1,0,1,2,1],arpV:.03,bass:'saw',bassP:'offbeat',bassV:.1,dr:{kick:'four',snare:'clap',hat:'off',v:.6}}},
+ {k:'cinematic',cat:'Bold & dramatic',n:'Dramatic Trailer Hits',bpm:95,mood:'epic, suspenseful, powerful',p:'dramatic movie-trailer music with deep booms, pulsing strings and big hits',r:{key:-2,prog:MIN,pad:'strings',padV:.08,arp:'strings',arpP:[0,0,0,0,0,0,0,0],arpV:.04,bass:'sine',bassP:'whole',bassV:.15,dr:{kick:'boom',snare:null,hat:null,v:.7}}},
+ {k:'orch',cat:'Bold & dramatic',n:'Orchestral Swell',bpm:90,mood:'majestic, emotional, grand finale',p:'orchestral piece with a big emotional swell at the finale, horns and strings',r:{key:3,prog:DOO,pad:'strings',padV:.09,arp:'piano',arpP:[0,1,2,1,0,1,2,1],arpV:.05,bass:'sine',bassP:'whole',bassV:.14,lead:'strings',leadV:.05,dr:{kick:'boom',snare:null,hat:null,v:.4}}},
+];
+const MUSIC=Object.fromEntries(SOUNDTRACKS.map(t=>[t.k,[`${t.n} (~${t.bpm} BPM)`,`${t.p}, about ${t.bpm} BPM`]]));
+const SND={ctx:null,master:null,timer:null,nextT:0,bar:0,rec:null,src:'synth',el:null,elUrl:'',playing:false,preview:null};
+function sndCtx(){ const c=ensureCtx(); if(!c) return null; if(!SND.master){ SND.master=c.createGain(); SND.master.gain.value=(ST.musicVol??70)/100; SND.comp=c.createDynamicsCompressor(); SND.master.connect(SND.comp); SND.comp.connect(c.destination); } if(c.state==='suspended') c.resume(); return c; }
+function chordNotes(root,q){ const iv={M:[0,4,7],m:[0,3,7],M7:[0,4,7,11],m7:[0,3,7,10],'7':[0,4,7,10]}[q]||[0,4,7]; return iv.map(x=>root+x); }
+function vox(dest,type,freq,t,dur,vol){
+  const c=SND.ctx||AUD.ctx; const g=c.createGain(); g.connect(dest);
+  const env=(a,d)=>{ g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+a); g.gain.exponentialRampToValueAtTime(0.0001,t+d); };
+  const osc=(w,f,detune=0)=>{ const o=c.createOscillator(); o.type=w; o.frequency.value=f; o.detune.value=detune; return o; };
+  let nodes=[];
+  if(type==='pad'||type==='strings'){ const f=c.createBiquadFilter(); f.type='lowpass'; f.frequency.value=type==='pad'?1400:2200; f.connect(g);
+    nodes=[osc('sawtooth',freq,-7),osc('sawtooth',freq,7)]; nodes.forEach(o=>o.connect(f)); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(vol,t+Math.min(0.6,dur*0.4)); g.gain.setValueAtTime(vol,t+dur*0.8); g.gain.linearRampToValueAtTime(0.0001,t+dur); }
+  else if(type==='epiano'){ nodes=[osc('sine',freq),osc('sine',freq*2)]; const g2=c.createGain(); g2.gain.value=0.25; nodes[1].disconnect; nodes[0].connect(g); nodes[1].connect(g2); g2.connect(g); env(0.01,dur); }
+  else if(type==='piano'){ nodes=[osc('triangle',freq),osc('sine',freq*2)]; nodes.forEach(o=>o.connect(g)); env(0.005,Math.min(dur,1.6)); }
+  else if(type==='pluck'||type==='marimba'){ nodes=[osc(type==='marimba'?'sine':'triangle',freq)]; nodes[0].connect(g); env(0.003,type==='marimba'?0.35:0.45); }
+  else if(type==='bell'){ nodes=[osc('sine',freq*2),osc('sine',freq*5.4)]; const g2=c.createGain(); g2.gain.value=0.2; nodes[0].connect(g); nodes[1].connect(g2); g2.connect(g); env(0.002,1.2); }
+  else if(type==='808'){ const o=osc('sine',freq); o.frequency.setValueAtTime(freq*2,t); o.frequency.exponentialRampToValueAtTime(freq,t+0.06); nodes=[o]; o.connect(g); env(0.005,dur); }
+  else { const w=type==='saw'?'sawtooth':type; if(w==='sawtooth'||w==='square'){ const f=c.createBiquadFilter(); f.type='lowpass'; f.frequency.value=900; f.connect(g); nodes=[osc(w,freq)]; nodes[0].connect(f); } else { nodes=[osc(w,freq)]; nodes[0].connect(g); } env(0.005,dur); }
+  nodes.forEach(o=>{ o.start(t); o.stop(t+dur+0.1); });
+}
+function drum(dest,kind,t,v){
+  const c=SND.ctx; if(kind==='kick'||kind==='boom'){ const o=c.createOscillator(), g=c.createGain(); o.frequency.setValueAtTime(kind==='boom'?90:140,t); o.frequency.exponentialRampToValueAtTime(kind==='boom'?30:45,t+(kind==='boom'?0.6:0.12)); g.gain.setValueAtTime(v*(kind==='boom'?1.2:1),t); g.gain.exponentialRampToValueAtTime(0.0001,t+(kind==='boom'?1.4:0.35)); o.connect(g); g.connect(dest); o.start(t); o.stop(t+1.5); return; }
+  const len=kind==='hat'?0.05:kind==='ohat'?0.25:0.18, buf=c.createBuffer(1,Math.floor(c.sampleRate*len),c.sampleRate), d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,kind==='brush'?1:2);
+  const s=c.createBufferSource(); s.buffer=buf; const f=c.createBiquadFilter(), g=c.createGain();
+  f.type=kind==='hat'||kind==='ohat'?'highpass':'bandpass'; f.frequency.value={hat:7000,ohat:6000,snare:1800,clap:1200,rim:2500,brush:3000}[kind]||2000;
+  g.gain.value=v*({hat:.25,ohat:.18,snare:.8,clap:.7,rim:.4,brush:.3}[kind]||.5); s.connect(f); f.connect(g); g.connect(dest); s.start(t);
+}
+function scheduleBar(T,t0,bar){
+  const r=T.r, beat=60/T.bpm, step=beat/2, [deg,q]=r.prog[bar%r.prog.length], root=48+r.key+deg, ch=chordNotes(root+12,q), dest=SND.master, D=r.dr;
+  const sw=i=>t0+i*step+((i%2)?(r.swing||0)*step:0);
+  if(r.pad) ch.forEach(n=>vox(dest,r.pad,mhz(n),t0,beat*4,r.padV));
+  if(r.arp){ const P=r.arpP, st=beat*4/P.length; P.forEach((ix,i)=>{ if(ix<0) return; const n=ch[ix%ch.length]+12*Math.floor(ix/ch.length)+(r.arp==='bell'?12:0); vox(dest,r.arp,mhz(n),t0+i*st+((i%2)?(r.swing||0)*st:0),st*1.6,r.arpV); }); }
+  const b=root-12, bv=r.bassV, bt=r.bass;
+  ({whole:()=>vox(dest,bt,mhz(b),t0,beat*4,bv),roots:()=>[0,2].forEach(i=>vox(dest,bt,mhz(b),t0+i*beat,beat*1.8,bv)),offbeat:()=>[0,1,2,3].forEach(i=>vox(dest,bt,mhz(b),t0+i*beat+beat/2,beat*0.45,bv)),
+    eighths:()=>[...Array(8)].forEach((_,i)=>vox(dest,bt,mhz(b),t0+i*step,step*0.9,bv*0.8)),octave:()=>[...Array(8)].forEach((_,i)=>vox(dest,bt,mhz(b+(i%2?12:0)),sw(i),step*0.8,bv)),
+    walk:()=>[0,4,7,9].forEach((x,i)=>vox(dest,bt,mhz(b+x),t0+i*beat,beat*0.9,bv)),trap:()=>[0,3,6].forEach(i=>vox(dest,'808',mhz(b-12),t0+i*step*1.33,beat*1.3,bv))})[r.bassP||'roots']();
+  if(r.lead){ const sc=[0,2,4,7,9,12]; [0,2,4,6].forEach(i=>{ if((bar+i)%3===0) return; vox(dest,r.lead,mhz(root+24+sc[(bar*3+i)%sc.length]),t0+i*beat,beat*1.5,r.leadV); }); }
+  if(D){ const v=D.v;
+    const K={four:[0,2,4,6],half:[0],boombap:[0,3,5],trap:[0,3,5,7],boom:bar%2?[]:[0]}[D.kick]||[]; K.forEach(i=>drum(dest,D.kick==='boom'?'boom':'kick',t0+i*step,v));
+    if(D.snare){ const S=D.kick==='half'||D.kick==='trap'?[4]:[2,6]; S.forEach(i=>drum(dest,D.snare,sw(i),v)); }
+    if(D.hat==='8') [...Array(8)].forEach((_,i)=>drum(dest,'hat',sw(i),v*(i%2?0.7:1)));
+    if(D.hat==='16') [...Array(16)].forEach((_,i)=>drum(dest,'hat',t0+i*step/2,v*(i%2?0.5:0.8)));
+    if(D.hat==='off') [1,3,5,7].forEach(i=>drum(dest,'ohat',t0+i*step,v));
+    if(D.hat==='swing') [0,2,3,4,6,7].forEach(i=>drum(dest,'brush',sw(i),v));
+    if(D.hat==='trap') [...Array(16)].forEach((_,i)=>{ drum(dest,'hat',t0+i*step/2,v*0.6); if(i===13||i===14) drum(dest,'hat',t0+i*step/2+step/4,v*0.5); });
+  }
+}
+function sndStart(key,offsetSec=0){
+  sndStop(); const c=sndCtx(); if(!c) return false; SND.ctx=c;
+  if(SND.src==='file'&&SND.el){ SND.el.currentTime=(ST.audioStart||0)+offsetSec; SND.el.volume=Math.min(1,(ST.musicVol??70)/100); SND.el.loop=true; SND.el.play().catch(()=>{}); SND.playing=true; return true; }
+  const T=SOUNDTRACKS.find(x=>x.k===key)||SOUNDTRACKS[0]; SND.cur={...T,bpm:T.bpm,r:T.r}; const barLen=60/T.bpm*4;
+  SND.bar=0; SND.nextT=c.currentTime+0.08; SND.master.gain.cancelScheduledValues(c.currentTime); SND.master.gain.setValueAtTime(0.0001,c.currentTime); SND.master.gain.linearRampToValueAtTime((ST.musicVol??70)/100,c.currentTime+0.4);
+  const pump=()=>{ while(SND.nextT<c.currentTime+0.6){ scheduleBar(SND.cur,SND.nextT,SND.bar++); SND.nextT+=barLen; } };
+  pump(); SND.timer=setInterval(pump,150); SND.playing=true; return true;
+}
+function sndStop(fade){ clearInterval(SND.timer); SND.timer=null; SND.playing=false; if(SND.el) try{ SND.el.pause(); }catch(e){}
+  if(SND.master&&SND.ctx){ const t=SND.ctx.currentTime; try{ SND.master.gain.cancelScheduledValues(t); SND.master.gain.setTargetAtTime(0,t,fade?0.4:0.03); }catch(e){} }
+  if(SND.master){ const old=SND.master; SND.master=null; setTimeout(()=>{ try{ old.disconnect(); }catch(e){} },fade?1500:300); } }
+function sndVol(){ const v=(ST.musicVol??70)/100; if(SND.el) SND.el.volume=Math.min(1,v); if(SND.master&&SND.ctx) SND.master.gain.setTargetAtTime(v,SND.ctx.currentTime,0.05); }
+async function sndSetFile(file,save=true){
+  if(SND.elUrl) try{ URL.revokeObjectURL(SND.elUrl); }catch(e){}
+  SND.elUrl=URL.createObjectURL(file); SND.el=new Audio(SND.elUrl); SND.el.preload='auto'; SND.src='file';
+  const id='au'+Date.now().toString(36); if(save) await idbPut(id,file); ST.audio={id,name:file.name,size:file.size}; ST.audioStart=0;
+  await new Promise(r=>{ SND.el.onloadedmetadata=r; SND.el.onerror=r; setTimeout(r,3000); }); ST.audio.dur=isFinite(SND.el.duration)?SND.el.duration:0;
+  if(!ST.audio.dur){ toast('⚠️ That audio file can’t be played in this browser — try an MP3 or M4A'); sndClearFile(); return false; }
+  return true;
+}
+function sndClearFile(){ sndStop(); SND.el=null; SND.src='synth'; ST.audio=null; ST.audioStart=0; }
+async function sndRestoreFile(){ if(!ST.audio||!ST.audio.id) return; if(SND.el&&SND.src==='file') return; const blob=await idbGet(ST.audio.id); if(!blob){ ST.audio=null; return; } SND.elUrl=URL.createObjectURL(blob); SND.el=new Audio(SND.elUrl); SND.src='file'; }
+function soundtrackHTML(){
+  const cats=[...new Set(SOUNDTRACKS.map(t=>t.cat))]; const own=ST.audio&&SND.src==='file';
+  return `<h3 style="margin-top:18px">🎵 Soundtrack</h3>
+   <p class="muted" style="font-size:13.5px;margin:0 0 8px">Pick one of <b>25 original soundtracks</b> (made by Prompt CRAFT — free to use in your videos) or add your own audio. Press <b>▶</b> to listen. The live preview below plays with your soundtrack.</p>
+   <div class="sndsrc" role="radiogroup" aria-label="Soundtrack source"><label><input type="radio" name="sndsrc" value="synth" ${own?'':'checked'}> 🎼 Built-in soundtrack</label><label><input type="radio" name="sndsrc" value="file" ${own?'checked':''}> 🎧 My own audio track</label></div>
+   <div id="sndBuilt" ${own?'hidden':''}>
+     <input id="sndQ" class="search" placeholder="🔍 Search soundtracks — try “calm”, “luxury”, “happy”, “beach”…" style="width:100%;margin:6px 0 4px" aria-label="Search soundtracks">
+     ${cats.map(c=>`<div class="sndcat" data-scat="${c}"><h4>${c}</h4><div class="sndgrid">${SOUNDTRACKS.filter(t=>t.cat===c).map(t=>`<div class="snd ${ST.music===t.k?'on':''}" data-snd="${t.k}" data-sq="${esc((t.n+' '+t.mood+' '+t.p+' '+t.cat).toLowerCase())}">
+       <button class="sndplay" data-sl="${t.k}" aria-label="Listen to ${esc(t.n)}">▶</button><button class="sndpick" data-sp="${t.k}" aria-pressed="${ST.music===t.k}"><b>${esc(t.n)}</b><span>${t.bpm} BPM · ${esc(t.mood)}</span></button></div>`).join('')}</div></div>`).join('')}
+   </div>
+   <div id="sndOwn" ${own?'':'hidden'}>
+     ${own?`<div class="sndfile">🎧 <b>${esc(ST.audio.name)}</b> <span class="muted">· ${fmtDur(ST.audio.dur)}</span> <button class="xbtn" id="sndListen">▶ Listen</button> <button class="xbtn" id="sndRm">✕ Remove</button></div>
+       <label class="fld" style="display:block;margin-top:8px"><span>Start the song at: <b id="sndStartV">${fmtDur(ST.audioStart||0)}</b> (skip a slow intro)</span><input type="range" id="sndStart" min="0" max="${Math.max(0,Math.floor((ST.audio.dur||0)-5))}" step="1" value="${Math.floor(ST.audioStart||0)}"></label>`
+       :`<div class="pickrow"><label class="btn ghost" style="cursor:pointer">⬆️ Upload a song or audio file<input type="file" id="sndUp" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg" hidden></label>${pickBtn('sndPick','audio')}</div><p class="muted" style="font-size:12.5px;margin:4px 0 0">MP3, M4A, WAV or AAC. Only use music you have the rights to (your own, or licensed for commercial use).</p>`}
+   </div>
+   <label class="fld sndvol"><span>🔊 Music volume: <b id="sndVolV">${ST.musicVol??70}%</b></span><input type="range" id="sndVol" min="0" max="100" step="5" value="${ST.musicVol??70}"></label>`;
+}
+function fmtDur(s){ s=Math.max(0,Math.round(s||0)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+function bindSoundtrack(){
+  const box=document.getElementById('sndBox'); if(!box) return; const q=s=>box.querySelector(s), qa=s=>box.querySelectorAll(s);
+  const redraw=()=>{ box.innerHTML=soundtrackHTML(); bindSoundtrack(); };
+  qa('input[name=sndsrc]').forEach(r=>r.onchange=()=>{ sndStop(); if(r.value==='synth'){ SND.src='synth'; } else if(ST.audio) { SND.src='file'; } q('#sndBuilt').hidden=r.value!=='synth'; q('#sndOwn').hidden=r.value!=='file'; if(r.value==='synth'&&ST.audio){ SND.src='synth'; } });
+  const prevPlaying=()=>PREV&&PREV.playing&&document.getElementById('prev');
+  qa('[data-sl]').forEach(b=>b.onclick=()=>{ const k=b.dataset.sl; if(SND.listen===k&&SND.playing){ sndStop(true); SND.listen=null; b.textContent='▶'; return; } const was=SND.src; SND.src='synth'; sndStart(k); SND.src=was; SND.listen=k; qa('[data-sl]').forEach(x=>x.textContent='▶'); b.textContent='⏸'; clearTimeout(SND.lt); SND.lt=setTimeout(()=>{ if(SND.listen===k){ sndStop(true); SND.listen=null; b.textContent='▶'; } },12000); });
+  qa('[data-sp]').forEach(b=>b.onclick=()=>{ ST.music=b.dataset.sp; SND.src='synth'; qa('.snd').forEach(s=>{ const on=s.dataset.snd===ST.music; s.classList.toggle('on',on); s.querySelector('[data-sp]').setAttribute('aria-pressed',on); }); window._looksUpd&&window._looksUpd(); if(prevPlaying()) sndStart(ST.music); toast('🎵 Soundtrack: '+SOUNDTRACKS.find(t=>t.k===ST.music).n); });
+  if(q('#sndQ')) q('#sndQ').oninput=e=>{ const v=e.target.value.toLowerCase().trim(); qa('.snd').forEach(s=>s.hidden=!!v&&!s.dataset.sq.includes(v)); qa('.sndcat').forEach(c=>c.hidden=![...c.querySelectorAll('.snd')].some(s=>!s.hidden)); };
+  if(q('#sndUp')) q('#sndUp').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; if(await sndSetFile(f)){ toast('🎧 Added “'+f.name+'”'); redraw(); } };
+  if(q('#sndPick')) q('#sndPick').onclick=()=>mfPicker({kind:'audio',multi:false,onPick:async fs=>{ if(await sndSetFile(fs[0])){ toast('🎧 Added “'+fs[0].name+'”'); redraw(); } }});
+  if(q('#sndRm')) q('#sndRm').onclick=()=>{ sndClearFile(); redraw(); toast('Removed your audio track'); };
+  if(q('#sndListen')) q('#sndListen').onclick=e=>{ if(SND.playing){ sndStop(); e.target.textContent='▶ Listen'; } else { sndStart(); e.target.textContent='⏸ Stop'; } };
+  if(q('#sndStart')) q('#sndStart').oninput=e=>{ ST.audioStart=+e.target.value; q('#sndStartV').textContent=fmtDur(ST.audioStart); };
+  q('#sndVol').oninput=e=>{ ST.musicVol=+e.target.value; q('#sndVolV').textContent=ST.musicVol+'%'; sndVol(); };
+}
+async function exportPreviewVideo(){
+  const cv=document.getElementById('prev'); if(!cv||!PREV) return; if(!window.MediaRecorder||!cv.captureStream){ toast('⚠️ This browser can’t record video — try Chrome or Edge'); return; }
+  const c=sndCtx(); const mime=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1,mp4a.40.2','video/mp4;codecs=avc1','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(t=>MediaRecorder.isTypeSupported(t))||''; const ext=/mp4/.test(mime)?'mp4':'webm';
+  const vs=cv.captureStream(30); const dest=c.createMediaStreamDestination();
+  const P=ST.photos, N=P.length, total=N*ST.len-(N-1)*0.75+1.5;
+  const btn=document.getElementById('pxp'); btn.disabled=true;
+  // route soundtrack into the recording
+  let elSrc=null, recEl=null;
+  sndStop(); await new Promise(r=>setTimeout(r,350));
+  if(SND.src==='file'&&ST.audio){ const blob=await idbGet(ST.audio.id); if(blob){ recEl=new Audio(URL.createObjectURL(blob)); recEl.currentTime=ST.audioStart||0; elSrc=c.createMediaElementSource(recEl); const g=c.createGain(); g.gain.value=(ST.musicVol??70)/100; elSrc.connect(g); g.connect(dest); g.connect(c.destination); } }
+  else { sndStart(ST.music); SND.master.connect(dest); }
+  const stream=new MediaStream([...vs.getVideoTracks(),...dest.stream.getAudioTracks()]);
+  const rec=new MediaRecorder(stream,mime?{mimeType:mime,videoBitsPerSecond:6e6}:undefined); const chunks=[]; rec.ondataavailable=e=>e.data.size&&chunks.push(e.data);
+  PREV.offset=0; PREV.t0=performance.now(); PREV.playing=true; if(recEl) recEl.play().catch(()=>{});
+  rec.start(500); const t0=performance.now();
+  const tick=setInterval(()=>{ const s=(performance.now()-t0)/1000; btn.textContent=`⏺ Recording… ${Math.min(100,Math.round(s/total*100))}%`; if(s>total-1.2&&SND.master&&SND.ctx) SND.master.gain.setTargetAtTime(0,SND.ctx.currentTime,0.35); },250);
+  await new Promise(r=>setTimeout(r,total*1000+200)); clearInterval(tick); rec.stop(); await new Promise(r=>rec.onstop=r);
+  if(recEl){ recEl.pause(); try{ elSrc.disconnect(); }catch(e){} } sndStop();
+  const blob=new Blob(chunks,{type:(mime||'video/webm').split(';')[0]}); btn.disabled=false; btn.textContent='⬇️ Download video with soundtrack';
+  const name=mfSafeName(ST.area||'Listing preview')+' - preview.'+ext;
+  const box=document.getElementById('pxpDone'); if(box) box.innerHTML=`<div class="lactive">✅ Your ${fmtDur(total)} video with soundtrack is ready (${(blob.size/1048576).toFixed(1)} MB). <span class="lact"><button class="xbtn" id="pxDl">⬇️ Download</button><button class="xbtn" id="pxSv">💾 Save to My Files</button></span></div>`;
+  const file=new File([blob],name,{type:blob.type});
+  if(box){ box.querySelector('#pxDl').onclick=()=>mfSave(name,blob); box.querySelector('#pxSv').onclick=async()=>{ const it=await mfUploadVideo(file,{title:(ST.area||'Listing')+' preview video',src:'Real Estate · Photo-to-video'}); if(it&&ST.projId){ it.proj=ST.projId; saveMyFiles(); } }; }
+  mfSave(name,blob);
+}
+
 function playMusicLoop(clip){
   const c=ensureCtx(); if(!c) return;
   if(AUD.loopGain){ try{ AUD.loopGain.gain.setTargetAtTime(0,c.currentTime,0.05); const old=AUD.loopGain; setTimeout(()=>{ try{ old.disconnect(); }catch(e){} },400); }catch(e){} }
@@ -4268,10 +4448,10 @@ function openClaudeCode(){
 }
 
 /* ---------- 💾 My Files: personal saved prompts, plans and videos ---------- */
-const MF_TYPES={prompt:['🧩','Prompt'],plan:['🎬','Video plan'],video:['🎞️','Video'],photo:['🖼️','Photo'],doc:['📄','Document'],breakdown:['🕵️','Video breakdown'],guide:['📝','How-to guide'],note:['🗒️','Note']};
+const MF_TYPES={prompt:['🧩','Prompt'],plan:['🎬','Video plan'],video:['🎞️','Video'],photo:['🖼️','Photo'],doc:['📄','Document'],audio:['🎵','Music'],breakdown:['🕵️','Video breakdown'],guide:['📝','How-to guide'],note:['🗒️','Note']};
 let MYF=(()=>{ try{ const v=JSON.parse(localStorage.getItem('pc_myfiles')); return Array.isArray(v)?v:[]; }catch(e){ return []; } })();
 const MFV={q:'',type:'all',open:null};
-const MF_FILE=x=>x.type==='video'||x.type==='photo'||x.type==='doc';
+const MF_FILE=x=>x.type==='video'||x.type==='photo'||x.type==='doc'||x.type==='audio';
 const MF_DOC_ACCEPT='.pdf,.docx,.txt,.md,.csv,.xlsx,.pptx,.json,.html,.epub';
 const MF_DL_OK=['gif','png','jpg','jpeg','webp','mp4','webm','mov','txt','json','md','docx','pptx','epub','csv','html','svg','pdf','xlsx','zip'];
 function mfExt(x){ return (((x.name||'').match(/\.([a-z0-9]+)$/i)||[])[1]||'').toLowerCase(); }
@@ -4318,6 +4498,7 @@ function myFilesView(){
         <label class="btn ghost" style="cursor:pointer">🖼️ Add a photo<input type="file" id="mfPhoto" accept="image/*" multiple hidden></label>
         <label class="btn ghost" style="cursor:pointer">📄 Add a document<input type="file" id="mfDoc" accept="${MF_DOC_ACCEPT}" multiple hidden></label>
         <label class="btn ghost" style="cursor:pointer">🎞️ Add a video<input type="file" id="mfVid" accept="video/*" hidden></label>
+        <label class="btn ghost" style="cursor:pointer">🎵 Add music<input type="file" id="mfAud" accept="audio/*,.mp3,.m4a,.wav,.aac" multiple hidden></label>
       </div>
     </div>
     <div class="card" id="projSec"><h2 style="margin:0 0 4px">📁 Projects <span class="muted" style="font-size:14px;font-weight:500">· auto-saved</span></h2>
@@ -4350,6 +4531,7 @@ function myFilesView(){
   if($('#mfDlShown')) $('#mfDlShown').onclick=()=>mfDownloadAll(list);
   $('#mfNew').onclick=()=>{ const it=mfAdd({type:'note',title:'My new prompt',text:'',src:'Written by me'}); MFV.open=it.id; MFV.type='all'; MFV.q=''; myFilesView(); const t=document.querySelector(`[data-mfedit="${it.id}"]`); if(t) t.focus(); };
   $('#mfPhoto').onchange=async e=>{ await mfUploadMany(e.target.files,'photo'); e.target.value=''; };
+  $('#mfAud').onchange=async e=>{ await mfUploadMany(e.target.files,'audio'); e.target.value=''; };
   $('#mfDoc').onchange=async e=>{ await mfUploadMany(e.target.files,'doc'); e.target.value=''; };
   $('#mfVid').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; await mfUploadVideo(f); e.target.value=''; };
   bindMyFiles(); bindProjCards(myFilesView); if($('#mfProjX')) $('#mfProjX').onclick=()=>{ MFV.proj=null; myFilesView(); };
@@ -4366,6 +4548,7 @@ function mfCard(x){
     <div class="body">
       ${x.type==='video'?(x.url?`<video src="${esc(x.url)}" controls playsinline style="width:100%;max-height:480px;border-radius:12px;background:#000"></video>`:'<p class="muted">Video not available.</p>')
         :x.type==='photo'?(x.url?`<img src="${esc(x.url)}" alt="${esc(x.title)}" style="width:100%;max-height:520px;object-fit:contain;border-radius:12px;background:var(--bg);display:block">`:'<p class="muted">Photo not available.</p>')
+        :x.type==='audio'?(x.url?`<audio src="${esc(x.url)}" controls style="width:100%"></audio>`:'<p class="muted">Music not available.</p>')
         :x.type==='doc'?`<div class="docchip"><span style="font-size:34px">${{pdf:'📕',docx:'📘',xlsx:'📗',csv:'📗',pptx:'📙'}[mfExt(x)]||'📄'}</span><div><b>${esc(x.name||x.title)}</b><div class="muted" style="font-size:12px">${(mfExt(x)||'file').toUpperCase()}${x.size?' · '+mfSize(x.size):''} — click ⬇️ Download to open it on your computer</div></div></div>`:''}
       ${MF_FILE(x)&&x.url&&!x.assetId&&!x.shared?'<p class="warnnote" style="margin-top:6px">⚠️ This file is only here until you close the page (it was over 20 MB, or you’re not signed in to Claude). Add a smaller version to keep it.</p>':''}
       <label class="fld" style="margin-top:6px"><span>Name</span><input data-mfname="${x.id}" value="${esc(x.title)}" maxlength="120"></label>
@@ -4374,7 +4557,7 @@ function mfCard(x){
       <div class="actions">
         <button class="btn" data-mfsave="${x.id}">✅ Save changes</button>
         ${x.text?`<button class="btn ghost" data-mfcopy="${x.id}">📋 Copy</button>`:''}
-        <button class="btn ghost" data-mfdl="${x.id}">⬇️ Download ${MF_FILE(x)?({video:'video',photo:'photo',doc:'document'})[x.type]:'.txt'}</button>
+        <button class="btn ghost" data-mfdl="${x.id}">⬇️ Download ${MF_FILE(x)?({video:'video',photo:'photo',doc:'document',audio:'music'})[x.type]:'.txt'}</button>
         ${!MF_FILE(x)||(x.type==='doc'&&x.text)?`<button class="btn ghost" data-mfenh="${x.id}">✨ Improve in Enhancer</button>`:''}
         <button class="btn ghost" data-mfdup="${x.id}">📄 Make a copy</button>
         <button class="btn ghost" data-mfdel="${x.id}">🗑️ Delete</button>
@@ -4418,7 +4601,7 @@ async function mfVideoBlob(x){ if(!x.url) return null; try{ const r=await fetch(
 async function mfDownload(x){
   if(MF_FILE(x)){ toast('⏳ Getting your file ready…'); const b=await mfVideoBlob(x); if(!b){ toast('⚠️ This file isn’t available anymore — add it again'); return; }
     const ext=x.type==='video'?mfVidExt(x,b.type):(mfExt(x)||(x.type==='photo'?'jpg':'pdf'));
-    if(!MF_DL_OK.includes(ext)){ toast(`⚠️ .${ext} files can’t be downloaded here — save it as PDF, Word (.docx), JPG or PNG and add it again`); return; }
+    if(!MF_DL_OK.includes(ext)){ toast(x.type==='audio'?'⚠️ Music files can’t be downloaded from here — include them by downloading everything as a .zip':`⚠️ .${ext} files can’t be downloaded here — save it as PDF, Word (.docx), JPG or PNG and add it again`); return; }
     await mfSave(mfSafeName(x.title)+'.'+ext, b); return; }
   await mfSave(mfSafeName(x.title)+'.txt', mfTxt(x));
 }
@@ -4438,20 +4621,21 @@ async function mfDownloadAll(items){
 
 async function mfUploadFile(f,kind){
   if(kind==='photo'&&!f.type.startsWith('image/')){ toast('Please choose a photo (JPG, PNG…)'); return null; }
+  if(kind==='audio'&&!f.type.startsWith('audio/')&&!/\.(mp3|m4a|wav|aac|ogg)$/i.test(f.name)){ toast('Please choose a music file (MP3, M4A, WAV)'); return null; }
   const ext=(f.name.match(/\.([a-z0-9]+)$/i)||[])[1]||'';
   let text='';
   if(kind==='doc'&&/^(txt|md|csv|json|html)$/i.test(ext)&&f.size<300000){ try{ text=await f.text(); }catch(e){} }
   const base={type:kind,title:f.name.replace(/\.[^.]+$/,''),src:'Uploaded by me',name:f.name,size:f.size,text};
-  const label=kind==='photo'?'Photo':'Document';
+  const label=kind==='photo'?'Photo':kind==='audio'?'Music file':'Document';
   const a=await getAssets(); let it;
   if(a&&f.size<=20*1048576){ try{ const r=await a.upload(f); it=mfAdd({...base,url:r.url||('/_blob/'+r.id),assetId:r.id}); }catch(e){ it=mfAdd({...base,url:URL.createObjectURL(f)}); toast(`⚠️ Couldn’t save “${f.name}” to your account — kept for this visit only`); } }
   else { it=mfAdd({...base,url:URL.createObjectURL(f)}); toast(f.size>20*1048576?`⚠️ “${f.name}” is over 20 MB — kept for this visit only`:'Kept for this visit (saving files needs the Claude app)'); }
   return it;
 }
 async function mfUploadMany(files,kind){
-  const list=[...files]; if(!list.length) return; toast(`⏳ Saving ${list.length} ${kind==='photo'?'photo':'document'}${list.length>1?'s':''}…`);
+  const list=[...files]; if(!list.length) return; toast(`⏳ Saving ${list.length} ${kind==='photo'?'photo':kind==='audio'?'music file':'document'}${list.length>1?'s':''}…`);
   let ok=0; for(const f of list){ const it=await mfUploadFile(f,kind); if(it) ok++; }
-  if(ok) toast(`✅ ${ok} ${kind==='photo'?'photo':'document'}${ok>1?'s':''} saved to My Files`);
+  if(ok) toast(`✅ ${ok} ${kind==='photo'?'photo':kind==='audio'?'music file':'document'}${ok>1?'s':''} saved to My Files`);
   updateFilesBtn(); if(document.getElementById('nav-files')&&document.getElementById('nav-files').classList.contains('on')) myFilesView();
 }
 async function mfUploadVideo(f,extra){
