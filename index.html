@@ -2,18 +2,28 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Prompt CRAFT — The Prompting Game</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="description" content="Learn to write great AI prompts by playing games, using a ready-made prompt library, Pro Missions and handy tools. For entertainment and educational purposes only.">
+<meta name="theme-color" content="#1f2330">
+<meta name="color-scheme" content="light dark">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Prompt CRAFT">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link href="fonts.css" rel="stylesheet">
 <style>
   :root{
     --bg:#f6f4ef; --card:#ffffff; --ink:#1f2330; --muted:#5d6475; --line:#e4e0d6;
-    --C:#2f7de1; --R:#8e4fd6; --A:#e0542f; --F:#1f9e6b; --T:#e0a21f; --E:#d43f86;
-    --good:#1f9e6b; --bad:#d6453a;
+    --C:#1c64c1; --R:#833ed2; --A:#b43b1b; --F:#17734e; --T:#846012; --E:#b9296e;
+    --good:#17734e; --bad:#bd3227;
   }
   @media (prefers-color-scheme: dark){
-    :root{ --bg:#16181f; --card:#1f222b; --ink:#eef0f5; --muted:#a3a9b8; --line:#30343f; }
+    :root{ --bg:#16181f; --card:#1f222b; --ink:#eef0f5; --muted:#a3a9b8; --line:#30343f; --C:#67a0e9; --R:#b58be4; --A:#e88266; --F:#23b379; --T:#e0a21f; --E:#e27ead; --good:#23b379; --bad:#e4837b; --link:#8ab4ff; }
+    .chip,.echip.ok,.lword>span,.watch,.mstep.done .msn,.lvl button.on,.lt .lword span,.xchip,.badge.on,.lt,.lt small{color:#111!important}
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.5}
@@ -137,7 +147,7 @@
   .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:12px}
   .dow{text-align:center;font-size:12px;font-weight:600;color:var(--muted);padding:4px 0}
   .day{font:inherit;aspect-ratio:1/1;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:4px 2px;gap:2px;position:relative;min-height:44px}
-  .day.out{opacity:.4}.day.today{border-color:var(--A)}.day.today .dn{color:var(--A);font-weight:700}
+  .day.out{opacity:1;background:var(--bg)}.day.out .dn{color:var(--muted)}.day.today{border-color:var(--A)}.day.today .dn{color:var(--A);font-weight:700}
   .day.sel{background:var(--ink);color:var(--bg);border-color:var(--ink)}
   .day .dn{font-family:Fredoka;font-size:15px}
   .day .dots{display:flex;gap:2px;flex-wrap:wrap;justify-content:center}.day .dots i{width:6px;height:6px;border-radius:50%;display:block}
@@ -234,7 +244,8 @@
   .win-bar span{margin-left:8px;opacity:.85}
   .win-body{padding:16px 18px}
   .clipli{cursor:pointer;border-radius:10px;padding:6px 8px;margin-left:-8px;transition:background .15s;display:list-item}
-  .clipli:hover,.clipli:focus{background:color-mix(in srgb,var(--F) 12%,transparent);outline:none}
+  .clipbtn{display:block;cursor:pointer;border-radius:10px}.clipbtn:focus-visible{outline:3px solid #1a5fd0}
+  .clipli:hover,.clipli:focus-within{background:color-mix(in srgb,var(--F) 12%,transparent);outline:none}
   .clipli .watch{display:inline-block;margin-left:8px;font-size:12px;font-weight:700;color:#fff;background:var(--F);border-radius:999px;padding:2px 9px;vertical-align:middle;white-space:nowrap}
   .clipcard{max-width:420px;width:100%;max-height:94vh;overflow:auto}
   .phone{margin:12px auto 0;width:min(300px,100%);background:#000;border-radius:26px;padding:8px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
@@ -361,9 +372,38 @@
   @keyframes pop{0%{transform:scale(.9);opacity:0}100%{transform:scale(1);opacity:1}}
   .pop{animation:pop .25s ease-out}
   @media (max-width:520px){ .row5{grid-template-columns:repeat(5,1fr);gap:5px} .lbtn{font-size:19px;padding:12px 2px} .lbtn small{font-size:9px} h1{font-size:28px} }
+  /* ---- accessibility & legal ---- */
+  .muted .ph,.ph{color:var(--ink)}
+  .tab.on small,.tab.on .muted{color:inherit;opacity:.85}
+  @media (max-width:600px){
+    .toolbar{padding:6px!important}
+    .nav,.toolbar .nav{flex-wrap:nowrap!important;overflow-x:auto;justify-content:flex-start!important;width:100%;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px;mask-image:linear-gradient(90deg,#000 88%,transparent)}
+    .nav::-webkit-scrollbar,.tb-skill::-webkit-scrollbar{display:none}
+    .nav .tab{flex:none}
+    .tb-skill{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;scrollbar-width:none}
+    .tb-skill>*{flex:none}
+    .tb-skill .lvl button{white-space:nowrap}
+    .hdr-center{margin:6px 0 4px!important}
+  }
+  @media (max-width:420px){ .hdr-center .logo{font-size:40px;white-space:nowrap} }
+  .skip{position:absolute;left:8px;top:-60px;z-index:100;background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none}
+  .skip:focus{top:8px}
+  :focus-visible{outline:3px solid #1a5fd0;outline-offset:2px}
+  #app:focus,#app h1:focus,#app h2:focus{outline:none}
+  .btn:disabled,button:disabled{opacity:.55;cursor:not-allowed}
+  .btn.danger{background:var(--bad);border-color:var(--bad);color:#fff}
+  .discnote{margin:8px 0;padding:9px 12px;border-radius:10px;font-size:13px;line-height:1.5;background:color-mix(in srgb,var(--T) 12%,var(--card));border:1px solid color-mix(in srgb,var(--T) 55%,var(--line));color:var(--ink)}
+  .appfoot{margin:28px auto 12px;padding:16px;border-top:2px solid var(--line);text-align:center;font-size:13px;line-height:1.6;color:var(--ink)}
+  .appfoot p{margin:4px 0}.appfoot a{color:var(--link,#1a5fd0);font-weight:600}
+  .legal h2{margin-top:0}.legal h3{margin:16px 0 4px}.legal p,.legal li{line-height:1.6}.legal a{color:var(--link,#1a5fd0)}
+  .tcheck{display:flex;gap:10px;align-items:flex-start;margin:12px 0 4px;font-size:14.5px;line-height:1.5;cursor:pointer}.tcheck input{width:22px;height:22px;flex:none;margin-top:1px}
+  .backterms{margin-bottom:12px}
+  @media (pointer:coarse){ .tab,.xbtn,.qcopy,.cloud,.mstep,.lvl button{min-height:44px} .btn{min-height:48px} }
+  @media (prefers-reduced-motion:reduce){ *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important} }
 </style>
 </head>
 <body>
+<a class="skip" href="#app" onclick="document.getElementById('app').focus();return false">Skip to main content</a>
 <div class="wrap">
   <header class="hdr">
     <div class="toolbar">
@@ -377,7 +417,8 @@
       </div>
     </div>
   </header>
-  <main id="app"></main>
+  <main id="app" aria-live="off"></main>
+  <div id="footBox"></div>
 </div>
 
 <script>
@@ -483,12 +524,12 @@ function home(){
         <div class="win-body">
         <div class="r-head"><span class="r-av">✳️</span><b>Claude’s answer</b><span class="muted" style="font-size:13px">— example result</span></div>
         <p style="margin:0 0 10px">Here are 5 upbeat Instagram captions for busy parents: <span class="muted" style="font-size:13px">(👆 click any caption to watch its video clip)</span></p>
-        <ol class="r-list">
-          <li class="clipli" data-clip="0" tabindex="0" role="button" title="Click to watch the video clip"><span>Mornings are chaos. Your protein shake doesn’t have to be. Blend, sip, and get out the door before the backpacks go missing. ☀️</span><span class="watch">▶ Watch clip</span></li>
-          <li class="clipli" data-clip="1" tabindex="0" role="button" title="Click to watch the video clip"><span>Nap time = 10-minute workout time. Who’s with us? Drop a 💪 if you squeezed one in today!</span><span class="watch">▶ Watch clip</span></li>
-          <li class="clipli" data-clip="2" tabindex="0" role="button" title="Click to watch the video clip"><span>Real talk: the snack drawer is for the kids. Our protein shakes are for you. No sharing required. 😉</span><span class="watch">▶ Watch clip</span></li>
-          <li class="clipli" data-clip="3" tabindex="0" role="button" title="Click to watch the video clip"><span>Soccer practice, grocery run, homework help… and you still made time for you. Tag a parent who does it all! 🙌</span><span class="watch">▶ Watch clip</span></li>
-          <li class="clipli" data-clip="4" tabindex="0" role="button" title="Click to watch the video clip"><span>New flavor alert: Chocolate Peanut Butter is here, and the kids keep asking for “just one sip.” Hide it well. 🍫</span><span class="watch">▶ Watch clip</span></li>
+        <ol class="r-list" role="list">
+          <li class="clipli" role="listitem"><span class="clipbtn" data-clip="0" tabindex="0" role="button" title="Click to watch the video clip"><span>Mornings are chaos. Your protein shake doesn’t have to be. Blend, sip, and get out the door before the backpacks go missing. ☀️</span><span class="watch">▶ Watch clip</span></span></li>
+          <li class="clipli" role="listitem"><span class="clipbtn" data-clip="1" tabindex="0" role="button" title="Click to watch the video clip"><span>Nap time = 10-minute workout time. Who’s with us? Drop a 💪 if you squeezed one in today!</span><span class="watch">▶ Watch clip</span></span></li>
+          <li class="clipli" role="listitem"><span class="clipbtn" data-clip="2" tabindex="0" role="button" title="Click to watch the video clip"><span>Real talk: the snack drawer is for the kids. Our protein shakes are for you. No sharing required. 😉</span><span class="watch">▶ Watch clip</span></span></li>
+          <li class="clipli" role="listitem"><span class="clipbtn" data-clip="3" tabindex="0" role="button" title="Click to watch the video clip"><span>Soccer practice, grocery run, homework help… and you still made time for you. Tag a parent who does it all! 🙌</span><span class="watch">▶ Watch clip</span></span></li>
+          <li class="clipli" role="listitem"><span class="clipbtn" data-clip="4" tabindex="0" role="button" title="Click to watch the video clip"><span>New flavor alert: Chocolate Peanut Butter is here, and the kids keep asking for “just one sip.” Hide it well. 🍫</span><span class="watch">▶ Watch clip</span></span></li>
         </ol>
         <div class="r-why">
           <div class="fp-head" style="font-size:15px;margin-bottom:6px">✅ Why this answer is so good — every CRAFT piece shows up:</div>
@@ -678,7 +719,7 @@ function msFbHTML(st,loading){
     ${st.fb.missing&&st.fb.missing.length?`<p style="margin:8px 0 2px"><b>➕ Add this to make it complete:</b></p><ul class="steps" style="margin:0">${st.fb.missing.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`:'<p class="fb good" style="margin-top:8px">🏆 Complete — nothing missing!</p>'}
     ${st.fb.better?`<div class="quote" style="margin-top:8px"><b>💡 Try adding:</b> ${esc(st.fb.better)}</div>`:''}
     ${st.fb.note?`<p class="muted" style="margin:8px 0 0">🧭 ${esc(st.fb.note)}</p>`:''}
-    <p class="muted" style="font-size:12px;margin:8px 0 0">Improve your prompt and click 🎯 Grade again — your best work counts.</p></div>`;
+    <p class="muted" style="font-size:12px;margin:8px 0 0">Improve your prompt and click 🎯 Grade again — your best work counts. Grades are for practice and fun only.</p></div>`;
 }
 function missionResults(id){
   const m=MISSIONS.find(x=>x.id===id), S=msState(id); const total=msTotal(m); const done=m.steps.filter((_,i)=>msStepScore(S.steps[i])>0).length;
@@ -1769,7 +1810,7 @@ function studioView(){
 function addImageFile(f){ const url=URL.createObjectURL(f); const img=new Image(); img.src=url; ST.photos.push({url,img,name:f.name||('photo-'+(ST.photos.length+1)+'.jpg'),room:guessRoom(f.name||'',ST.photos.length)}); }
 let _jszipP=null;
 function loadJSZip(){ if(window.JSZip) return Promise.resolve(window.JSZip); if(_jszipP) return _jszipP;
-  _jszipP=new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'; s.onload=()=>res(window.JSZip); s.onerror=()=>{ _jszipP=null; rej(); }; document.head.appendChild(s); }); return _jszipP; }
+  _jszipP=new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='jszip.min.js'; s.onload=()=>res(window.JSZip); s.onerror=()=>{ _jszipP=null; rej(); }; document.head.appendChild(s); }); return _jszipP; }
 async function addFiles(list){
   const files=[...list]; let added=0, skipped=0;
   for(const f of files){
@@ -2056,6 +2097,7 @@ function reShell(active){
     <div class="card pop">
       <h1>🏡 Real Estate</h1>
       <p class="muted" style="margin:0">All your real estate video tools in one place.</p>
+      ${discHTML('re')}
       <div class="tabs" style="margin-bottom:0">
         <button class="tab ${active==='studio'?'on':''}" onclick="studioView()">🎬 Photo-to-Video Studio</button>
         <button class="tab ${active==='prompts'?'on':''}" onclick="rePrompts()">📋 Prompts & Scripts (${n})</button>
@@ -2224,6 +2266,7 @@ function mortgageTool(){
   $('#toolBody').innerHTML = `
     <div class="card">
       <h2>🏠 Mortgage Calculator</h2>
+      ${discHTML('money')}
       <div class="formgrid">
         <label class="fld"><span>Home price ($)</span><input id="mPrice" type="number" value="500000" min="0"></label>
         <label class="fld"><span>Down payment (%)</span><input id="mDownPct" type="number" value="20" min="0" max="100" step="0.1"></label>
@@ -2279,6 +2322,7 @@ function autoTool(){
   $('#toolBody').innerHTML = `
     <div class="card">
       <h2>🚗 Auto Loan Calculator</h2>
+      ${discHTML('money')}
       <div class="formgrid">
         <label class="fld"><span>Vehicle price ($)</span><input id="aPrice" type="number" value="35000" min="0"></label>
         <label class="fld"><span>Down payment ($)</span><input id="aDown" type="number" value="5000" min="0"></label>
@@ -3168,6 +3212,7 @@ function videoDetectiveView(){
   $('#reBody').innerHTML = `
     <div class="card pop">
       <div class="top"><h1 style="margin:0">🔍 Video Detective</h1></div>
+      ${discHTML('video')}
       <p class="muted" style="margin:8px 0 0">Upload any video — a listing video, a Reel you love, an AI clip — and find out the prompts most likely used to make it: camera type, angle, movement, speed, lighting, look and tone. Then copy ready-made prompts to recreate that style.</p>
       ${lvlNote({new:'Tap the box below, pick a video from your computer or phone, then tap <b>🤖 Figure out the prompts</b>.', some:'Short clips (under 60 seconds) give the clearest results. Each scene change is detected as a separate shot.', adv:'Expert mode: the analysis adds lens, frame-rate, depth-of-field, grading and edit-pacing estimates, plus per-shot image-to-video prompts.'})}
     </div>
@@ -3421,7 +3466,7 @@ function enhRender(){
   const out=$('#enhOut'); if(!out||!ENH.out) return;
   const blanks=enhBlanks(ENH.prompt), R=ENH.out;
   out.innerHTML=`
-    <div class="card enhres">
+    <div class="card enhres">${discHTML('ai')}
       <div class="top"><h2 style="margin:0">Step 2 · Your enhanced prompt</h2><span class="badge" style="margin:0">${ENH.ai?'🤖 Rewritten by Claude':'⚙️ Built-in enhancer'}</span></div>
       <div class="ecompare">${enhScoreHTML(ENH.input||'','Before')}<span style="font-size:22px">➜</span>${enhScoreHTML(enhFilled(),'After')}</div>
       ${R.changes&&R.changes.length?`<div class="lvlnote lv-some" style="margin-top:10px"><b>✅ What I improved:</b><ul class="steps" style="margin:4px 0 0">${R.changes.map(c=>`<li>${esc(c)}</li>`).join('')}</ul></div>`:''}
@@ -3632,6 +3677,130 @@ function promptCard(it,tab,n){
 const CLOUD={db:null, uid:null, state:'checking', pending:{}, writing:{}, timers:{}, unsubs:[], device:(()=>{ try{ let d=localStorage.getItem('pc_device'); if(!d){ d=Math.random().toString(36).slice(2,10); localStorage.setItem('pc_device',d); } return d; }catch(e){ return 'x'+Math.random().toString(36).slice(2,8); } })(), applying:false, lastSync:null};
 const lsGet=(k,d)=>{ try{ const v=localStorage.getItem(k); return v==null?d:v; }catch(e){ return d; } };
 const lsSet=(k,v)=>{ try{ localStorage.setItem(k,v); }catch(e){} };
+/* ---------- ⚖️ Legal, disclaimers & data controls ---------- */
+const APP_NAME='Prompt CRAFT', APP_OWNER='Minh Nguyen', CONTACT_EMAIL='mnpaccity@gmail.com', LEGAL_DATE='November 7, 2026';
+const DISC={
+  money:'💡 <b>For entertainment and educational purposes only.</b> These are rough estimates, not financial advice or a loan offer. Real rates, taxes, insurance and fees vary — check with a licensed lender or financial professional before making decisions.',
+  ai:'🤖 <b>AI can make mistakes.</b> Always review AI-written content before you use it. Results are for entertainment and educational purposes only and are not professional, legal, financial or medical advice.',
+  video:'🎬 Prompt guesses are for entertainment and learning only. Only analyze videos you have the right to use, and never copy someone else’s footage, branding or likeness.',
+  re:'🏡 Example prompts are for entertainment and learning only and are not legal or real-estate advice. Follow fair-housing rules, MLS rules and your brokerage’s policies, and label AI-edited photos and videos where required.',
+  claude:'Prompt CRAFT is an independent learning app. It is not made by, affiliated with, or endorsed by Anthropic, Google, Apple, or any other company or product named in it. All trademarks belong to their owners.'
+};
+function discHTML(k){ return `<p class="discnote" role="note">${DISC[k]}</p>`; }
+const LEGAL={
+ disclaimer:{n:'⚠️ Disclaimer',h:`<h2>Disclaimer — for entertainment only</h2>
+  <p><b>${APP_NAME} is provided for entertainment and educational purposes only.</b> Nothing in this app is professional advice of any kind — including financial, lending, tax, legal, real-estate, marketing, medical, nutrition or business advice.</p>
+  <ul class="steps"><li><b>Calculators</b> (mortgage, auto loan, receipt, calculator) give estimates only. They may be inaccurate and are not a loan offer or quote.</li>
+  <li><b>Prompts, scripts, examples and AI results</b> are samples. AI can be wrong, out of date or incomplete. You are responsible for checking anything before you use, publish or send it.</li>
+  <li><b>Marketing and sales content</b> must follow the laws where you use it — for example advertising, telemarketing / do-not-call, email (CAN-SPAM), privacy, fair-housing and endorsement-disclosure rules.</li>
+  <li><b>Health-related examples</b> (such as protein-shake ads) are fictional marketing samples, not health claims or nutrition advice.</li>
+  <li><b>Example people, businesses, numbers and results are fictional.</b> Any resemblance to real people or businesses is a coincidence.</li>
+  <li><b>Games and Pro Missions grades</b> are for practice and fun only and are not a certification.</li></ul>
+  <p>${DISC.claude}</p>
+  <p>The app is provided “as is”, without warranties of any kind. To the fullest extent allowed by law, ${APP_OWNER} is not liable for any loss or damage from using it.</p>`},
+ privacy:{n:'🔒 Privacy',h:`<h2>Privacy Policy</h2><p class="muted">Last updated ${LEGAL_DATE}</p>
+  <p>${APP_NAME} (“the app”) is made by ${APP_OWNER}. This policy explains what the app stores and where.</p>
+  <h3>What we collect</h3><p><b>We do not run accounts, ads, analytics or tracking, and we do not sell or share your data.</b> The developer does not receive the information you type into the app.</p>
+  <h3>Where your information is stored</h3><ul class="steps">
+   <li><b>On your device:</b> things you enter — My Info (name, contact details for auto-fill), planner events, receipts, saved prompts, game scores and settings — are saved in your browser’s local storage on your device.</li>
+   <li><b>Inside Claude (claude.ai or the Claude apps):</b> if you open the app there while signed in, your data and any photos, documents or videos you upload to My Files are saved privately to <i>your</i> Claude account by Anthropic so they sync across your devices. AI features (Prompt Enhancer, Video Detective, Pro Missions coach, “Explain with Claude”) send the text or video frames you choose to Claude to generate a response. Anthropic’s privacy policy applies to that processing.</li>
+   <li><b>Google Calendar (optional):</b> only if you connect it inside Claude, the planner reads and writes the calendar events you choose.</li></ul>
+  <h3>Third-party services</h3><p>The Android app and the website version load everything from their own site and do not contact third-party services. Only when you use Prompt CRAFT inside Claude does it also load fonts from Google Fonts and a ZIP helper from cdnjs (Cloudflare); those services receive standard technical information such as your IP address, under their own privacy policies. Links to other sites (Claude, Google, video tools) open their own sites, with their own policies.</p>
+  <h3>Children</h3><p>The app is intended for adults 18 and older and is not directed to children under 13. We do not knowingly collect information from children.</p>
+  <h3>Your choices and deleting your data</h3><p>You can delete everything the app stored at any time in <b>Legal → 🗑️ Delete my data</b>, or by clearing your browser’s site data. Uninstalling the Android app also removes its data from your device.</p>
+  <h3>Security</h3><p>Data on your device is protected by your device and browser. Anyone with access to your unlocked device may see it, so avoid storing sensitive information such as passwords, ID or bank numbers.</p>
+  <h3>Changes and contact</h3><p>We may update this policy and will change the date above. Questions: <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>`},
+ terms:{n:'📜 Terms',h:`<h2>Terms of Use</h2><p class="muted">Last updated ${LEGAL_DATE}</p>
+  <ol class="steps"><li><b>Entertainment only.</b> The app is for entertainment and educational purposes only. See the Disclaimer.</li>
+  <li><b>Who can use it.</b> You must be 18 or older.</li>
+  <li><b>Your content.</b> You own what you create. You are responsible for anything you upload, generate or publish, and for having the rights to it (including photos, videos, music and people’s likenesses).</li>
+  <li><b>Acceptable use.</b> Don’t use the app to break laws, mislead people, infringe others’ rights, impersonate anyone, send spam, or create harmful, hateful or deceptive content. Follow the rules of any AI or social platform you use.</li>
+  <li><b>AI-generated media.</b> Label AI-generated or AI-edited images, video and voices where laws or platforms require it.</li>
+  <li><b>Third-party services.</b> Claude, Google, video tools and other services are run by their owners under their own terms.</li>
+  <li><b>No warranty; limitation of liability.</b> The app is provided “as is.” To the fullest extent allowed by law, ${APP_OWNER} is not liable for any indirect or consequential damages, or for decisions made using the app.</li>
+  <li><b>Changes.</b> We may update the app and these terms. Continuing to use the app means you accept the updated terms.</li>
+  <li><b>Contact.</b> <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></li></ol>`},
+ access:{n:'♿ Accessibility',h:`<h2>Accessibility Statement</h2>
+  <p>We want ${APP_NAME} to be usable by everyone, including people who use screen readers, keyboards, magnification or voice control. We aim to meet the <b>Web Content Accessibility Guidelines (WCAG) 2.1, Level AA</b>, which is the standard commonly used for ADA compliance.</p>
+  <h3>What we’ve done</h3><ul class="steps"><li>Everything works with a keyboard: <b>Tab</b> to move, <b>Enter</b> or <b>Space</b> to press, <b>Esc</b> to close windows. A “Skip to main content” link appears on the first Tab.</li>
+  <li>Clear focus outlines show where you are.</li><li>Pop-up windows are announced to screen readers and keep focus inside until closed.</li>
+  <li>Buttons, fields, images and icons have text labels; status messages are announced.</li>
+  <li>Text can be zoomed to 200% and the layout adapts to small screens.</li><li>Animation is reduced if your device asks for reduced motion.</li>
+  <li>Video clips show on-screen captions with the voiceover text.</li><li>Information is never shown by color alone.</li></ul>
+  <h3>Known limitations</h3><p>Some third-party sites the app links to, and AI-generated content, may not be fully accessible. Videos you upload are shown as you provided them, so add captions to your own videos.</p>
+  <h3>Feedback</h3><p>If anything is hard to use, please tell us at <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>. We aim to reply within 5 business days.</p>`},
+ data:{n:'🗑️ Delete my data',h:`<h2>Delete my data</h2><p>This permanently removes everything ${APP_NAME} saved: My Info, planner, receipts, My Files (including uploaded photos, documents and videos), mission progress, game scores and settings — on this device and, if you’re signed in inside Claude, in your Claude account.</p>
+  <p class="warnnote">⚠️ This can’t be undone. Download anything you want to keep from 💾 My Files first.</p>
+  <div class="actions"><button class="btn danger" id="lgDel">🗑️ Delete all my data</button></div><div id="lgAsk"></div>`}
+};
+function legalView(tab){
+  tab=LEGAL[tab]?tab:'disclaimer'; setNav(''); window._rerender=()=>legalView(tab); try{ history.replaceState(null,'','#legal-'+tab); }catch(e){}
+  $('#app').innerHTML=`<div class="card pop"><h1 style="margin:0">⚖️ Legal & privacy</h1>
+    <div class="tabs" role="tablist" style="margin-top:10px;flex-wrap:wrap">${Object.entries(LEGAL).map(([k,v])=>`<button class="tab ${k===tab?'on':''}" role="tab" aria-selected="${k===tab}" onclick="legalView('${k}')">${v.n}</button>`).join('')}</div></div>
+    <div class="card legal">${LEGAL[tab].h}</div>`;
+  if(tab==='data') $('#lgDel').onclick=()=>{ $('#lgAsk').innerHTML=`<div class="askrow" role="alert">Are you sure? Everything will be erased. <button class="xbtn danger" id="lgYes">Yes, delete everything</button><button class="xbtn" id="lgNo">Cancel</button></div>`; $('#lgNo').onclick=()=>$('#lgAsk').innerHTML=''; $('#lgYes').onclick=deleteAllData; $('#lgNo').focus(); };
+  window.scrollTo(0,0);
+}
+async function deleteAllData(){
+  toast('⏳ Deleting your data…');
+  try{ const a=await getAssets(); if(a){ const ids=new Set(); (MYF||[]).forEach(x=>x.assetId&&ids.add(x.assetId)); Object.values(REAL||{}).forEach(r=>r&&r.id&&ids.add(r.id)); for(const id of ids){ try{ await a.delete(id); }catch(e){} } } }catch(e){}
+  try{ if(CLOUD&&CLOUD.db&&CLOUD.uid){ for(const k of Object.keys(CLOUD_KEYS)){ try{ const d=cloudDoc(k); if(typeof d.delete==='function') await d.delete(); else await d.set({v:null,updatedAt:Date.now(),device:'deleted'}); }catch(e){} } } }catch(e){}
+  try{ Object.keys(localStorage).filter(k=>k.startsWith('pc_')).forEach(k=>localStorage.removeItem(k)); }catch(e){}
+  try{ if('caches' in window){ const ks=await caches.keys(); await Promise.all(ks.map(k=>caches.delete(k))); } }catch(e){}
+  $('#app').innerHTML=`<div class="card pop" style="text-align:center"><div style="font-size:48px">✅</div><h2>Your data was deleted</h2><p>Everything the app saved has been removed.</p><button class="btn" onclick="location.reload()">Start fresh</button></div>`;
+}
+function footerHTML(){ return `<footer class="appfoot" role="contentinfo"><p><b>For entertainment and educational purposes only.</b> Not financial, legal, real-estate or professional advice. AI can make mistakes.</p>
+  <nav aria-label="Legal"><a href="#legal-disclaimer" onclick="legalView('disclaimer');return false">Disclaimer</a> · <a href="#legal-privacy" onclick="legalView('privacy');return false">Privacy</a> · <a href="#legal-terms" onclick="legalView('terms');return false">Terms</a> · <a href="#legal-access" onclick="legalView('access');return false">Accessibility</a> · <a href="#legal-data" onclick="legalView('data');return false">Delete my data</a></nav>
+  <p class="muted">© 2026 ${APP_OWNER}. Not affiliated with Anthropic, Google or Apple.</p></footer>`; }
+function firstRunDisclaimer(){
+  if(lsGet('pc_terms_ok','')==='v1') return;
+  const m=document.createElement('div'); m.className='modal'; m.id='termsModal'; m.dataset.noclose='1';
+  m.innerHTML=`<div class="card pop helpcard" style="max-width:560px"><h2 style="margin:0 0 6px">👋 Welcome to ${APP_NAME}</h2>
+    <p><b>This app is for entertainment and educational purposes only.</b></p>
+    <ul class="steps"><li>Calculators give estimates only — not financial or loan advice.</li><li>Prompts and AI results are examples — AI can make mistakes, so always check before using.</li><li>Nothing here is legal, real-estate, medical or professional advice.</li><li>For adults 18+. Your data stays on your device (or your own Claude account).</li></ul>
+    <label class="tcheck"><input type="checkbox" id="tmOk"> I’m 18 or older and I agree to the <a href="#legal-terms" id="tmT">Terms</a>, <a href="#legal-privacy" id="tmP">Privacy Policy</a> and <a href="#legal-disclaimer" id="tmD">Disclaimer</a>.</label>
+    <div class="actions"><button class="btn" id="tmGo" disabled>Let’s start</button></div></div>`;
+  document.body.appendChild(m);
+  const ok=m.querySelector('#tmOk'), go=m.querySelector('#tmGo');
+  ok.onchange=()=>{ go.disabled=!ok.checked; };
+  const peek=k=>e=>{ e.preventDefault(); lsSet('pc_terms_peek','1'); m.remove(); legalView(k); const b=document.createElement('button'); b.className='btn backterms'; b.textContent='← Back to the welcome screen'; b.onclick=()=>{ b.remove(); firstRunDisclaimer(); }; document.getElementById('app').prepend(b); };
+  m.querySelector('#tmT').onclick=peek('terms'); m.querySelector('#tmP').onclick=peek('privacy'); m.querySelector('#tmD').onclick=peek('disclaimer');
+  go.onclick=()=>{ lsSet('pc_terms_ok','v1'); m.remove(); toast('Welcome! Have fun learning to prompt 🎉'); };
+}
+
+/* ---------- ♿ Accessibility helpers (WCAG 2.1 AA) ---------- */
+const A11Y={stack:[]};
+function a11yFix(root){
+  (root.querySelectorAll?root:document).querySelectorAll('[onclick]:not(button):not(a):not(input):not(select):not(textarea):not(label):not([role])').forEach(el=>{ el.setAttribute('role','button'); el.tabIndex=0; el.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); el.click(); } }); });
+  (root.querySelectorAll?root:document).querySelectorAll('button:not([aria-label]),a:not([aria-label])').forEach(b=>{ const t=(b.textContent||'').trim(); if(!/[A-Za-z0-9]/.test(t)){ const l=b.getAttribute('title')||({'✕':'Close','⬇️':'Download','×':'Close'})[t]||'Button'; b.setAttribute('aria-label',l); } });
+  (root.querySelectorAll?root:document).querySelectorAll('input:not([type=hidden]):not([aria-label]),textarea:not([aria-label]),select:not([aria-label])').forEach(i=>{ if(i.id&&document.querySelector(`label[for="${i.id}"]`)) return; if(i.closest('label')) return; const l=i.getAttribute('placeholder')||i.getAttribute('title')||i.name||(i.type==='file'?'Choose a file':''); if(l) i.setAttribute('aria-label',l.replace(/^🔍\s*|^🔎\s*/,'')); });
+  (root.querySelectorAll?root:document).querySelectorAll('canvas:not([role])').forEach(c=>{ c.setAttribute('role','img'); c.setAttribute('aria-label',c.id==='clipCv'?'Animated example video — the caption below describes it':'Animated illustration'); });
+  (root.querySelectorAll?root:document).querySelectorAll('img:not([alt])').forEach(i=>i.setAttribute('alt',''));
+  (root.querySelectorAll?root:document).querySelectorAll('.tab.on:not([aria-current])').forEach(t=>t.setAttribute('aria-current','true'));
+}
+function a11yModal(m){
+  const card=m.firstElementChild||m; m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
+  const h=m.querySelector('h1,h2,h3'); if(h){ if(!h.id) h.id='dlg'+Math.random().toString(36).slice(2,7); m.setAttribute('aria-labelledby',h.id); } else m.setAttribute('aria-label','Dialog');
+  const prev=document.activeElement; A11Y.stack.push({m,prev});
+  document.querySelector('.wrap')&&document.querySelector('.wrap').setAttribute('aria-hidden','true');
+  setTimeout(()=>{ if(!m.isConnected) return; if(m.contains(document.activeElement)) return; const f=m.querySelector('input:not([type=hidden]):not([type=file]),textarea,select,button:not([disabled]),a[href]'); (f||card).focus&&(f||(card.tabIndex=-1,card)).focus(); },60);
+  m.addEventListener('keydown',e=>{
+    if(e.key==='Escape'&&!m.dataset.noclose){ const c=[...m.querySelectorAll('button')].find(b=>/close|cancel/i.test(b.textContent)||/X$/.test(b.id||'')); if(c){ e.preventDefault(); e.stopPropagation(); c.click(); } }
+    if(e.key==='Tab'){ const f=[...m.querySelectorAll('a[href],button:not([disabled]),input:not([type=hidden]):not([disabled]),textarea,select,[tabindex]:not([tabindex="-1"])')].filter(x=>x.offsetParent!==null||x===document.activeElement); if(!f.length) return; const first=f[0], last=f[f.length-1]; if(e.shiftKey&&document.activeElement===first){ e.preventDefault(); last.focus(); } else if(!e.shiftKey&&document.activeElement===last){ e.preventDefault(); first.focus(); } }
+  });
+}
+function a11yInit(){
+  const app=document.getElementById('app'); app.setAttribute('tabindex','-1');
+  const t=document.createElement('div'); t.id='toast'; t.setAttribute('role','status'); t.setAttribute('aria-live','polite'); document.body.appendChild(t);
+  const nav=document.querySelector('.nav'); if(nav) nav.setAttribute('aria-label','Main');
+  const logo=document.querySelector('.logo'); if(logo){ logo.setAttribute('aria-label','Prompt CRAFT — go to home'); }
+  a11yFix(document);
+  new MutationObserver(muts=>{ for(const mu of muts){ mu.addedNodes.forEach(n=>{ if(n.nodeType!==1) return; if(n.classList&&n.classList.contains('modal')&&n.parentElement===document.body) a11yModal(n); a11yFix(n); }); mu.removedNodes.forEach(n=>{ if(n.nodeType===1&&n.classList&&n.classList.contains('modal')){ const i=A11Y.stack.findIndex(s=>s.m===n); if(i>-1){ const s=A11Y.stack.splice(i,1)[0]; if(!document.querySelector('body > .modal')){ const w=document.querySelector('.wrap'); w&&w.removeAttribute('aria-hidden'); } if(s.prev&&s.prev.isConnected) try{ s.prev.focus(); }catch(e){} } } }); } }).observe(document.body,{childList:true,subtree:true});
+  const _setNav=setNav; window.setNav=setNav=function(id){ _setNav(id); if(A11Y.navFocus){ setTimeout(()=>{ const h=document.querySelector('#app h1, #app h2'); if(h){ h.tabIndex=-1; h.focus({preventScroll:true}); } },30); } };
+  document.addEventListener('click',e=>{ if(e.target.closest('.nav')) A11Y.navFocus=true; else if(!e.target.closest('#app')) A11Y.navFocus=false; },true);
+  document.addEventListener('keydown',e=>{ if(e.key==='Tab') document.body.classList.add('kbd'); },true);
+}
+
 /* ---------- ⌨️ Claude Code cheat sheet ---------- */
 const CC=[{"k": "start", "n": "⭐ Start here", "d": "The handful you’ll use every day. Open Command Prompt first: press the Windows key, type cmd, press Enter.", "items": [["cd C:\\Users\\YourName\\my-project", "Go into your project folder (a Windows command, not Claude).", "Do this before typing claude, so Claude works on the right files."], ["claude", "Start Claude Code in the folder you’re in.", "Then just type what you want in plain English."], ["claude -c", "Continue your last conversation.", "You closed the window and want to pick up where you left off."], ["/help", "List every command in your version.", "Whenever you forget a command."], ["/init", "Create a CLAUDE.md file that teaches Claude about your project.", "First time in a new project."], ["/clear", "Start a new, empty conversation.", "Switching to a different task."], ["/compact", "Shrink the conversation so Claude has room to keep working.", "The chat is long and Claude starts forgetting things."], ["/rewind", "Go back to an earlier point (undo).", "Claude went the wrong way."], ["/model", "Switch the AI model.", "Strongest model for hard jobs, faster one for easy jobs."], ["/usage", "See how much of your plan you’ve used.", "Worried about hitting your limit."], ["Esc", "Stop Claude right away.", "Claude is doing the wrong thing."], ["Shift + Tab", "Switch modes: normal → auto-accept edits → plan mode.", "Plan mode = Claude plans first and changes nothing until you say yes."], ["@", "Point to a file, e.g. @README.md", "Tell Claude exactly which file you mean."], ["/exit", "Close Claude Code.", "When you’re finished."]], "adv": false}, {"k": "everyday", "n": "💬 Everyday commands", "d": "Type these inside Claude Code.", "items": [["/help", "List all commands."], ["/clear [name]", "Start a new conversation."], ["/compact [instructions]", "Condense the conversation to free up space."], ["/exit", "Close Claude Code."], ["/init", "Generate a CLAUDE.md for the project."], ["/memory", "Edit your CLAUDE.md memory files."], ["/model [model]", "Switch model."], ["/resume [session]", "Reopen an earlier conversation."], ["/rewind", "Return to an earlier point."], ["/diff", "Show file changes."], ["/plan [description]", "Plan before editing."], ["/status", "Show version, model and account."], ["/usage", "Show usage and limits."]], "adv": false}, {"k": "context", "n": "🧠 Conversation & context", "d": "Manage the chat and Claude’s memory space.", "items": [["/btw [question]", "Ask a quick side question."], ["/branch [name]", "Branch off in a new direction."], ["/fork [prompt]", "Copy the conversation to a background session."], ["/context [all]", "Show what is using context space."], ["/autocompact [auto|<tokens>]", "Set when automatic compaction happens."], ["/copy [N]", "Copy Claude’s last reply."], ["/export [filename]", "Save the conversation as text."], ["/recap", "One-line summary of the session."], ["/rename [name]", "Rename the session."], ["/goal [condition|clear]", "Keep working until a goal is met."], ["/cd <path>", "Change folder."], ["/add-dir <path>", "Give Claude access to another folder."], ["/focus", "Show only the final answer."], ["/insights", "Show your usage patterns."]], "adv": false}, {"k": "models", "n": "🎛️ Models & permissions", "d": "Control how Claude thinks and what it may do.", "items": [["/effort [level|auto|status]", "Set reasoning effort."], ["/fast [on|off]", "Toggle fast mode."], ["/advisor [model|off]", "Let a second model give advice."], ["/output-style [style]", "Change how replies are formatted."], ["/permissions", "Manage what Claude may do without asking."], ["/sandbox", "Toggle sandbox mode."], ["/auto-mode-setup", "Set up auto mode."], ["/fewer-permission-prompts", "Reduce permission prompts. (Skill)"], ["/voice [hold|tap|off]", "Set voice input mode."]], "adv": false}, {"k": "review", "n": "🔍 Code review & testing", "d": "Check and verify your work.", "items": [["/code-review [level] [--fix] [PR]", "Check code for bugs. (Skill)"], ["/review [level] [--fix] [PR]", "Same as /code-review."], ["/security-review", "Security check of your changes."], ["/ultrareview [PR or branch]", "Deep review in the cloud."], ["/autofix-pr [prompt]", "Fix a pull request when checks fail."], ["/simplify [target]", "Clean up new code. (Skill)"], ["/verify", "Run the app to confirm a change works. (Skill)"], ["/run", "Open the app to view a change. (Skill)"], ["/run-skill-generator", "Teach /run how to start your app. (Skill)"], ["/batch <instruction>", "Large changes across many files. (Skill)"]], "adv": false}, {"k": "agents", "n": "🤖 Agents & background work", "d": "Helpers that work for you, even in the background.", "items": [["/agents", "How to set up subagents."], ["/list-agents", "List agents Claude can message."], ["/subtask <task>", "Start a background helper."], ["/background [prompt]", "Send this chat to the background."], ["/tasks", "Show background work."], ["/stop", "Stop a background session."], ["/loop [interval] [prompt]", "Repeat a prompt on a timer. (Skill)"], ["/schedule [description]", "Schedule cloud tasks."], ["/deep-research <question>", "Research a topic and write a report. (Workflow)"], ["/workflows", "Show running workflows."], ["/teleport", "Bring a cloud session to your computer."], ["/remote-control", "Continue on claude.ai or your phone."], ["/remote-env", "Choose your default cloud setup."], ["/desktop", "Continue in the desktop app."]], "adv": true}, {"k": "settings", "n": "⚙️ Settings & setup", "d": "Make Claude Code look and work the way you like.", "items": [["/config [key=value]", "Open or change settings."], ["/theme", "Change colors."], ["/color [color|default]", "Change the prompt bar color."], ["/statusline", "Set up the status line."], ["/keybindings", "Edit keyboard shortcuts."], ["/terminal-setup", "Make Shift + Enter add a new line."], ["/tui [default|fullscreen]", "Switch screen layout."], ["/scroll-speed", "Change scroll speed."], ["/hooks", "Show hooks (automatic actions)."], ["/update-config [request]", "Change settings by asking in plain English. (Skill)"], ["/privacy-settings", "Change privacy settings."], ["/doctor", "Find and fix setup problems. (Skill)"], ["/debug [description]", "Help diagnose a problem. (Skill)"], ["/heapdump", "Save a memory report."], ["/restart", "Restart Claude Code."], ["/release-notes", "Show what’s new."], ["/import [codex|gemini|cursor]", "Import your setup from another tool."], ["/powerup", "Interactive feature lessons."]], "adv": false}, {"k": "addons", "n": "🔌 Connections & add-ons", "d": "Connect apps, plugins and skills.", "items": [["/mcp", "Manage connected tools."], ["/plugin [subcommand]", "Install and manage plugins."], ["/reload-plugins", "Reload plugins."], ["/skills", "List skills."], ["/reload-skills", "Reload skills."], ["/skill-doctor", "Show which skills cost the most."], ["/ide", "Connect to your code editor."], ["/chrome", "Set up Claude in Chrome."], ["/claude-in-chrome [task]", "Run a task in Chrome. (Skill)"], ["/install-github-app", "Add the Claude GitHub app."], ["/install-slack-app", "Add the Claude Slack app."], ["/web-setup", "Connect GitHub for cloud sessions."], ["/setup-bedrock", "Set up Amazon Bedrock."], ["/setup-vertex", "Set up Google Cloud."], ["/artifacts", "List artifacts."], ["/design [brief]", "Design screens and pages. (Skill)"], ["/design consent", "Grant or remove Claude Design access."], ["/design-login", "Sign in for /design-sync."], ["/design-sync [hint]", "Upload a design system. (Skill)"], ["/slides [brief]", "Make a slide deck. (Skill)"], ["/dataviz [request]", "Help with charts. (Skill)"], ["/claude-api", "Load the Claude API docs. (Skill)"], ["/artifact-capabilities", "Show what artifacts can do. (Skill)"], ["/artifact-diagramming", "Help with diagrams. (Skill)"], ["/plugin-authoring", "Help writing a plugin."], ["/workflow-authoring", "Help writing workflows. (Skill)"], ["/mobile", "QR code for the Claude app."]], "adv": true}, {"k": "account", "n": "👤 Account & usage", "d": "Sign-in, limits and feedback.", "items": [["/login", "Sign in."], ["/logout", "Sign out."], ["/cost", "Same as /usage."], ["/stats", "Same as /usage."], ["/usage-credits", "Add usage credits."], ["/rate-limit-options", "Options when you hit a limit."], ["/upgrade", "Upgrade your plan."], ["/passes", "Share a free week with friends."], ["/team-onboarding", "Write a team guide."], ["/feedback [report]", "Send feedback."], ["/bug [report]", "Report a bug."], ["/radio", "Play lo-fi radio."], ["/stickers", "Order stickers."]], "adv": true}, {"k": "terminal", "n": "🖥️ Terminal commands", "d": "Type these in Command Prompt (not inside Claude Code).", "items": [["claude", "Start Claude Code."], ["claude \"query\"", "Start with a first message."], ["claude -p \"query\"", "Ask once, print the answer and exit."], ["type file.txt | claude -p \"query\"", "Send a file with a question. (On Mac/Linux this is cat instead of type.)"], ["claude -c", "Continue the last chat."], ["claude -c -p \"query\"", "Continue with one question."], ["claude -r \"<session>\" \"query\"", "Open a chat by name or ID."], ["claude import [source]", "Import setup from another tool."], ["claude update", "Update Claude Code."], ["claude install [version]", "Install a specific version."], ["claude doctor", "Check your setup."], ["claude auth login", "Sign in."], ["claude auth logout", "Sign out."], ["claude auth status", "Show sign-in status."], ["claude setup-token", "Create a token for scripts."], ["claude purge [path]", "Delete a project’s history."], ["claude agents", "Show background sessions."], ["claude attach <id|name>", "Open a background session."], ["claude logs <id|name>", "Show a session’s output."], ["claude stop <id>", "Stop a background session."], ["claude respawn <id>", "Restart a background session."], ["claude rm <id>", "Remove a background session."], ["claude daemon status", "Show background helper status."], ["claude daemon logs", "Show background helper log."], ["claude daemon run", "Run the background helper here."], ["claude daemon stop --any", "Stop the background helper."], ["claude mcp", "Manage MCP servers."], ["claude mcp login <name>", "Sign in to an MCP server."], ["claude mcp logout <name>", "Sign out of an MCP server."], ["claude plugin", "Manage plugins."], ["claude auto-mode defaults", "Show auto mode rules."], ["claude auto-mode reset", "Reset auto mode."], ["claude ultrareview [target]", "Run a deep code review."], ["claude remote-control", "Use Claude Code from claude.ai or your phone."], ["claude gateway", "Start a company gateway. (Admins)"], ["claude self-hosted-runner", "Run cloud sessions on your own servers. (Admins)"]], "adv": true}, {"k": "flags", "n": "🏁 Startup flags", "d": "Add these after claude when you start it, e.g. claude --model sonnet", "items": [["--continue, -c", "Continue the last chat."], ["--resume, -r", "Open an earlier chat."], ["--print, -p", "Print the answer and exit."], ["--model", "Pick the model."], ["--effort", "Set reasoning effort."], ["--permission-mode", "Start in a chosen permission mode."], ["--name, -n", "Name the session."], ["--add-dir", "Add more folders."], ["--version, -v", "Show version."], ["--worktree, -w", "Work in a separate copy of your code."], ["--bg, --background", "Run in the background."], ["--safe-mode", "Start with all add-ons off."], ["--allowedTools, --allowed-tools", "Tools Claude may use without asking."], ["--disallowedTools, --disallowed-tools", "Tools Claude may not use."], ["--tools", "Limit built-in tools."], ["--dangerously-skip-permissions", "Skip ALL permission prompts. ⚠️ Risky — only in a test folder."], ["--allow-dangerously-skip-permissions", "Add skip-permissions to Shift + Tab cycling."], ["--permission-prompts", "Choose who answers prompts in print mode."], ["--permission-prompt-tool", "Use a tool to answer prompts."], ["--restricted", "Start in restricted mode."], ["--disable-slash-commands", "Turn off all commands and skills."], ["--bare", "Fast start with nothing extra loaded."], ["--fallback-model", "Backup model if the main one is busy."], ["--advisor <model>", "Turn on the advisor."], ["--autocompact <auto|tokens>", "Set when the chat compacts itself."], ["--output-format", "Text or JSON output."], ["--input-format", "Text or JSON input."], ["--json-schema", "Return JSON in a given schema."], ["--max-turns", "Cap the number of steps."], ["--max-budget-usd", "Stop at a spending limit."], ["--include-partial-messages", "Stream partial replies."], ["--include-hook-events", "Include hook events in output."], ["--forward-subagent-text", "Include subagent text in output."], ["--prompt-suggestions", "Suggest the next prompt."], ["--replay-user-messages", "Echo your messages back."], ["--verbose", "Show full detail."], ["--ax-screen-reader", "Screen-reader-friendly output."], ["--betas", "Enable API beta features."], ["--system-prompt", "Replace the system prompt."], ["--system-prompt-file", "Replace the system prompt from a file."], ["--append-system-prompt", "Add to the system prompt."], ["--append-system-prompt-file", "Add a file to the system prompt."], ["--append-subagent-system-prompt", "Add to every subagent’s prompt."], ["--append-subagent-system-prompt-file", "Add a file to every subagent’s prompt."], ["--system-prompt-snapshot", "Rebuild the prompt each time."], ["--exclude-dynamic-system-prompt-sections", "Keep personal details out of the system prompt."], ["--agent", "Use a specific agent."], ["--agents", "Add custom subagents."], ["--teammate-mode", "Set how teammates appear."], ["--fork-session", "Resume as a new session."], ["--session-id", "Use a specific session ID."], ["--no-session-persistence", "Don’t save the session."], ["--from-pr", "Show sessions for a pull request."], ["--exec", "Run a command in the background."], ["--tmux", "Open a tmux session."], ["--cloud", "Start a cloud session."], ["--teleport", "Bring a cloud session here."], ["--environment <id>", "Use your own cloud environment."], ["--ref <branch>", "Start from a branch."], ["--remote-control, --rc", "Control the session from your phone or the web."], ["--remote-control-session-name-prefix", "Prefix for Remote Control names."], ["--desktop", "Open the desktop app instead."], ["--settings", "Load settings from a file."], ["--setting-sources", "Choose which settings to load."], ["--mcp-config", "Load MCP servers."], ["--strict-mcp-config", "Use only the MCP servers you pass."], ["--plugin-dir", "Load a plugin from a folder."], ["--plugin-url", "Load a plugin from a link."], ["--channels", "Listen for MCP notifications."], ["--dangerously-load-development-channels", "Allow unapproved channels."], ["--chrome", "Turn on Claude in Chrome."], ["--no-chrome", "Turn off Claude in Chrome."], ["--ide", "Connect to your editor on start."], ["--init", "Run setup hooks first."], ["--init-only", "Run setup hooks and exit."], ["--maintenance", "Run maintenance hooks first."], ["--debug", "Turn on debug mode."], ["--debug-file <path>", "Save debug logs to a file."]], "adv": true}, {"k": "keys", "n": "⌨️ Keyboard shortcuts", "d": "Keys you press while Claude Code is open. On Windows, “Option” means the Alt key.", "items": [["Esc", "Stop Claude."], ["Esc Esc", "Clear your input, or go back."], ["Shift + Tab", "Cycle permission modes."], ["Ctrl + C", "Stop, or quit if pressed twice."], ["Ctrl + D", "Quit (press twice)."], ["↑ / ↓", "Recall earlier input."], ["Tab", "Accept a suggestion."], ["Ctrl + R", "Search earlier input."], ["Ctrl + O", "Show the full transcript."], ["Ctrl + T", "Show the task list."], ["Ctrl + B", "Send tasks to the background."], ["Ctrl + S", "Save your prompt for later."], ["Ctrl + G", "Write your prompt in an editor."], ["Ctrl + V", "Paste an image."], ["Ctrl + L", "Redraw the screen."], ["Ctrl + Z", "Pause Claude Code."], ["Ctrl + Enter", "Send queued messages now."], ["Ctrl + X  Ctrl + K", "Stop all background helpers."], ["← / →", "Move between tabs."], ["Option + P  (Alt + P)", "Switch model."], ["Option + T  (Alt + T)", "Toggle thinking."], ["Option + O  (Alt + O)", "Toggle fast mode."]], "adv": false}, {"k": "typing", "n": "✍️ Typing & new lines", "d": "Editing what you type.", "items": [["Ctrl + A", "Go to the start of the line."], ["Ctrl + E", "Go to the end of the line."], ["Ctrl + K", "Delete to the end of the line."], ["Ctrl + U", "Delete to the start of the line."], ["Ctrl + W", "Delete the previous word."], ["Ctrl + Y", "Paste what you deleted."], ["Alt + Y", "Cycle through deleted text."], ["Alt + B", "Move back a word."], ["Alt + F", "Move forward a word."], ["Alt + D", "Delete the next word."], ["Ctrl + _", "Undo your last edit."], ["Shift + Enter", "New line."], ["\\ + Enter", "New line, in any terminal."], ["Ctrl + J", "New line, in any terminal."], ["Option + Enter", "New line (when Option is set as Meta)."]], "adv": true}, {"k": "prefix", "n": "✳️ Prefixes", "d": "Type one of these at the very start of your message.", "items": [["/", "Show commands."], ["!", "Run a terminal command, e.g. ! dir"], ["@", "Mention a file, e.g. @README.md"], [":", "Add an emoji."], ["?", "Show shortcuts."]], "adv": false}, {"k": "plugins", "n": "🧩 Plugin commands", "d": "Install a plugin first: /plugin install <name>@claude-plugins-official", "items": [["/commit-commands:commit", "Commit your changes. (commit-commands)"], ["/commit-commands:commit-push-pr", "Commit, push and open a PR. (commit-commands)"], ["/commit-commands:clean_gone", "Delete old local branches. (commit-commands)"], ["/feature-dev:feature-dev [description]", "Build a feature step by step. (feature-dev)"], ["/code-review:code-review", "Review a pull request. (code-review)"], ["/pr-review-toolkit:review-pr [aspects]", "Review a PR in depth. (pr-review-toolkit)"], ["/hookify:hookify [behavior]", "Stop Claude from repeating a behavior. (hookify)"], ["/hookify:list", "List rules. (hookify)"], ["/hookify:configure", "Turn rules on or off. (hookify)"], ["/hookify:help", "Show help. (hookify)"], ["/claude-md-management:revise-claude-md", "Save session learnings to CLAUDE.md."], ["/claude-md-management:claude-md-improver", "Improve your CLAUDE.md."], ["/claude-code-setup:claude-automation-recommender", "Suggest automations."], ["/claude-security:claude-security", "Scan code for security issues."], ["/code-modernization:modernize", "Modernize old code."], ["/ralph-loop:ralph-loop \"PROMPT\"", "Keep Claude working until done."], ["/ralph-loop:cancel-ralph", "Stop the loop."], ["/frontend-design:frontend-design", "Improve frontend design."], ["/skill-creator:skill-creator", "Create and test skills."], ["/playground:playground", "Make an interactive HTML playground."], ["/session-report:session-report", "Report token use."], ["/receipts:receipts", "Report what you’ve done with Claude Code."], ["/project-artifact:project-artifact", "Publish a project status page."], ["/mcp-server-dev:build-mcp-server", "Build an MCP server."], ["/plugin-dev:create-plugin [description]", "Create your own plugin."], ["/agent-sdk-dev:new-sdk-app [name]", "Set up an Agent SDK app."]], "adv": true}, {"k": "custom", "n": "🛠️ Make your own commands", "d": "Shortcuts for things you ask often.", "items": [[".claude/commands/standup.md", "A Markdown file here becomes the command /standup in this project."], ["~/.claude/commands/", "Command files here work in every project."], ["$ARGUMENTS", "In a command file, replaced by whatever you type after the command."], [".claude/skills/my-skill/SKILL.md", "A skill: instructions Claude loads when the task matches."], ["CLAUDE.md", "Project notes Claude reads at the start of every session."]], "adv": true}];
 /* ---------- Plain-English details for Claude Code cheat sheet items ---------- */
@@ -3766,6 +3935,7 @@ function openClaudeCode(){
         <div class="ccgrid">${s.items.map(i=>`<button class="ccitem" data-cc="${esc(i[0])}" data-ccs="${s.k}" data-cci="${CC.find(x=>x.k===s.k).items.indexOf(i)}" title="Click to learn what it does"><code>${esc(i[0])}</code><span>${esc(i[1])}${LEVEL!=='adv'&&i[2]?`<br><small class="muted">👉 ${esc(i[2])}</small>`:''}</span></button>`).join('')}</div>`).join('')
         :'<p class="muted" style="margin-top:12px">No commands match. Try another word, or type /help inside Claude Code.</p>'}
 </div>
+      ${discHTML('claude')}
       <div class="ccsec ccupd"><h4>🔄 Keep this sheet up to date</h4>
         <p style="font-size:13.5px">Claude Code adds new commands often. This sheet was last updated <b>November 2026</b>. To see what’s new:</p>
         <ul class="steps" style="font-size:13.5px"><li>Inside Claude Code, type <code>/help</code> (every command in your version) or <code>/release-notes</code> (what’s new).</li>
@@ -3995,7 +4165,7 @@ function cloudBadge(){
   const t={checking:'⏳ Connecting…', on:'☁️ Saved to cloud', saving:'⏳ Saving…', off:'💻 This device only', error:'⚠️ Cloud sync paused'}[CLOUD.state]||'';
   return `<button class="cloud cs-${CLOUD.state}" onclick="openCloudInfo()" title="Cloud sync">${t}</button>`;
 }
-function drawCloudBadge(){ const b=document.getElementById('cloudBox'); if(b) b.innerHTML=cloudBadge(); }
+function drawCloudBadge(){ const b=document.getElementById('cloudBox'); if(!b) return; b.innerHTML=(CLOUD.state==='off'&&window.top===window)?'':cloudBadge(); }
 function cloudSetState(s){ CLOUD.state=s; drawCloudBadge(); }
 function cloudDoc(key){ return CLOUD.db.doc(`data/users/${CLOUD.uid}/${key}`); }
 function cloudMark(key){
@@ -4081,7 +4251,11 @@ saveBest=function(g,pct){ const b=store('best_'+g)||0; _saveBest0(g,pct); if(pct
 setLevel=function(l){ _setLevel0(l); if(!CLOUD.applying) cloudMark('prefs'); };
 document.getElementById('lvlTop').innerHTML=levelSwitch(); updateMeBtn(); drawCloudBadge(); initCloud();
 updateFilesBtn();
-if(location.hash==='#missions'){ gamesView(); } else if(location.hash==='#claudecode'){ home(); openClaudeCode(); } else if(location.hash==='#files') myFilesView(); else if(location.hash==='#enhancer') enhancerView(); else if(location.hash==='#detective') videoDetectiveView(); else if(location.hash==='#tools') toolsView(); else if(location.hash==='#planner') plannerView(); else if(location.hash==='#studio'||location.hash==='#realestate') studioView(); else if(location.hash==='#library') libraryView(); else if(location.hash==='#games') gamesView(); else home();
+document.getElementById('footBox').innerHTML=footerHTML();
+a11yInit();
+setTimeout(firstRunDisclaimer,400);
+if('serviceWorker' in navigator && location.protocol==='https:' && window.top===window && !/claude\.ai|claudeusercontent/.test(location.hostname)){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
+if(/^#legal-/.test(location.hash)) legalView(location.hash.slice(7)); else if(location.hash==='#missions'){ gamesView(); } else if(location.hash==='#claudecode'){ home(); openClaudeCode(); } else if(location.hash==='#files') myFilesView(); else if(location.hash==='#enhancer') enhancerView(); else if(location.hash==='#detective') videoDetectiveView(); else if(location.hash==='#tools') toolsView(); else if(location.hash==='#planner') plannerView(); else if(location.hash==='#studio'||location.hash==='#realestate') studioView(); else if(location.hash==='#library') libraryView(); else if(location.hash==='#games') gamesView(); else home();
 </script>
 </body>
 </html>

@@ -20,3 +20,12 @@ Open `index.html` in any web browser. Everything runs in a single file — no in
 - **💾 My Files** — save prompts, video plans, video breakdowns, how-to guides, photos, documents and your own videos to a personal folder; edit, search, copy, download (single files or everything as a .zip) and sync them to your Claude account.
 - **⌨️ Claude Code cheat sheet** — button in the toolbar with 300+ Claude Code commands, terminal commands, flags and keyboard shortcuts; search, copy, save or download.
 - **🌳 Pro Missions** — advanced multi-step projects (marketing campaign, listing launch, client pitch, team retreat, crisis response) with live coaching and completeness grading.
+
+## 📱 Installable app & Google Play
+
+- Works as an installable app (PWA) with offline support: `manifest.webmanifest`, `sw.js`, `icons/`.
+- Fonts and the ZIP helper are bundled, so the site makes no third-party requests.
+- Legal pages: [Privacy](privacy.html) · [Terms](terms.html) · [Disclaimer](disclaimer.html) · [Accessibility](accessibility.html) · [Delete my data](delete-data.html)
+- Accessibility: WCAG 2.1 AA target. An automated axe audit passes in light and dark mode.
+- **For entertainment and educational purposes only.**
+- Store graphics and the step-by-step publishing guide are in [`store/`](store/PLAY_STORE_GUIDE.md).
