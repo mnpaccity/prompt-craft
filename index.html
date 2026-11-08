@@ -310,7 +310,7 @@
   .fempty{text-align:center;color:var(--muted);padding:18px 8px 8px;font-size:14px}
   .th img{cursor:zoom-in}
   .th.fresh{animation:pop .4s ease-out;border-color:var(--F)}
-  .newtag{position:absolute;top:10px;right:10px;background:var(--F);color:#fff;font-size:11px;font-weight:700;border-radius:6px;padding:1px 6px}
+  .newtag{position:absolute;top:10px;right:10px;background:#17734e;color:#fff;font-size:11px;font-weight:700;border-radius:6px;padding:1px 6px}
   .xbanner{margin:0 0 12px;padding:10px 14px;border-radius:12px;font-size:14px;background:var(--card);border:2px dashed var(--line)}
   .xbanner.on{background:linear-gradient(135deg,color-mix(in srgb,var(--T) 20%,var(--card)),color-mix(in srgb,var(--F) 16%,var(--card)));border:2px solid color-mix(in srgb,var(--T) 60%,var(--line))}
   .xchip{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.5px;color:#7a4b00;background:#ffd166;border-radius:6px;padding:1px 6px}
@@ -401,6 +401,21 @@
   .lchip{font-size:11.5px;padding:2px 8px;border-radius:999px;background:var(--bg);border:1px solid var(--line)}
   .lactive .badge,.lhead .badge{font-family:inherit;font-size:12px;padding:2px 9px;white-space:nowrap}
   .lbtns{display:flex;flex-wrap:wrap;gap:6px}.lgo{font-weight:700}
+  .projbar{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:10px 14px;margin:0 0 14px;border-radius:14px;background:var(--card);border:2px solid color-mix(in srgb,var(--C) 40%,var(--line))}
+  .pjicon{font-size:22px}.pjname input{font:inherit;font-weight:700;padding:6px 10px;border-radius:10px;border:2px solid var(--line);background:var(--bg);color:var(--ink);min-width:220px}
+  .pjsaved{font-size:13px;color:var(--good);font-weight:600}.pjhint{font-size:14px}.pjbtns{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .pjgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+  .pjcard{display:flex;gap:10px;padding:10px;border-radius:14px;border:2px solid var(--line);background:var(--card)}
+  .pjthumb{flex:none;width:84px;height:64px;border-radius:10px;overflow:hidden;background:var(--bg);display:grid;place-items:center;font-size:28px}.pjthumb img{width:100%;height:100%;object-fit:cover}
+  .pjbody{min-width:0;flex:1}.pjbody b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pickrow{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:10px 0 4px}
+  .pickcard{max-width:820px;width:100%;max-height:90vh;overflow:auto}.pkh{margin:14px 0 6px;font-size:16px}
+  .pkgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+  .pkitem{font:inherit;font-size:12.5px;text-align:left;padding:6px;border-radius:12px;border:3px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;display:flex;flex-direction:column;gap:4px}
+  .pkitem img,.pkitem video{width:100%;height:96px;object-fit:cover;border-radius:8px;background:var(--bg)}
+  .pkitem span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pkitem.on{border-color:var(--good);box-shadow:0 0 0 2px color-mix(in srgb,var(--good) 30%,transparent)}
+  .pkitem.on::after{content:'✓ Selected';font-weight:700;color:var(--good)}
   .skip{position:absolute;left:8px;top:-60px;z-index:100;background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none}
   .skip:focus{top:8px}
   :focus-visible{outline:3px solid #1a5fd0;outline-offset:2px}
@@ -1711,8 +1726,44 @@ const EXPORT={hd:['1080p · 30 fps · H.264 (social media)','1080p, 30 fps, H.26
 const AR_SIZES={'16:9':[960,540],'9:16':[540,960],'1:1':[720,720],'4:5':[640,800],'21:9':[1050,450]};
 const proList=obj=>Object.entries(obj).map(([k,v])=>[k,v.n,v.pro?1:0]);
 const proList2=obj=>Object.entries(obj).map(([k,v])=>[k,v[0],v[2]?1:0]);
-const ST = { lens:'auto', fps:'24', dof:'f8', music:'piano', export:'k4', light:'auto', motion:'auto', amount:10, energy:'calm', keep:Object.fromEntries(KEEP.map(k=>[k[0],true])), photos:[], tool:'Runway', ar:'16:9', len:5, look:'warm', trans:'dissolve', area:'', price:'', beds:'', feature:'', agent:'', phone:'', style:'', lookId:null };
+const ST = { lens:'auto', fps:'24', dof:'f8', music:'piano', export:'k4', light:'auto', motion:'auto', amount:10, energy:'calm', keep:Object.fromEntries(KEEP.map(k=>[k[0],true])), photos:[], tool:'Runway', ar:'16:9', len:5, look:'warm', trans:'dissolve', area:'', price:'', beds:'', feature:'', agent:'', phone:'', style:'', lookId:null, projId:null };
 let PREV = null;
+/* ---------- 📁 Choose from My Files (photo / video picker) ---------- */
+function mfPicker({kind,multi,onPick}){
+  const label=kind==='photo'?'photo':'video';
+  const fromProjects=kind==='photo'?PROJ.flatMap(p=>(p.photos||[]).map(ph=>({pid:p.id,pname:p.name,ph}))):[];
+  const m=document.createElement('div'); m.className='modal';
+  const sel=new Set(); let q='';
+  const files=()=>MYF.filter(x=>x.type===kind&&x.url&&(!q||(x.title+' '+(x.name||'')+' '+(x.text||'')+' '+(x.src||'')).toLowerCase().includes(q)));
+  const projs=()=>fromProjects.filter(o=>!q||(o.pname+' '+o.ph.name+' '+(ROOMS[o.ph.room]?ROOMS[o.ph.room].n:'')).toLowerCase().includes(q));
+  const draw=()=>{
+    const F=files(), P=projs();
+    m.innerHTML=`<div class="card pop helpcard pickcard"><div class="top"><h2 style="margin:0">📁 Choose ${multi?label+'s':'a '+label} from My Files</h2><button class="xbtn" id="pkX">✕ Close</button></div>
+      <input id="pkQ" class="search" placeholder="🔍 Search by name, room, notes or project…" value="${esc(q)}" style="width:100%;margin-top:10px">
+      <div class="pklist">
+      ${F.length?`<h3 class="pkh">💾 My Files</h3><div class="pkgrid">${F.map(x=>`<button class="pkitem ${sel.has('f:'+x.id)?'on':''}" data-pk="f:${x.id}" aria-pressed="${sel.has('f:'+x.id)}">
+          ${kind==='photo'?`<img src="${esc(x.url)}" alt="">`:`<video src="${esc(x.url)}" muted preload="metadata"></video>`}<span>${esc(x.title)}</span></button>`).join('')}</div>`:''}
+      ${P.length?`<h3 class="pkh">📁 From my projects</h3><div class="pkgrid" id="pkProj">${P.map(o=>`<button class="pkitem ${sel.has('p:'+o.ph.id)?'on':''}" data-pk="p:${o.ph.id}" data-pp="${o.pid}" aria-pressed="${sel.has('p:'+o.ph.id)}"><img data-ph="${o.ph.id}" data-au="${esc(o.ph.assetUrl||'')}" alt=""><span>${esc(o.pname)} · ${esc(ROOMS[o.ph.room]?ROOMS[o.ph.room].n:o.ph.name)}</span></button>`).join('')}</div>`:''}
+      ${!F.length&&!P.length?`<div class="fb" style="text-align:center;padding:20px">${q?'Nothing matches your search.':`No ${label}s saved yet. Add some in <b>💾 My Files → ${kind==='photo'?'🖼️ Add a photo':'🎞️ Add a video'}</b>${kind==='photo'?', or work on a project in the Studio':''}.`}</div>`:''}
+      </div>
+      <div class="actions"><button class="btn" id="pkOk" ${sel.size?'':'disabled'}>✅ Use ${sel.size?sel.size+' ':''}selected</button><button class="btn ghost" id="pkNo">Cancel</button>${multi&&(F.length+P.length)>1?`<button class="xbtn" id="pkAll">Select all shown</button>`:''}</div></div>`;
+    const qi=m.querySelector('#pkQ'); qi.oninput=()=>{ q=qi.value.toLowerCase().trim(); const pos=qi.selectionStart; draw(); const n=m.querySelector('#pkQ'); n.focus(); try{ n.setSelectionRange(pos,pos); }catch(e){} };
+    m.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>{ const k=b.dataset.pk; if(!multi){ sel.clear(); sel.add(k); } else sel.has(k)?sel.delete(k):sel.add(k); draw(); const nb=m.querySelector(`[data-pk="${k}"]`); nb&&nb.focus(); });
+    m.querySelectorAll('img[data-ph]').forEach(async im=>{ let blob=await idbGet(im.dataset.ph); if(!blob&&im.dataset.au){ im.src=im.dataset.au; return; } if(blob) im.src=URL.createObjectURL(blob); });
+    if(m.querySelector('#pkAll')) m.querySelector('#pkAll').onclick=()=>{ F.forEach(x=>sel.add('f:'+x.id)); P.forEach(o=>sel.add('p:'+o.ph.id)); draw(); };
+    m.querySelector('#pkX').onclick=m.querySelector('#pkNo').onclick=()=>m.remove();
+    m.querySelector('#pkOk').onclick=async()=>{ const out=[]; m.querySelector('#pkOk').textContent='⏳ Loading…';
+      for(const k of sel){ const [t,id]=[k[0],k.slice(2)]; try{
+        if(t==='f'){ const x=MYF.find(y=>y.id===id); const r=await fetch(x.url); const bl=await r.blob(); const nm=x.name||(mfSafeName(x.title)+(kind==='photo'?'.jpg':'.mp4')); out.push(new File([bl],nm,{type:bl.type||(kind==='photo'?'image/jpeg':'video/mp4')})); }
+        else { const o=fromProjects.find(z=>z.ph.id===id); let bl=await idbGet(id); if(!bl&&o.ph.assetUrl){ const r=await fetch(o.ph.assetUrl); bl=await r.blob(); } if(bl) out.push(new File([bl],o.ph.name||'photo.jpg',{type:bl.type||'image/jpeg'})); }
+      }catch(e){} }
+      m.remove(); if(!out.length){ toast('⚠️ Those files aren’t available on this device anymore'); return; } onPick(out); };
+  };
+  m.onclick=e=>{ if(e.target===m) m.remove(); };
+  document.body.appendChild(m); draw();
+}
+function pickBtn(id,kind){ return `<button type="button" class="btn ghost pickbtn" id="${id}">📁 Choose from My Files</button>`; }
+
 /* ---------- 🎨 Saved Looks: reusable, adjustable Studio presets ---------- */
 const LOOK_KEYS=['look','tool','ar','len','trans','motion','amount','energy','light','lens','fps','dof','music','export'];
 const STARTER_LOOKS=[
@@ -1808,12 +1859,14 @@ function studioView(){
       <div class="top"><h1 style="margin:0">🏡 Real Estate Photo-to-Video Studio</h1><button class="qcopy" onclick="openStudioHelp()">❓ How to use the Studio</button></div>
       <p class="muted" style="margin:0">Drop in your listing photos. The studio writes a matching AI video prompt for <b>every</b> photo — same warm look, same slow camera speed, same lens feel — so the clips stitch together into one smooth, seamless, professional video. Then it gives you the stitching plan and a live preview.</p>
     </div>
+    <div id="projBar"></div>
     <div class="card">
       <h2>Step 1 · Add your photos</h2>
       <label class="drop" id="drop">
         <input type="file" id="files" accept="image/*,.zip,application/zip" multiple hidden>
         <span style="font-size:40px">📷</span><br><b>Drag & drop listing photos — or a .ZIP of photos — here</b><br><span class="muted">or tap to choose · you can also paste a copied photo with Ctrl + V · your photos stay on your device</span>
       </label>
+      <div class="pickrow">${pickBtn('stPick','photo')}<span class="muted" style="font-size:13px">Search photos you saved in My Files or used in earlier projects</span></div>
       <div class="folder" id="folder">
         <div class="folder-tab">📁 My uploaded photos <span class="fcount" id="fcount">0</span></div>
         <div id="thumbs"></div>
@@ -1880,7 +1933,7 @@ function studioView(){
   function sel(k,l,opts){ const op=o=>`<option value="${o[0]}" ${String(ST[k])===String(o[0])?'selected':''}>${o[1]}</option>`; const std=opts.filter(o=>!o[2]), pro=opts.filter(o=>o[2]);
     return `<label class="fld"><span>${l}</span><select data-k="${k}">${std.map(op).join('')}${pro.length?`<optgroup label="⭐ Professional">${pro.map(op).join('')}</optgroup>`:''}</select></label>`; }
   function inp(k,l,ph){ return `<label class="fld"><span>${l}</span><input data-k="${k}" value="${esc(ST[k])}" placeholder="${ph}"></label>`; }
-  $('#looksSlot').outerHTML=looksPanelHTML(); bindLooks();
+  $('#looksSlot').outerHTML=looksPanelHTML(); bindLooks(); drawProjBar();
   document.querySelectorAll('[data-k]').forEach(el=>el.oninput=el.onchange=()=>{ ST[el.dataset.k]= (el.dataset.k==='len'||el.dataset.k==='amount')? +el.value : el.value; if(el.dataset.k==='motion') renderThumbs(); if(el.tagName==='SELECT'&&(el.dataset.k==='len'||el.dataset.k==='amount')&&window._looksRedraw) window._looksRedraw(); else if(window._looksUpd) window._looksUpd(); });
   document.querySelectorAll('[data-keep]').forEach(c=>c.onchange=()=>{ ST.keep[c.dataset.keep]=c.checked; window._looksUpd&&window._looksUpd(); });
   document.querySelectorAll('[data-preset]').forEach(t=>t.oninput=()=>{ PRESETS[t.dataset.preset].t=t.value; window._looksUpd&&window._looksUpd(); });
@@ -1891,6 +1944,7 @@ function studioView(){
   drop.ondragleave=()=>drop.classList.remove('over');
   drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over'); const fl=e.dataTransfer.files; if(fl&&fl.length) addFiles(fl); else if(e.dataTransfer.getData('text/uri-list')||e.dataTransfer.getData('text/plain')) toast('That came in as a web link, not a photo. Right-click the photo → “Copy image”, then press Ctrl + V here.'); };
   $('#makeplan').onclick=makePlan;
+  $('#stPick').onclick=()=>mfPicker({kind:'photo',multi:true,onPick:fs=>{ addFiles(fs); }});
   const lu=$('#lstUrl'), lo=$('#lstOpen');
   lu.oninput=()=>{ const v=lu.value.trim(); const ok=/^https?:\/\/\S+\.\S+/i.test(v)||/^[\w-]+\.[\w.-]+\/?/.test(v);
     const href=ok?(/^https?:/i.test(v)?v:'https://'+v):'#';
@@ -1905,7 +1959,107 @@ function studioView(){
   renderThumbs();
   window.scrollTo(0,0);
 }
-function addImageFile(f){ const url=URL.createObjectURL(f); const img=new Image(); img.src=url; ST.photos.push({url,img,name:f.name||('photo-'+(ST.photos.length+1)+'.jpg'),room:guessRoom(f.name||'',ST.photos.length)}); }
+/* ---------- 📁 Projects: Studio work auto-saves into a project folder ---------- */
+const IDB={};
+function idbOpen(){ if(IDB.p) return IDB.p; IDB.p=new Promise((res,rej)=>{ try{ const r=indexedDB.open('pc_db',1); r.onupgradeneeded=()=>{ if(!r.result.objectStoreNames.contains('photos')) r.result.createObjectStore('photos'); }; r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }catch(e){ rej(e); } }).catch(()=>null); return IDB.p; }
+async function idbDo(mode,fn){ const db=await idbOpen(); if(!db) return null; return new Promise(res=>{ try{ const tx=db.transaction('photos',mode); const st=tx.objectStore('photos'); const rq=fn(st); tx.oncomplete=()=>res(rq&&rq.result!==undefined?rq.result:true); tx.onerror=()=>res(null); tx.onabort=()=>res(null); }catch(e){ res(null); } }); }
+const idbPut=(k,v)=>idbDo('readwrite',s=>s.put(v,k)), idbGet=k=>idbDo('readonly',s=>s.get(k)), idbDel=k=>idbDo('readwrite',s=>s.delete(k));
+let PROJ=(()=>{ try{ const v=JSON.parse(localStorage.getItem('pc_projects')); return Array.isArray(v)?v:[]; }catch(e){ return []; } })();
+const PJ={sig:'',timer:null,savedAt:0,plan:'',uploading:false};
+function saveProjList(){ try{ localStorage.setItem('pc_projects',JSON.stringify(PROJ)); }catch(e){ try{ PROJ.forEach(p=>{ if(p!==projCur()) p.thumb=''; }); localStorage.setItem('pc_projects',JSON.stringify(PROJ)); }catch(_){} } if(typeof cloudMark==='function') cloudMark('projects'); }
+function projCur(){ return PROJ.find(x=>x.id===ST.projId); }
+const PJ_TEXT=['area','price','beds','feature','agent','phone'];
+function projSig(){ return JSON.stringify([lookSnapshot(),ST.lookId,ST.photos.map(p=>[p.id,p.room,p.mv||'']),PJ_TEXT.map(k=>ST[k]),PJ.plan.length]); }
+function phId(){ return 'ph'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+async function thumbOf(ph){ try{ if(!ph.img.complete) await ph.img.decode(); const w=200, h=Math.round(w*ph.img.naturalHeight/ph.img.naturalWidth)||130; const c=document.createElement('canvas'); c.width=w; c.height=Math.min(h,200); c.getContext('2d').drawImage(ph.img,0,0,w,h); return c.toDataURL('image/jpeg',0.6); }catch(e){ return ''; } }
+async function projSaveNow(){
+  if(!ST.photos.length&&!projCur()) return;
+  let p=projCur();
+  if(!p){ p={id:'p'+Date.now().toString(36),name:ST.area||('Untitled home · '+new Date().toLocaleDateString()),autoName:!ST.area,created:Date.now()}; PROJ.unshift(p); ST.projId=p.id; }
+  p.settings=lookSnapshot(); p.lookId=ST.lookId||null; p.text=Object.fromEntries(PJ_TEXT.map(k=>[k,ST[k]||'']));
+  p.photos=ST.photos.map(x=>({id:x.id,name:x.name,room:x.room,mv:x.mv||'',assetId:x.assetId||'',assetUrl:x.assetUrl||''}));
+  if(PJ.plan) p.plan=PJ.plan; p.updated=Date.now();
+  if(p.autoName&&ST.area){ p.name=ST.area; }
+  const first=ST.photos[0]; if(first&&p.thumbId!==first.id){ p.thumb=await thumbOf(first); p.thumbId=first.id; } if(!first){ p.thumb=''; p.thumbId=''; }
+  saveProjList(); PJ.savedAt=Date.now(); drawProjBar(); projUpload(p);
+}
+async function projUpload(p){
+  if(PJ.uploading) return; const a=await getAssets(); if(!a) return; PJ.uploading=true;
+  try{ for(const ph of ST.photos){ if(ph.assetId||ST.projId!==p.id) continue; const blob=await idbGet(ph.id); if(!blob||blob.size>20*1048576) continue;
+      try{ const r=await a.upload(blob); ph.assetId=r.id; ph.assetUrl=r.url||('/_blob/'+r.id); const e=(p.photos||[]).find(x=>x.id===ph.id); if(e){ e.assetId=ph.assetId; e.assetUrl=ph.assetUrl; } saveProjList(); }catch(e){ break; } } }
+  finally{ PJ.uploading=false; }
+}
+setInterval(()=>{ if(!document.getElementById('studioOut')) return; const s=projSig(); if(s!==PJ.sig){ PJ.sig=s; clearTimeout(PJ.timer); PJ.timer=setTimeout(projSaveNow,700); } },1500);
+function drawProjBar(){
+  const b=document.getElementById('projBar'); if(!b) return; const p=projCur();
+  const t=PJ.savedAt?new Date(PJ.savedAt).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}):'';
+  b.innerHTML=`<div class="projbar"><span class="pjicon" aria-hidden="true">📁</span>
+    ${p?`<label class="pjname"><span class="sr">Project name</span><input id="pjName" value="${esc(p.name)}" maxlength="80" aria-label="Project name"></label><span class="pjsaved" role="status">✅ Auto-saved${t?' · '+t:''}</span>`
+       :`<span class="pjhint">${ST.photos.length?'Saving…':'Add photos and your work <b>auto-saves</b> as a project in 💾 My Files → 📁 Projects.'}</span>`}
+    <span class="pjbtns"><button class="xbtn" id="pjAll">📁 My projects${PROJ.length?` (${PROJ.length})`:''}</button><button class="xbtn" id="pjNew">➕ New project</button></span></div>`;
+  const n=b.querySelector('#pjName'); if(n) n.onchange=()=>{ const q=projCur(); if(!q) return; q.name=n.value.trim()||q.name; q.autoName=false; q.updated=Date.now(); saveProjList(); toast('✏️ Project renamed'); };
+  b.querySelector('#pjAll').onclick=()=>{ MFV.type='all'; MFV.q=''; MFV.proj=null; myFilesView(); setTimeout(()=>{ const s=document.getElementById('projSec'); s&&s.scrollIntoView({behavior:'smooth',block:'start'}); },60); };
+  b.querySelector('#pjNew').onclick=()=>projNew();
+}
+async function projNew(){ if(ST.photos.length) await projSaveNow(); ST.photos=[]; ST.projId=null; PJ.plan=''; PJ_TEXT.forEach(k=>ST[k]=''); if(PF.name) ST.agent=PF.name+(PF.role?', '+PF.role:''); if(PF.phone||PF.website) ST.phone=PF.phone||PF.website; PJ.sig=projSig(); PJ.savedAt=0; studioView(); toast('➕ New project — your style settings are kept. Add the new home’s photos.'); }
+async function projOpen(id){
+  const p=PROJ.find(x=>x.id===id); if(!p) return;
+  if(ST.projId&&ST.projId!==id&&ST.photos.length) await projSaveNow();
+  toast('📂 Opening “'+p.name+'”…');
+  const S=p.settings||{}; LOOK_KEYS.forEach(k=>{ if(S.s&&S.s[k]!=null) ST[k]=S.s[k]; }); if(S.keep) Object.assign(ST.keep,S.keep); ST.style=S.style||'';
+  Object.keys(PRESETS).forEach(k=>PRESETS[k].t=(S.presets&&S.presets[k])||PRESET_ORIG[k]);
+  PJ_TEXT.forEach(k=>ST[k]=(p.text&&p.text[k])||''); ST.lookId=p.lookId||null;
+  ST.photos.forEach(x=>{ try{ URL.revokeObjectURL(x.url); }catch(e){} }); ST.photos=[]; let missing=0;
+  for(const ph of (p.photos||[])){
+    let blob=await idbGet(ph.id);
+    if(!blob&&ph.assetUrl){ try{ const r=await fetch(ph.assetUrl); if(r.ok){ blob=await r.blob(); idbPut(ph.id,blob); } }catch(e){} }
+    if(!blob){ missing++; continue; }
+    const url=URL.createObjectURL(blob), img=new Image(); img.src=url;
+    ST.photos.push({id:ph.id,url,img,name:ph.name,room:ph.room,mv:ph.mv||undefined,assetId:ph.assetId,assetUrl:ph.assetUrl});
+  }
+  ST.projId=id; PJ.plan=p.plan||''; PJ.sig=projSig(); PJ.savedAt=p.updated;
+  location.hash='#studio'; studioView();
+  if(ST.photos.length>=2&&p.plan) setTimeout(()=>{ try{ makePlan(); }catch(e){} },300);
+  if(missing) toast(`⚠️ ${missing} photo${missing>1?'s':''} couldn’t be found on this device — add ${missing>1?'them':'it'} again`);
+}
+function projCardsHTML(){
+  if(!PROJ.length) return `<p class="muted" style="margin:6px 0 0">No projects yet. Open <b>🏡 Real Estate → Photo-to-Video Studio</b> and add photos — your work auto-saves here as a project.</p>`;
+  return `<div class="pjgrid">${PROJ.map(p=>{ const nf=MYF.filter(x=>x.proj===p.id).length; return `<div class="pjcard" data-pid="${p.id}">
+    <div class="pjthumb">${p.thumb?`<img src="${p.thumb}" alt="">`:'<span aria-hidden="true">🏠</span>'}</div>
+    <div class="pjbody"><b>${esc(p.name)}</b><div class="muted" style="font-size:12px">${(p.photos||[]).length} photo${(p.photos||[]).length===1?'':'s'}${p.plan?' · prompts ready':''}${nf?` · ${nf} saved file${nf>1?'s':''}`:''} · ${mfDate(p.updated)}</div>
+    <div class="lbtns" style="margin-top:6px"><button class="xbtn lgo" data-popen="${p.id}">📂 Open</button>${nf?`<button class="xbtn" data-pfiles="${p.id}">🔎 Files</button>`:''}<button class="xbtn" data-pren="${p.id}">✏️ Rename</button><button class="xbtn" data-pdup="${p.id}">📄 Duplicate</button><button class="xbtn" data-pdl="${p.id}">⬇️ Download</button><button class="xbtn" data-pdel="${p.id}" aria-label="Delete project">🗑️</button></div>
+    <div data-pask="${p.id}"></div></div></div>`; }).join('')}</div>`;
+}
+function bindProjCards(rerender){
+  const q=s=>document.querySelectorAll(s);
+  q('[data-popen]').forEach(b=>b.onclick=()=>projOpen(b.dataset.popen));
+  q('[data-pfiles]').forEach(b=>b.onclick=()=>{ MFV.proj=b.dataset.pfiles; MFV.type='all'; rerender(); });
+  q('[data-pren]').forEach(b=>b.onclick=()=>{ const id=b.dataset.pren, p=PROJ.find(x=>x.id===id), box=document.querySelector(`[data-pask="${id}"]`);
+    box.innerHTML=`<div class="askrow"><input id="prIn" value="${esc(p.name)}" maxlength="80" aria-label="New project name"><button class="xbtn" id="prOk">Save</button><button class="xbtn" id="prNo">Cancel</button></div>`;
+    const i=box.querySelector('#prIn'); i.focus(); i.select(); const ok=()=>{ p.name=i.value.trim()||p.name; p.autoName=false; p.updated=Date.now(); saveProjList(); rerender(); toast('✏️ Renamed'); };
+    box.querySelector('#prOk').onclick=ok; i.onkeydown=e=>{ if(e.key==='Enter') ok(); if(e.key==='Escape') box.innerHTML=''; }; box.querySelector('#prNo').onclick=()=>box.innerHTML=''; });
+  q('[data-pdup]').forEach(b=>b.onclick=async()=>{ const p=PROJ.find(x=>x.id===b.dataset.pdup); const c=JSON.parse(JSON.stringify(p)); c.id='p'+Date.now().toString(36); c.name=p.name+' (copy)'; c.autoName=false; c.created=c.updated=Date.now();
+    c.photos=[]; for(const ph of (p.photos||[])){ const blob=await idbGet(ph.id); const nid=phId(); if(blob) await idbPut(nid,blob); c.photos.push({...ph,id:nid,assetId:blob?'':ph.assetId,assetUrl:blob?'':ph.assetUrl}); }
+    c.thumbId=c.photos[0]?c.photos[0].id:''; PROJ.splice(PROJ.indexOf(p)+1,0,c); saveProjList(); rerender(); toast('📄 Project duplicated — great for a similar home'); });
+  q('[data-pdl]').forEach(b=>b.onclick=()=>projDownload(b.dataset.pdl));
+  q('[data-pdel]').forEach(b=>b.onclick=()=>{ const id=b.dataset.pdel, box=document.querySelector(`[data-pask="${id}"]`);
+    box.innerHTML=`<div class="askrow" role="alert">Delete this project and its photos? <button class="xbtn danger" id="pdY">Delete</button><button class="xbtn" id="pdN">Cancel</button></div>`;
+    box.querySelector('#pdN').onclick=()=>box.innerHTML=''; box.querySelector('#pdN').focus();
+    box.querySelector('#pdY').onclick=async()=>{ const p=PROJ.find(x=>x.id===id); const others=PROJ.filter(x=>x!==p).flatMap(x=>(x.photos||[]).map(y=>y.assetId)).filter(Boolean); const a=await getAssets();
+      for(const ph of (p.photos||[])){ await idbDel(ph.id); if(a&&ph.assetId&&!others.includes(ph.assetId)) try{ await a.delete(ph.assetId); }catch(e){} }
+      PROJ=PROJ.filter(x=>x!==p); if(ST.projId===id){ ST.projId=null; } MYF.forEach(x=>{ if(x.proj===id) delete x.proj; }); saveMyFiles(); saveProjList(); if(MFV.proj===id) MFV.proj=null; rerender(); toast('🗑️ Project deleted'); }; });
+}
+async function projDownload(id){
+  const p=PROJ.find(x=>x.id===id); if(!p) return; let JSZip; try{ JSZip=await loadJSZip(); }catch(e){ toast('⚠️ Couldn’t build the zip'); return; }
+  toast('⏳ Packing your project…'); const z=new JSZip(), base=mfSafeName(p.name);
+  let k=0; for(const ph of (p.photos||[])){ let blob=await idbGet(ph.id); if(!blob&&ph.assetUrl){ try{ const r=await fetch(ph.assetUrl); if(r.ok) blob=await r.blob(); }catch(e){} } if(blob){ k++; const ext=((ph.name||'').match(/\.([a-z0-9]+)$/i)||[])[1]||'jpg'; z.file(`Photos/${String(k).padStart(2,'0')} - ${mfSafeName(ROOMS[ph.room]?ROOMS[ph.room].n:'photo')}.${ext}`,blob); } }
+  if(p.plan) z.file('Video prompts.txt',p.plan.replace(/\n/g,'\r\n'));
+  z.file('Project settings.txt',[`PROJECT: ${p.name}`,`Saved: ${new Date(p.updated).toLocaleString()}`,'',...Object.entries((p.settings&&p.settings.s)||{}).map(([a,b])=>`${a}: ${b}`),p.settings&&p.settings.style?`style words: ${p.settings.style}`:'',...Object.entries(p.text||{}).filter(([a,b])=>b).map(([a,b])=>`${a}: ${b}`)].join('\r\n'));
+  MYF.filter(x=>x.proj===id&&!MF_FILE(x)).forEach(x=>z.file(`Saved files/${mfSafeName(x.title)}.txt`,mfTxt(x)));
+  const blob=await z.generateAsync({type:'blob'}); await mfSave(base+'.zip',blob);
+}
+
+function addImageFile(f){ const url=URL.createObjectURL(f); const img=new Image(); img.src=url; const id=phId(); idbPut(id,f); ST.photos.push({id,url,img,name:f.name||('photo-'+(ST.photos.length+1)+'.jpg'),room:guessRoom(f.name||'',ST.photos.length)}); }
 let _jszipP=null;
 function loadJSZip(){ if(window.JSZip) return Promise.resolve(window.JSZip); if(_jszipP) return _jszipP;
   _jszipP=new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='jszip.min.js'; s.onload=()=>res(window.JSZip); s.onerror=()=>{ _jszipP=null; rej(); }; document.head.appendChild(s); }); return _jszipP; }
@@ -2032,7 +2186,7 @@ function makePlan(){
   const L=LOOKS[ST.look], total=(N*ST.len-(N-1)*0.75).toFixed(0);
   const prompts=P.map((p,i)=>clipPrompt(p,i,N));
   const ov=overlays(N);
-  const allText = prompts.join('\n\n----------\n\n');
+  const allText = prompts.join('\n\n----------\n\n'); PJ.plan=allText;
   const master = `[Context] I am attaching ${N} professional listing photos of a home${ST.area?` (${ST.area})`:''}. They are in this order: ${P.map((p,i)=>`${i+1}) ${ROOMS[p.room].n}`).join(', ')}. Each clip uses ONE single camera motion (about ${ST.amount}% movement) with ${ENERGY[ST.energy].n.toLowerCase()}. I will turn each photo into a ${ST.len}-second clip with the image-to-video tool ${ST.tool}, then stitch them into one ${total}-second ${ST.ar} listing video. The look is "${L.n}". The video must show the home exactly as it is — nothing added, removed or changed.
 
 [Role] Act as a luxury real estate videographer and an expert image-to-video prompt writer.
@@ -3065,12 +3219,13 @@ function openClip(i){
         <div class="clipctl" style="margin-top:0"><button class="xbtn snd ${P.real?'on':''}" id="rvReal">🎞️ Real clip</button><button class="xbtn snd ${!P.real?'on':''}" id="rvAnim">🎨 Animated preview</button><button class="xbtn snd" id="rvDel">🗑️ Remove my clip</button></div><div id="rvAsk"></div>`
       :`<p style="margin:4px 0 6px;font-size:14px">Make this clip with <b>photorealistic people</b>: paste these 3 shot prompts into an AI video tool (Google Veo, Kling or Runway — text-to-video, 9:16, ~4 s each), join them in CapCut with the voiceover, then upload the finished clip here.</p>
         ${REAL_PROMPTS[P.i].map((t,k)=>`<div class="quote" style="font-size:13px"><b>Shot ${k+1}:</b> ${esc(t)}</div>`).join('')}
-        <div class="clipctl" style="margin-top:6px"><button class="xbtn snd" id="rvCopy">📋 Copy all 3 prompts</button><button class="xbtn snd" id="rvSave">💾 Save</button><label class="xbtn snd" style="cursor:pointer">⬆️ Upload my real clip<input type="file" id="rvUp" accept="video/*" hidden></label></div>
+        <div class="clipctl" style="margin-top:6px"><button class="xbtn snd" id="rvCopy">📋 Copy all 3 prompts</button><button class="xbtn snd" id="rvSave">💾 Save</button><label class="xbtn snd" style="cursor:pointer">⬆️ Upload my real clip<input type="file" id="rvUp" accept="video/*" hidden></label><button class="xbtn snd" id="rvPick">📁 From My Files</button></div>
         <p class="muted" style="font-size:11.5px;margin:6px 0 0">AI-generated people are fictional — label ads that use them as AI-generated where required, and never use a real person’s face or voice without permission.</p>`}
       <div id="rvMsg" class="muted" style="font-size:12px;margin-top:4px"></div></div>`;
     const q=s=>rp.querySelector(s);
     if(q('#rvSave')) q('#rvSave').onclick=()=>saveToFiles({type:'plan',title:'Real-people clip '+(P.i+1)+' prompts',text:realPromptsText(P.i),src:'Home · Example clips'});
     if(q('#rvCopy')) q('#rvCopy').onclick=async()=>{ const t=realPromptsText(P.i); (await copyText(t))?toast('✅ Copied all 3 prompts'):showCopyBox(t); };
+    if(q('#rvPick')) q('#rvPick').onclick=()=>mfPicker({kind:'video',multi:false,onPick:fs=>{ const inp=q('#rvUp'); const dt=new DataTransfer(); dt.items.add(fs[0]); inp.files=dt.files; inp.dispatchEvent(new Event('change')); }});
     if(q('#rvUp')) q('#rvUp').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; if(!f.type.startsWith('video/')){ toast('Please choose a video file'); return; }
       const msg=q('#rvMsg'); const assets=await getAssets();
       if(assets&&f.size<=20*1048576){ msg.textContent='⏳ Uploading to your account…';
@@ -3367,6 +3522,7 @@ function videoDetectiveView(){
       <h2>Step 1 · Upload a video</h2>
       <label class="drop" id="vdDrop"><input type="file" id="vdFile" accept="video/*,.mkv,.avi,.wmv,.flv,.3gp,.mpg,.mpeg,.mts,.m2ts,.ts,.vob" hidden>
         <span style="font-size:40px">🎞️</span><br><b>Drag & drop a video here</b><br><span class="muted">or tap to choose · MP4 works best (WebM and some MOV files work too) · your video stays on your device</span></label>
+      <div class="pickrow">${pickBtn('vdPick','video')}<span class="muted" style="font-size:13px">Search videos you saved in My Files</span></div>
       <div id="vdPrev"></div>
       ${vdFixHTML()}
       <details class="presetbox lstbox" id="vdLinkBox">
@@ -3381,6 +3537,7 @@ function videoDetectiveView(){
     <div id="vdOut"></div>`;
   const drop=$('#vdDrop'), f=$('#vdFile');
   f.onchange=()=>f.files[0]&&vdLoad(f.files[0]);
+  $('#vdPick').onclick=()=>mfPicker({kind:'video',multi:false,onPick:fs=>vdLoad(fs[0])});
   drop.ondragover=e=>{e.preventDefault();drop.classList.add('over');}; drop.ondragleave=()=>drop.classList.remove('over');
   drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over'); const x=[...e.dataTransfer.files].find(z=>z.type.startsWith('video/')||VD_BAD_EXT.test(z.name)); if(x) vdLoad(x); else toast('Please drop a video file (MP4 works best)'); };
   const u=$('#vdUrl'), o=$('#vdOpen');
@@ -3896,6 +4053,8 @@ async function deleteAllData(){
   toast('⏳ Deleting your data…');
   try{ const a=await getAssets(); if(a){ const ids=new Set(); (MYF||[]).forEach(x=>x.assetId&&ids.add(x.assetId)); Object.values(REAL||{}).forEach(r=>r&&r.id&&ids.add(r.id)); for(const id of ids){ try{ await a.delete(id); }catch(e){} } } }catch(e){}
   try{ if(CLOUD&&CLOUD.db&&CLOUD.uid){ for(const k of Object.keys(CLOUD_KEYS)){ try{ const d=cloudDoc(k); if(typeof d.delete==='function') await d.delete(); else await d.set({v:null,updatedAt:Date.now(),device:'deleted'}); }catch(e){} } } }catch(e){}
+  try{ const a=await getAssets(); if(a) for(const p of PROJ) for(const ph of (p.photos||[])) if(ph.assetId) try{ await a.delete(ph.assetId); }catch(e){} }catch(e){}
+  try{ const db=await idbOpen(); db&&db.close(); indexedDB.deleteDatabase('pc_db'); }catch(e){}
   try{ Object.keys(localStorage).filter(k=>k.startsWith('pc_')).forEach(k=>localStorage.removeItem(k)); }catch(e){}
   try{ if('caches' in window){ const ks=await caches.keys(); await Promise.all(ks.map(k=>caches.delete(k))); } }catch(e){}
   $('#app').innerHTML=`<div class="card pop" style="text-align:center"><div style="font-size:48px">✅</div><h2>Your data was deleted</h2><p>Everything the app saved has been removed.</p><button class="btn" onclick="location.reload()">Start fresh</button></div>`;
@@ -4122,6 +4281,7 @@ function mfId(){ return Date.now().toString(36)+Math.random().toString(36).slice
 function mfDate(t){ try{ return new Date(t).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}); }catch(e){ return ''; } }
 function mfAdd(o){ const it={id:mfId(),type:o.type||'prompt',title:(o.title||'Untitled').slice(0,120),text:o.text||'',src:o.src||'',created:Date.now(),updated:Date.now()};
   if(o.url){ it.url=o.url; } if(o.assetId) it.assetId=o.assetId; if(o.name) it.name=o.name;
+  if(ST.projId&&/Real Estate|Studio|Video Detective|Example clips/.test(o.src||'')) it.proj=ST.projId;
   MYF.unshift(it); saveMyFiles(); return it; }
 /* Opens a small "Save to My Files" window so the user can name the item first */
 function saveToFiles(o){
@@ -4146,7 +4306,7 @@ function myFilesView(){
   setNav('files'); window._rerender=myFilesView; try{ history.replaceState(null,'','#files'); }catch(e){}
   const counts={}; MYF.forEach(x=>counts[x.type]=(counts[x.type]||0)+1);
   const q=MFV.q.toLowerCase();
-  const list=MYF.filter(x=>(MFV.type==='all'||x.type===MFV.type)&&(!q||(x.title+' '+x.text+' '+x.src).toLowerCase().includes(q)));
+  const list=MYF.filter(x=>(!MFV.proj||x.proj===MFV.proj)&&(MFV.type==='all'||x.type===MFV.type)&&(!q||(x.title+' '+x.text+' '+x.src).toLowerCase().includes(q)));
   $('#app').innerHTML=`
     <div class="card pop">
       <h1>💾 My Files</h1>
@@ -4160,6 +4320,9 @@ function myFilesView(){
         <label class="btn ghost" style="cursor:pointer">🎞️ Add a video<input type="file" id="mfVid" accept="video/*" hidden></label>
       </div>
     </div>
+    <div class="card" id="projSec"><h2 style="margin:0 0 4px">📁 Projects <span class="muted" style="font-size:14px;font-weight:500">· auto-saved</span></h2>
+      <p class="muted" style="margin:0 0 10px;font-size:14px">Every home you work on in the Photo-to-Video Studio saves itself here — photos, style, on-screen text and prompts. ${LEVEL==='new'?'Click <b>📂 Open</b> to pick up where you left off.':''}</p>
+      ${projCardsHTML()}</div>
     ${MYF.length?`<div class="card dlbox">
       <h2 style="margin:0 0 4px">⬇️ Download for editing &amp; creating</h2>
       <p class="muted" style="margin:0 0 8px;font-size:14px">Put your files on your computer so you can upload them into other apps — like <b>CapCut</b> for editing, or <b>Veo, Kling or Runway</b> for making videos.</p>
@@ -4169,6 +4332,7 @@ function myFilesView(){
         ${MFV.type!=='all'||MFV.q?`<button class="btn ghost" id="mfDlShown">⬇️ Download just what’s shown (${list.length})</button>`:''}
       </div></div>`:''}
     <div class="card">
+      ${MFV.proj&&PROJ.find(x=>x.id===MFV.proj)?`<div class="lactive" style="margin-bottom:10px">Showing files from project <b>${esc(PROJ.find(x=>x.id===MFV.proj).name)}</b><span class="lact"><button class="xbtn" id="mfProjX">✕ Show all files</button></span></div>`:''}
       <input id="mfQ" class="search" placeholder="🔍 Search my files…" value="${esc(MFV.q)}" style="width:100%">
       <div class="tabs" style="margin-top:10px;flex-wrap:wrap">
         <button class="tab ${MFV.type==='all'?'on':''}" data-mft="all">📁 All (${MYF.length})</button>
@@ -4188,7 +4352,7 @@ function myFilesView(){
   $('#mfPhoto').onchange=async e=>{ await mfUploadMany(e.target.files,'photo'); e.target.value=''; };
   $('#mfDoc').onchange=async e=>{ await mfUploadMany(e.target.files,'doc'); e.target.value=''; };
   $('#mfVid').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; await mfUploadVideo(f); e.target.value=''; };
-  bindMyFiles();
+  bindMyFiles(); bindProjCards(myFilesView); if($('#mfProjX')) $('#mfProjX').onclick=()=>{ MFV.proj=null; myFilesView(); };
   window.scrollTo(0,0);
 }
 function mfCard(x){
@@ -4308,6 +4472,7 @@ const CLOUD_KEYS={
   realclips:{ get:()=>{ const k={}; Object.entries(REAL).forEach(([i,v])=>{ if(v&&v.id) k[i]=v; }); return k; }, set:v=>{ if(v&&typeof v==='object'){ Object.keys(REAL).forEach(i=>{ if(REAL[i]&&REAL[i].id&&!v[i]) delete REAL[i]; }); Object.assign(REAL,v); try{ localStorage.setItem('pc_realclips',JSON.stringify(v)); }catch(e){} } } },
   myfiles:{ get:()=>MYF.filter(x=>!MF_FILE(x)||x.assetId||x.shared), set:v=>{ if(Array.isArray(v)){ const local=MYF.filter(x=>MF_FILE(x)&&!x.assetId&&!x.shared); MYF=local.concat(v); try{ localStorage.setItem('pc_myfiles',JSON.stringify(MYF)); }catch(e){} updateFilesBtn(); if(document.getElementById('nav-files')&&document.getElementById('nav-files').classList.contains('on')) myFilesView(); } } },
   missions:{ get:()=>MS, set:v=>{ if(v&&typeof v==='object'){ Object.keys(MS).forEach(k=>delete MS[k]); Object.assign(MS,v); try{ localStorage.setItem('pc_missions',JSON.stringify(MS)); }catch(e){} } } },
+  projects:{ get:()=>PROJ, set:v=>{ if(Array.isArray(v)){ PROJ=v; try{ localStorage.setItem('pc_projects',JSON.stringify(v)); }catch(e){} } } },
   looks:{ get:()=>LOOKSAVE, set:v=>{ if(Array.isArray(v)){ LOOKSAVE=v; try{ localStorage.setItem('pc_looks',JSON.stringify(v)); }catch(e){} } } },
   enhancer:{ get:()=>ENH.hist.slice(0,15), set:v=>{ if(Array.isArray(v)){ ENH.hist=v; try{ localStorage.setItem('pc_enh_hist',JSON.stringify(v)); }catch(e){} } } },
   scores:{ get:()=>{ const o={}; ['match','sort','scramble','build','recall'].forEach(g=>{ const b=store('best_'+g); if(b) o[g]=b; }); return o; },
