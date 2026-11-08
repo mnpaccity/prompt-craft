@@ -18,3 +18,4 @@ Open `index.html` in any web browser. Everything runs in a single file — no in
 > Live Google Calendar sync works when the page is opened as an artifact inside claude.ai with the Google Calendar connector enabled. Everywhere else, the planner uses "Add to Google Calendar" links.
 
 - **💾 My Files** — save prompts, video plans, video breakdowns, how-to guides and your own videos to a personal folder; edit, search, copy, download (single files or everything as a .zip) and sync them to your Claude account.
+- **⌨️ Claude Code cheat sheet** — button in the toolbar with 300+ Claude Code commands, terminal commands, flags and keyboard shortcuts; search, copy, save or download.
