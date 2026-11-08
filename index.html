@@ -390,6 +390,17 @@
   .vdsteps li{margin:6px 0;line-height:1.5}
   .vdfix{margin-top:12px}.vdfixbody{padding:4px 2px 2px;line-height:1.55}.vdfixbody h3{margin:14px 0 4px;font-size:16px}.vdfixbody a{color:var(--link,#1a5fd0);font-weight:600}
   .vdbad{display:block;padding:8px 10px;border-radius:10px;background:color-mix(in srgb,var(--bad) 10%,var(--card));border:1px solid color-mix(in srgb,var(--bad) 45%,var(--line));color:var(--ink)}.vdbad a{color:var(--link,#1a5fd0)}
+  .lactive{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 12px;border-radius:12px;background:color-mix(in srgb,var(--F) 10%,var(--card));border:2px solid color-mix(in srgb,var(--F) 40%,var(--line));margin-bottom:10px;font-size:14px}
+  .lactive.chg{background:color-mix(in srgb,var(--T) 10%,var(--card));border-color:color-mix(in srgb,var(--T) 45%,var(--line))}.lact{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+  .lquick{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--bg);border:2px dashed var(--line);margin-bottom:10px;font-size:14px}
+  .lquick label{display:flex;align-items:center;gap:8px}.lquick input[type=range]{width:150px;accent-color:var(--C)}.lquick span{min-width:44px;font-weight:700}
+  .lsave{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.lsave input{flex:1;min-width:220px;font:inherit;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
+  .lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+  .lcard{padding:10px 12px;border-radius:14px;border:2px solid var(--line);background:var(--card)}.lcard.on{border-color:var(--F);box-shadow:0 0 0 2px color-mix(in srgb,var(--F) 25%,transparent)}
+  .lhead{display:flex;justify-content:space-between;gap:6px;align-items:center}.lchips{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+  .lchip{font-size:11.5px;padding:2px 8px;border-radius:999px;background:var(--bg);border:1px solid var(--line)}
+  .lactive .badge,.lhead .badge{font-family:inherit;font-size:12px;padding:2px 9px;white-space:nowrap}
+  .lbtns{display:flex;flex-wrap:wrap;gap:6px}.lgo{font-weight:700}
   .skip{position:absolute;left:8px;top:-60px;z-index:100;background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none}
   .skip:focus{top:8px}
   :focus-visible{outline:3px solid #1a5fd0;outline-offset:2px}
@@ -1700,8 +1711,88 @@ const EXPORT={hd:['1080p · 30 fps · H.264 (social media)','1080p, 30 fps, H.26
 const AR_SIZES={'16:9':[960,540],'9:16':[540,960],'1:1':[720,720],'4:5':[640,800],'21:9':[1050,450]};
 const proList=obj=>Object.entries(obj).map(([k,v])=>[k,v.n,v.pro?1:0]);
 const proList2=obj=>Object.entries(obj).map(([k,v])=>[k,v[0],v[2]?1:0]);
-const ST = { lens:'auto', fps:'24', dof:'f8', music:'piano', export:'k4', light:'auto', motion:'auto', amount:10, energy:'calm', keep:Object.fromEntries(KEEP.map(k=>[k[0],true])), photos:[], tool:'Runway', ar:'16:9', len:5, look:'warm', trans:'dissolve', area:'', price:'', beds:'', feature:'', agent:'', phone:'' };
+const ST = { lens:'auto', fps:'24', dof:'f8', music:'piano', export:'k4', light:'auto', motion:'auto', amount:10, energy:'calm', keep:Object.fromEntries(KEEP.map(k=>[k[0],true])), photos:[], tool:'Runway', ar:'16:9', len:5, look:'warm', trans:'dissolve', area:'', price:'', beds:'', feature:'', agent:'', phone:'', style:'', lookId:null };
 let PREV = null;
+/* ---------- 🎨 Saved Looks: reusable, adjustable Studio presets ---------- */
+const LOOK_KEYS=['look','tool','ar','len','trans','motion','amount','energy','light','lens','fps','dof','music','export'];
+const STARTER_LOOKS=[
+ {id:'s-twilight',builtIn:1,name:'🌆 Luxury Twilight Cinema',note:'Moody dusk glow, slow dramatic moves, light-sweep transitions.',s:{look:'twilight',energy:'dramatic',light:'dusk',len:6,trans:'lightsweep',motion:'presets',amount:10,lens:'24',fps:'24',dof:'f8',music:'strings',export:'k4',ar:'16:9'}},
+ {id:'s-airy',builtIn:1,name:'☀️ Bright & Airy Daytime',note:'Clean natural light, elegant gliding, soft dissolves.',s:{look:'bright',energy:'elegant',light:'soft',len:5,trans:'dissolve',motion:'auto',amount:10,lens:'auto',fps:'24',dof:'f8',music:'piano',export:'k4',ar:'16:9'}},
+ {id:'s-family',builtIn:1,name:'🏡 Warm Family Home',note:'Cozy warm glow, calm walkthrough, upbeat acoustic.',s:{look:'warm',energy:'calm',light:'glow',len:5,trans:'light',motion:'auto',amount:10,lens:'auto',fps:'24',dof:'f8',music:'acoustic',export:'hd',ar:'16:9'}},
+ {id:'s-reel',builtIn:1,name:'📱 Fast Social Reel 9:16',note:'Vertical, lively, 3-second clips cut on the beat.',s:{look:'bright',energy:'lively',light:'auto',len:3,trans:'beat',motion:'auto',amount:15,lens:'auto',fps:'30',dof:'f8',music:'house',export:'hd',ar:'9:16'}},
+ {id:'s-ultra',builtIn:1,name:'💎 Ultra-Luxury Slow Cinema',note:'Barely-moving 8-second shots, golden light, orchestral.',s:{look:'warm',energy:'dramatic',light:'sun',len:8,trans:'dissolve',motion:'presets',amount:3,lens:'35',fps:'24',dof:'f4',music:'orch',export:'prores',ar:'16:9'}},
+];
+let LOOKSAVE=(()=>{ try{ const v=JSON.parse(localStorage.getItem('pc_looks')); return Array.isArray(v)?v:[]; }catch(e){ return []; } })();
+function saveLooks(){ try{ localStorage.setItem('pc_looks',JSON.stringify(LOOKSAVE)); }catch(e){} if(typeof cloudMark==='function') cloudMark('looks'); }
+function allLooks(){ return LOOKSAVE.concat(STARTER_LOOKS); }
+function lookSnapshot(){
+  const s={}; LOOK_KEYS.forEach(k=>s[k]=ST[k]);
+  const roomMv={}; ST.photos.forEach(p=>{ if(p.mv&&p.mv!=='default') roomMv[p.room]=p.mv; });
+  const presets={}; Object.keys(PRESETS).forEach(k=>{ if(PRESETS[k].t!==PRESET_ORIG[k]) presets[k]=PRESETS[k].t; });
+  return {s,keep:{...ST.keep},style:ST.style||'',roomMv,presets};
+}
+function lookSame(L){ if(!L) return false; const a=lookSnapshot(); const b={s:{...a.s,...L.s},keep:L.keep||a.keep,style:L.style||'',roomMv:L.roomMv||{},presets:L.presets||{}};
+  return JSON.stringify(a.s)===JSON.stringify(b.s)&&JSON.stringify(a.keep)===JSON.stringify(b.keep)&&a.style===b.style&&JSON.stringify(a.presets)===JSON.stringify(b.presets); }
+function applyLook(id){
+  const L=allLooks().find(x=>x.id===id); if(!L) return;
+  LOOK_KEYS.forEach(k=>{ if(L.s&&L.s[k]!=null) ST[k]=L.s[k]; });
+  if(L.keep) Object.assign(ST.keep,L.keep); ST.style=L.style||'';
+  Object.keys(PRESETS).forEach(k=>PRESETS[k].t=(L.presets&&L.presets[k])||PRESET_ORIG[k]);
+  let moved=0; if(L.roomMv) ST.photos.forEach(p=>{ if(L.roomMv[p.room]){ p.mv=L.roomMv[p.room]; moved++; } });
+  ST.lookId=L.id; studioView(); setTimeout(()=>{ const c=document.getElementById('looksCard'); if(c) c.scrollIntoView({behavior:'smooth',block:'start'}); },60);
+  toast(`🎨 Applied “${L.name}”${moved?` (+ ${moved} room camera move${moved>1?'s':''})`:''} — adjust anything below`);
+}
+function lookChips(L){ const s=L.s||{}; const g=(o,k)=>o&&o[k]?(o[k].n||o[k][0]||k):k;
+  return [g(LOOKS,s.look),g(ENERGY,s.energy).replace(/ energy$/,''),s.len+'s per photo',s.ar,(s.amount!=null?'~'+s.amount+'% motion':''),L.style?'✍️ custom style':'',L.roomMv&&Object.keys(L.roomMv).length?'🎥 room moves':''].filter(Boolean).map(t=>`<span class="lchip">${esc(String(t))}</span>`).join(''); }
+function looksPanelHTML(){
+  const cur=allLooks().find(x=>x.id===ST.lookId); const changed=cur&&!lookSame(cur);
+  const opts=(k)=>[...document.querySelectorAll(`select[data-k="${k}"] option`)];
+  return `<div class="card" id="looksCard"><div class="top"><h2 style="margin:0">🎨 Saved Looks</h2><span class="muted" style="font-size:13px">Save a look you love · use it on any home</span></div>
+    <p class="muted" style="margin:6px 0 10px;font-size:14px">A <b>look</b> remembers all your Step 2 choices — color, camera motion, speed, lighting, lens, music, transitions, preservation rules, your own style words and edited room presets. ${LEVEL==='new'?'To copy a look onto a new home: add the new photos in Step 1, then click <b>✅ Use this look</b>. Everything stays adjustable.':'Apply it to a new listing’s photos, then fine-tune anything.'}</p>
+    ${cur?`<div class="lactive ${changed?'chg':''}">Using: <b>${esc(cur.name)}</b> ${changed?'<span class="badge">✏️ adjusted</span>':'<span class="badge">✓ as saved</span>'}
+      <span class="lact">${changed&&!cur.builtIn?`<button class="xbtn" id="lkUpd">💾 Update “${esc(cur.name)}”</button>`:''}${changed?`<button class="xbtn" id="lkNew2">➕ Save as a new look</button>`:''}</span></div>`:''}
+    <div class="lquick"><b>🎚️ Quick adjust</b>
+      <label>Speed (seconds per photo) <input type="range" id="lqLen" min="0" max="${Math.max(0,opts('len').length-1)}" step="1"><span id="lqLenV"></span></label>
+      <label>Camera move size <input type="range" id="lqAmt" min="0" max="${Math.max(0,opts('amount').length-1)}" step="1"><span id="lqAmtV"></span></label></div>
+    <div class="lsave"><input id="lkName" placeholder="Name this look, e.g. “Laguna Beach twilight”" maxlength="60" aria-label="Name for the new look"><button class="btn" id="lkSave">💾 Save my current settings as a look</button></div>
+    <div class="lgrid">${allLooks().map(L=>`<div class="lcard ${L.id===ST.lookId?'on':''}" data-lid="${L.id}">
+        <div class="lhead"><b>${esc(L.name)}</b>${L.builtIn?'<span class="badge">Starter</span>':`<span class="muted" style="font-size:11.5px">${mfDate(L.updated||L.created)}</span>`}</div>
+        ${L.note?`<p class="muted" style="font-size:12.5px;margin:2px 0 6px">${esc(L.note)}</p>`:''}
+        <div class="lchips">${lookChips(L)}</div>
+        <div class="lbtns"><button class="xbtn lgo" data-lapply="${L.id}">✅ Use this look</button>${L.builtIn?`<button class="xbtn" data-ldup="${L.id}">📄 Copy & edit</button>`:`<button class="xbtn" data-lren="${L.id}">✏️ Rename</button><button class="xbtn" data-ldup="${L.id}">📄 Duplicate</button><button class="xbtn" data-ldel="${L.id}">🗑️</button>`}</div>
+        <div data-lask="${L.id}"></div></div>`).join('')}</div></div>`;
+}
+function bindLooks(){
+  const card=document.getElementById('looksCard'); if(!card) return;
+  const newLook=(name,base)=>{ const snap=base||lookSnapshot(); const L={id:'l'+Date.now().toString(36),name:(name||'My look').slice(0,60),note:'',s:snap.s,keep:snap.keep,style:snap.style,roomMv:snap.roomMv,presets:snap.presets,created:Date.now(),updated:Date.now()}; LOOKSAVE.unshift(L); saveLooks(); return L; };
+  $('#lkSave').onclick=()=>{ const n=$('#lkName').value.trim(); if(!n){ $('#lkName').focus(); toast('Type a name for your look first'); return; } const L=newLook(n); ST.lookId=L.id; redraw(); toast(`💾 Saved “${L.name}” — use it on any home`); };
+  $('#lkName').onkeydown=e=>{ if(e.key==='Enter') $('#lkSave').click(); };
+  if($('#lkUpd')) $('#lkUpd').onclick=()=>{ const L=LOOKSAVE.find(x=>x.id===ST.lookId); if(!L) return; Object.assign(L,lookSnapshot(),{updated:Date.now()}); saveLooks(); redraw(); toast(`💾 Updated “${L.name}”`); };
+  if($('#lkNew2')) $('#lkNew2').onclick=()=>{ $('#lkName').focus(); $('#lkName').scrollIntoView({block:'center'}); toast('Type a name, then click 💾 Save'); };
+  card.querySelectorAll('[data-lapply]').forEach(b=>b.onclick=()=>applyLook(b.dataset.lapply));
+  card.querySelectorAll('[data-ldup]').forEach(b=>b.onclick=()=>{ const S=allLooks().find(x=>x.id===b.dataset.ldup); const L=newLook(S.name.replace(/^\S+\s/,'')+' (my copy)',{s:{...lookSnapshot().s,...S.s},keep:S.keep||{...ST.keep},style:S.style||'',roomMv:S.roomMv||{},presets:S.presets||{}}); L.note=S.note||''; saveLooks(); applyLook(L.id); });
+  card.querySelectorAll('[data-lren]').forEach(b=>b.onclick=()=>{ const id=b.dataset.lren, L=LOOKSAVE.find(x=>x.id===id), box=card.querySelector(`[data-lask="${id}"]`);
+    box.innerHTML=`<div class="askrow"><input id="lrIn" value="${esc(L.name)}" maxlength="60" aria-label="New name"><button class="xbtn" id="lrOk">Save</button><button class="xbtn" id="lrNo">Cancel</button></div>`;
+    const i=box.querySelector('#lrIn'); i.focus(); i.select(); const ok=()=>{ L.name=i.value.trim()||L.name; L.updated=Date.now(); saveLooks(); redraw(); toast('✏️ Renamed'); };
+    box.querySelector('#lrOk').onclick=ok; i.onkeydown=e=>{ if(e.key==='Enter') ok(); if(e.key==='Escape') box.innerHTML=''; }; box.querySelector('#lrNo').onclick=()=>box.innerHTML=''; });
+  card.querySelectorAll('[data-ldel]').forEach(b=>b.onclick=()=>{ const id=b.dataset.ldel, box=card.querySelector(`[data-lask="${id}"]`);
+    box.innerHTML=`<div class="askrow">Delete this look? <button class="xbtn danger" id="ldY">Delete</button><button class="xbtn" id="ldN">Cancel</button></div>`;
+    box.querySelector('#ldN').onclick=()=>box.innerHTML=''; box.querySelector('#ldY').onclick=()=>{ LOOKSAVE=LOOKSAVE.filter(x=>x.id!==id); if(ST.lookId===id) ST.lookId=null; saveLooks(); redraw(); toast('🗑️ Look deleted'); }; });
+  // quick adjust sliders mirror the Step 2 menus
+  const wire=(rid,key,vid,fmt)=>{ const r=$(rid), sel=document.querySelector(`select[data-k="${key}"]`); if(!r||!sel) return; const os=[...sel.options];
+    const idx=()=>Math.max(0,os.findIndex(o=>String(o.value)===String(ST[key])));
+    const order=os.map((o,i)=>i).sort((a,b)=>(+os[a].value)-(+os[b].value)); r.max=os.length-1;
+    r.value=order.indexOf(idx()); const show=()=>{ $(vid).textContent=fmt(+os[order[+r.value]].value); }; show();
+    r.oninput=()=>{ const o=os[order[+r.value]]; ST[key]=+o.value; sel.value=o.value; show(); updActive(); }; };
+  wire('#lqLen','len','#lqLenV',v=>v+' s'); wire('#lqAmt','amount','#lqAmtV',v=>'~'+v+'%');
+  function redraw(){ const y=window.scrollY; card.outerHTML=looksPanelHTML(); bindLooks(); window.scrollTo(0,y); }
+  function updActive(){ const cur=allLooks().find(x=>x.id===ST.lookId); const a=card.querySelector('.lactive'); if(cur&&a&&!lookSame(cur)!==a.classList.contains('chg')) redraw(); }
+  window._looksRedraw=redraw; window._looksUpd=updActive;
+}
+function saveStyleAsLook(name,styleText){
+  const snap=lookSnapshot(); const L={id:'l'+Date.now().toString(36),name:name.slice(0,60),note:'Style words from a prompt you liked.',s:snap.s,keep:snap.keep,style:styleText.slice(0,900),roomMv:{},presets:{},created:Date.now(),updated:Date.now()};
+  LOOKSAVE.unshift(L); saveLooks(); return L;
+}
 
 function guessRoom(name, i){
   const n=name.toLowerCase();
@@ -1737,6 +1828,7 @@ function studioView(){
         <p class="warnnote" style="margin-top:10px">⚠️ Only use photos you have permission to use — for example your own listing, or photos the listing agent or photographer gave you. Listing photos are usually owned by the photographer.</p>
       </details>
     </div>
+    <div id="looksSlot"></div>
     <div class="card">
       <h2>Step 2 · Choose your style</h2>
       <div class="formgrid">
@@ -1770,6 +1862,7 @@ function studioView(){
         ${Object.entries(PRESETS).map(([k,v])=>`<label class="fld" style="display:block;margin-top:10px"><span>${v.n}</span><textarea data-preset="${k}" rows="3">${esc(v.t)}</textarea></label>`).join('')}
         <div class="actions"><button class="qcopy" id="resetPresets">↺ Reset presets to original wording</button></div>
       </details>
+      <label class="fld" style="display:block;margin-top:16px"><span>✍️ Your own style words (optional — added to every clip)</span><textarea data-k="style" rows="3" placeholder="e.g. soft morning haze, gentle lens flare from windows, Architectural Digest feel">${esc(ST.style||'')}</textarea></label>
       <h3 style="margin-top:18px">🛡️ Preservation (what must NOT change)</h3>
       <div class="keeps">${KEEP.map(k=>`<label class="keep"><input type="checkbox" data-keep="${k[0]}" ${ST.keep[k[0]]?'checked':''}> ${k[1]}</label>`).join('')}</div>
       <h3 style="margin-top:16px">On-screen text (optional)</h3>
@@ -1787,9 +1880,10 @@ function studioView(){
   function sel(k,l,opts){ const op=o=>`<option value="${o[0]}" ${String(ST[k])===String(o[0])?'selected':''}>${o[1]}</option>`; const std=opts.filter(o=>!o[2]), pro=opts.filter(o=>o[2]);
     return `<label class="fld"><span>${l}</span><select data-k="${k}">${std.map(op).join('')}${pro.length?`<optgroup label="⭐ Professional">${pro.map(op).join('')}</optgroup>`:''}</select></label>`; }
   function inp(k,l,ph){ return `<label class="fld"><span>${l}</span><input data-k="${k}" value="${esc(ST[k])}" placeholder="${ph}"></label>`; }
-  document.querySelectorAll('[data-k]').forEach(el=>el.oninput=el.onchange=()=>{ ST[el.dataset.k]= (el.dataset.k==='len'||el.dataset.k==='amount')? +el.value : el.value; if(el.dataset.k==='motion') renderThumbs(); });
-  document.querySelectorAll('[data-keep]').forEach(c=>c.onchange=()=>{ ST.keep[c.dataset.keep]=c.checked; });
-  document.querySelectorAll('[data-preset]').forEach(t=>t.oninput=()=>{ PRESETS[t.dataset.preset].t=t.value; });
+  $('#looksSlot').outerHTML=looksPanelHTML(); bindLooks();
+  document.querySelectorAll('[data-k]').forEach(el=>el.oninput=el.onchange=()=>{ ST[el.dataset.k]= (el.dataset.k==='len'||el.dataset.k==='amount')? +el.value : el.value; if(el.dataset.k==='motion') renderThumbs(); if(el.tagName==='SELECT'&&(el.dataset.k==='len'||el.dataset.k==='amount')&&window._looksRedraw) window._looksRedraw(); else if(window._looksUpd) window._looksUpd(); });
+  document.querySelectorAll('[data-keep]').forEach(c=>c.onchange=()=>{ ST.keep[c.dataset.keep]=c.checked; window._looksUpd&&window._looksUpd(); });
+  document.querySelectorAll('[data-preset]').forEach(t=>t.oninput=()=>{ PRESETS[t.dataset.preset].t=t.value; window._looksUpd&&window._looksUpd(); });
   $('#resetPresets').onclick=()=>{ Object.keys(PRESETS).forEach(k=>PRESETS[k].t=PRESET_ORIG[k]); document.querySelectorAll('[data-preset]').forEach(t=>t.value=PRESETS[t.dataset.preset].t); toast('↺ Presets reset'); };
   const drop=$('#drop'), files=$('#files');
   files.onchange=()=>addFiles(files.files);
@@ -1863,7 +1957,7 @@ function renderThumbs(){
     <span style="display:flex;gap:8px;flex-wrap:wrap"><button class="qcopy" id="smart">✨ Smart tour order</button><button class="qcopy" id="clearall">🗑️ Remove all</button></span></div>
     <div class="thumbs">${ST.photos.map((p,i)=>`<div class="th ${fresh.has(p.url)?'fresh':''}">
       <div class="num">${i+1}</div>${fresh.has(p.url)?'<div class="newtag">NEW</div>':''}<img src="${p.url}" alt="${esc(p.name)}" data-view="${i}" title="${esc(p.name)} — click to view">
-      <select data-i="${i}" class="roomsel">${ROOM_ORDER.map(k=>`<option value="${k}" ${p.room===k?'selected':''}>${ROOMS[k].n}</option>`).join('')}</select>
+      <select data-i="${i}" class="roomsel" aria-label="Room type for photo ${i+1}">${ROOM_ORDER.map(k=>`<option value="${k}" ${p.room===k?'selected':''}>${ROOMS[k].n}</option>`).join('')}</select>
       <select data-pm="${i}" class="roomsel mvsel" title="Camera motion for this photo"><option value="default" ${!p.mv||p.mv==='default'?'selected':''}>🎥 ${ST.motion==='auto'?'Auto: '+MOTIONS[ROOM_MV[p.room]].n:ST.motion==='presets'?'Auto: '+MOTIONS[ROOM_PRESET[p.room]].n:'Default: '+MOTIONS[ST.motion].n}</option>${Object.entries(MOTIONS).map(([k,v])=>`<option value="${k}" ${p.mv===k?'selected':''}>🎥 ${v.n}</option>`).join('')}</select>
       <div class="thb"><button data-mv="${i}" data-d="-1" title="Move earlier">◀</button><button data-mv="${i}" data-d="1" title="Move later">▶</button><button data-rm="${i}" title="Remove">✕</button></div>
     </div>`).join('')}</div>
@@ -1917,7 +2011,7 @@ Frame rate: ${FPS[ST.fps][1]}
 Depth of field: ${DOF[ST.dof][1]}${LEVEL==='adv'?`\nPro camera specs: full-frame cinema camera, white balance matched across all clips (5600K daylight / 3200K interiors with practicals), constant camera velocity with no acceleration spikes, horizon perfectly level\nPro color: Rec.709 warm grade, lifted shadows, soft highlight roll-off, gentle film grain, identical grade on every clip`:''}
 Lighting & color: ${L.grade}
 Environmental lighting: ${(()=>{const k=ST.light==='auto'?ROOM_LIGHT[p.room]:ST.light; const x=LIGHTS[k]; return x.p? x.p+' — very subtle and realistic; keep the overall brightness and colors of the photo' : 'none — keep the lighting perfectly still, exactly as in the photo';})()}
-Tone: ${L.tone}
+Tone: ${L.tone}${ST.style&&ST.style.trim()?`\nExtra style: ${ST.style.trim().replace(/\s+/g,' ')}`:''}
 Aspect ratio: ${ST.ar}${keeps.length?`
 Preservation rules:
 ${keeps.map(k=>'- '+k[1]+'.').join('\n')}`:''}
@@ -1957,7 +2051,7 @@ ${allText}`;
       <div class="top"><h2 style="margin:0">Step 3 · Your video plan</h2><span class="badge">${N} clips · about ${total} seconds</span></div>
       <p class="muted">Every clip uses the same look, speed and lens, so they blend together like one continuous camera move.</p>
       <div class="actions" style="margin-top:6px">
-        <button class="btn" id="cpAll">📋 Copy all ${N} clip prompts</button><button class="btn ghost" id="svPlan">💾 Save to My Files</button>
+        <button class="btn" id="cpAll">📋 Copy all ${N} clip prompts</button><button class="btn ghost" id="svPlan">💾 Save to My Files</button><button class="btn ghost" id="svLook">🎨 Save this look</button>
         <button class="btn ghost" id="cpMaster">🤖 Copy “improve with Claude” prompt</button>
       </div>
       <p class="muted" style="font-size:13px;margin-top:8px">🤖 Optional: paste the “improve with Claude” prompt into Claude <b>and attach your photos</b>. Claude will look at each photo and add the real details it sees.</p>
@@ -2001,6 +2095,7 @@ ${allText}`;
         <li>Label the video “AI-enhanced from listing photos” if your MLS or brokerage requires it.</li>
       </ul>
     </div>`;
+  $('#svLook').onclick=()=>{ const c=document.getElementById('looksCard'); if(c){ c.scrollIntoView({behavior:'smooth',block:'start'}); setTimeout(()=>{ const i=$('#lkName'); i&&i.focus(); },400); toast('Name your look, then click 💾 Save'); } };
   $('#svPlan').onclick=()=>saveToFiles({type:'plan',title:`Listing video plan · ${N} clips`,text:allText,src:'Real Estate · Photo-to-video'});
   $('#cpAll').onclick=async()=>{ (await copyText(allText))?toast(`✅ Copied all ${N} prompts`):showCopyBox(allText); };
   $('#cpMaster').onclick=async()=>{ (await copyText(master))?toast('✅ Copied! Paste into Claude and attach your photos'):showCopyBox(master); };
@@ -3378,12 +3473,13 @@ function vdRender(manual){
       ${Array.isArray(R.image_to_video_prompts)&&R.image_to_video_prompts.length?`<h3 style="margin-top:16px">📸 Photo-to-video prompts (one per shot)</h3>${R.image_to_video_prompts.map((t,i)=>`<div class="quote"><b>Shot ${i+1}:</b> ${esc(t)}</div>${cp(t)}`).join('')}`:''}
       ${R.craft_prompt?`<h3 style="margin-top:16px">🧩 CRAFT prompt to plan a similar video</h3><div class="quote" style="white-space:pre-wrap">${esc(R.craft_prompt)}</div>${cp(R.craft_prompt)}`:''}
       ${Array.isArray(R.tips)&&R.tips.length?`<h3 style="margin-top:16px">💡 Tips to recreate it</h3><ul class="steps">${R.tips.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}
-      <div class="actions"><button class="btn ghost" id="vdAll">📋 Copy the full breakdown</button><button class="btn ghost" id="vdSave">💾 Save to My Files</button></div>
+      <div class="actions"><button class="btn ghost" id="vdAll">📋 Copy the full breakdown</button><button class="btn ghost" id="vdSave">💾 Save to My Files</button><button class="btn ghost" id="vdLook">🎨 Save as a Studio look</button></div>
       <p class="muted" style="font-size:12px;margin:8px 0 0">These are educated guesses from the frames — no tool can see the exact prompt that was used. Only recreate styles, not someone else’s actual footage, branding or people.</p></div>`;
   }
   if(manual&&L) html+=`<div class="card"><h2>🤖 Ask Claude yourself</h2><p class="muted" style="font-size:14px">Automatic analysis isn’t available in this view. Copy this request, paste it into a Claude chat, then copy-and-paste 4–8 of the key frames above into the same message.</p><div class="quote" style="white-space:pre-wrap">${esc(vdManualPrompt())}</div>${cp(vdManualPrompt())}</div>`;
   out.innerHTML=html;
   out.querySelectorAll('[data-vdcp]').forEach(b=>b.onclick=async()=>{ const t=decodeURIComponent(b.dataset.vdcp); (await copyText(t))?toast('✅ Copied'):showCopyBox(t); });
+  if($('#vdLook')) $('#vdLook').onclick=()=>{ const t=(R.text_to_video_prompt||R.summary||'').toString(); if(!t){ toast('No style found to save'); return; } const L=saveStyleAsLook('Look from Video Detective · '+new Date().toLocaleDateString(),t); ST.lookId=L.id; ST.style=L.style; toast('🎨 Saved as a look — opening the Studio'); setTimeout(()=>reShell?studioView():0,500); };
   if($('#vdSave')) $('#vdSave').onclick=()=>{ const parts=[R.summary?'SUMMARY: '+R.summary:'',R.text_to_video_prompt?'TEXT-TO-VIDEO PROMPT:\n'+R.text_to_video_prompt:'',Array.isArray(R.image_to_video_prompts)&&R.image_to_video_prompts.length?'PHOTO-TO-VIDEO PROMPTS:\n'+R.image_to_video_prompts.map((t,i)=>`Shot ${i+1}: ${t}`).join('\n'):'',R.craft_prompt?'CRAFT PROMPT:\n'+R.craft_prompt:'',Array.isArray(R.tips)&&R.tips.length?'TIPS:\n- '+R.tips.join('\n- '):''].filter(Boolean); saveToFiles({type:'breakdown',title:'Video breakdown · '+new Date().toLocaleDateString(),text:parts.length?parts.join('\n\n'):JSON.stringify(R,null,2),src:'Video Detective'}); };
   if($('#vdAll')) $('#vdAll').onclick=async()=>{ const t=JSON.stringify(R,null,2); (await copyText(t))?toast('✅ Copied'):showCopyBox(t); };
 }
@@ -4212,6 +4308,7 @@ const CLOUD_KEYS={
   realclips:{ get:()=>{ const k={}; Object.entries(REAL).forEach(([i,v])=>{ if(v&&v.id) k[i]=v; }); return k; }, set:v=>{ if(v&&typeof v==='object'){ Object.keys(REAL).forEach(i=>{ if(REAL[i]&&REAL[i].id&&!v[i]) delete REAL[i]; }); Object.assign(REAL,v); try{ localStorage.setItem('pc_realclips',JSON.stringify(v)); }catch(e){} } } },
   myfiles:{ get:()=>MYF.filter(x=>!MF_FILE(x)||x.assetId||x.shared), set:v=>{ if(Array.isArray(v)){ const local=MYF.filter(x=>MF_FILE(x)&&!x.assetId&&!x.shared); MYF=local.concat(v); try{ localStorage.setItem('pc_myfiles',JSON.stringify(MYF)); }catch(e){} updateFilesBtn(); if(document.getElementById('nav-files')&&document.getElementById('nav-files').classList.contains('on')) myFilesView(); } } },
   missions:{ get:()=>MS, set:v=>{ if(v&&typeof v==='object'){ Object.keys(MS).forEach(k=>delete MS[k]); Object.assign(MS,v); try{ localStorage.setItem('pc_missions',JSON.stringify(MS)); }catch(e){} } } },
+  looks:{ get:()=>LOOKSAVE, set:v=>{ if(Array.isArray(v)){ LOOKSAVE=v; try{ localStorage.setItem('pc_looks',JSON.stringify(v)); }catch(e){} } } },
   enhancer:{ get:()=>ENH.hist.slice(0,15), set:v=>{ if(Array.isArray(v)){ ENH.hist=v; try{ localStorage.setItem('pc_enh_hist',JSON.stringify(v)); }catch(e){} } } },
   scores:{ get:()=>{ const o={}; ['match','sort','scramble','build','recall'].forEach(g=>{ const b=store('best_'+g); if(b) o[g]=b; }); return o; },
            set:v=>{ if(!v) return; Object.entries(v).forEach(([g,b])=>{ const cur=store('best_'+g)||0; if(b>cur) store('best_'+g,b); }); } }
