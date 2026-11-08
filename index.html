@@ -3169,7 +3169,7 @@ const VSITES=[[/youtu\.?be/i,'YouTube'],[/tiktok/i,'TikTok'],[/instagram/i,'Inst
 function vdSite(u){ for(const [re,n] of VSITES) if(re.test(u)) return n; return 'the website'; }
 function vdLinkSteps(u){
   const s=vdSite(u);
-  const own={YouTube:'If it’s <b>your own</b> video: open <b>YouTube Studio → Content</b>, click ⋮ next to the video → <b>Download</b>.',TikTok:'On TikTok, tap <b>Share → Save video</b> (only appears if the creator allows downloads).',Instagram:'If it’s <b>your own</b> Reel: open it, tap <b>⋯ → Download</b> (or Save to camera roll).',Facebook:'If it’s <b>your own</b> video: open it, click <b>⋯ → Download video</b>.'}[s];
+  const own={YouTube:'If it’s <b>your own</b> video: open <b>YouTube Studio → Content</b>, click ⋮ next to the video → <b>Download</b>.',TikTok:'On TikTok, tap <b>Share → Save video</b> (only appears if the creator allows downloads).',Instagram:'Easiest: copy the post’s link (<b>Share → Copy link</b>), paste it into <a href="https://grabfy.com/" target="_blank" rel="noopener">Grabfy ↗</a>, click <b>Download</b> and pick <b>1080p</b> — you get an MP4.',Facebook:'If it’s <b>your own</b> video: open it, click <b>⋯ → Download video</b>.'}[s];
   return `<div class="lsteps">
     <div class="fp-head" style="font-size:15px;margin:12px 0 6px">3 ways to analyze this ${esc(s)} video</div>
     <p style="margin:0 0 4px"><b>⚡ Quickest — screenshots (about 1 minute):</b></p>
@@ -3180,7 +3180,7 @@ function vdLinkSteps(u){
     <ol class="steps"><li><b>Windows 11:</b> open the <b>Snipping Tool</b>, click the 🎥 <b>Record</b> button, select the video area and click <b>Start</b>. Play 10–30 seconds, then stop and <b>Save</b>. (Or press <b>Windows key + Alt + R</b> to record with Game Bar.)</li>
       <li><b>Mac:</b> press <b>⌘ + Shift + 5</b> → “Record Selected Portion.” <b>iPhone/Android:</b> use Screen Recording from the control panel.</li>
       <li>Drag the saved recording into the video box above and click <b>🤖 Figure out the prompts</b>.</li></ol>
-    ${own?`<p style="margin:10px 0 4px"><b>⬇️ Download it (only if allowed):</b> ${own} Then upload it in the video box above.</p>`:''}
+    ${own?`<p style="margin:10px 0 4px"><b>⬇️ Download it (only if allowed):</b> ${own} Then add it in the video box above.</p>`:''}
     <p class="warnnote" style="margin-top:10px">⚠️ Use this to learn a <b>style</b>. Don’t download, re-post or copy other people’s videos, music or likeness without permission, and follow each site’s rules.</p></div>`;
 }
 const VDS={ shots:[] };
@@ -3225,8 +3225,16 @@ function vdStepsHTML(){
 function vdFixHTML(){
   return `<details class="presetbox vdfix" id="vdFix"><summary>🛠️ Video won’t open? Fix the format</summary>
     <div class="vdfixbody">
-      <p><b>Why this happens:</b> Video Detective works in your web browser, and browsers can only open certain video types — <b>MP4</b> (best), <b>WebM</b> and some <b>MOV</b> files. Files like <b>MKV, AVI, WMV</b>, and some iPhone “HEVC” videos won’t open. The fix is simple: <b>convert the video to MP4</b> with a free program, then add the new MP4 here.</p>
-      <h3>✅ Easiest fix on Windows: HandBrake (free)</h3>
+      <p><b>Why this happens:</b> Video Detective works in your web browser, and browsers can only open certain video types — <b>MP4</b> (best), <b>WebM</b> and some <b>MOV</b> files. Files like <b>MKV, AVI, WMV</b>, and some iPhone “HEVC” videos won’t open. The fix is simple: <b>get an MP4 version</b> — from Instagram with Grabfy, or by converting a file on your computer — then add it here.</p>
+      <h3>📲 Video is on Instagram? Use Grabfy — the easiest fix</h3>
+      <p><a href="https://grabfy.com/" target="_blank" rel="noopener">Grabfy ↗</a> is a free website that saves public Instagram videos, Reels and Stories as an <b>MP4</b> — the format Video Detective needs. No sign-up or install.</p>
+      <ol class="steps">
+        <li>On Instagram, open the video, tap <b>Share</b> (paper airplane) and choose <b>Copy link</b>.</li>
+        <li>Go to <a href="https://grabfy.com/" target="_blank" rel="noopener">Grabfy ↗</a>, paste the link in the box and click <b>Download</b>.</li>
+        <li>Pick <b>1080p</b> and save the file. It goes to your <b>Downloads</b> folder.</li>
+        <li>Come back here and add the MP4.</li>
+      </ol>
+      <h3>💻 Video file on your computer won’t open? Convert it with HandBrake (free)</h3>
       <ol class="steps">
         <li>Go to <a href="https://handbrake.fr/downloads.php" target="_blank" rel="noopener">handbrake.fr/downloads ↗</a> and click <b>Download (Windows)</b>. Open the file you downloaded and follow the install steps.</li>
         <li>Open <b>HandBrake</b> and drag your video into its window (or click <b>File</b> and pick the video).</li>
@@ -3236,13 +3244,12 @@ function vdFixHTML(){
       </ol>
       <h3>🌐 No install? Use an online converter</h3>
       <p><a href="https://cloudconvert.com/mp4-converter" target="_blank" rel="noopener">CloudConvert MP4 converter ↗</a> — click <b>Select File</b>, pick your video, click <b>Convert</b>, then <b>Download</b>. <span class="muted">(Your video is uploaded to their website, so don’t use this for private videos.)</span></p>
-      <h3>🔗 Is the video on a website (YouTube, TikTok, Instagram…)?</h3>
+      <h3>🔗 On YouTube or TikTok?</h3>
       <ul class="steps">
-        <li><b>If it’s your own video,</b> use that app’s own <b>Download</b> or <b>Save video</b> button (for example YouTube Studio → ⋮ → <b>Download</b>, or TikTok → Share → <b>Save video</b>). These save as MP4.</li>
-        <li><b>If it’s someone else’s video,</b> don’t download it — use the <b>🔗 From a link</b> option above instead. It lets you take screenshots, which is all Video Detective needs.</li>
-        <li><b>Or record your screen:</b> press <b>Windows key + Shift + R</b> (Windows 11 Snipping Tool), drag a box around the playing video, then click <b>Start</b>. It saves an MP4 you can add here.</li>
+        <li><b>Your own video:</b> YouTube Studio → ⋮ → <b>Download</b>, or TikTok → Share → <b>Save video</b>. These save as MP4.</li>
+        <li><b>Or record your screen:</b> press <b>Windows key + Shift + R</b> (Windows 11 Snipping Tool), drag a box around the playing video, then click <b>Start</b>. It saves an MP4.</li>
       </ul>
-      <p class="muted" style="font-size:12.5px">Only use videos you made or have permission to use. HandBrake and CloudConvert are free outside tools, not part of Prompt CRAFT.</p>
+      <p class="muted" style="font-size:12.5px">Only use videos you made or have permission to use — don’t re-post or sell other people’s videos. Grabfy, HandBrake and CloudConvert are free outside tools, not part of Prompt CRAFT.</p>
     </div></details>`;
 }
 function vdBadFormat(name){
