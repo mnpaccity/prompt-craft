@@ -3260,6 +3260,7 @@ function soundtrackHTML(){
   return `<h3 style="margin-top:18px">🎵 Soundtrack</h3>
    <p class="muted" style="font-size:13.5px;margin:0 0 8px">Pick one of <b>25 original soundtracks</b> (made by Prompt CRAFT — free to use in your videos) or add your own audio. Press <b>▶</b> to listen. The live preview below plays with your soundtrack.</p>
    <div class="sndsrc" role="radiogroup" aria-label="Soundtrack source"><label><input type="radio" name="sndsrc" value="synth" ${own?'':'checked'}> 🎼 Built-in soundtrack</label><label><input type="radio" name="sndsrc" value="file" ${own?'checked':''}> 🎧 My own audio track</label></div>
+   ${mySndCatHTML()}
    <div id="sndBuilt" ${own?'hidden':''}>
      <input id="sndQ" class="search" placeholder="🔍 Search soundtracks — try “calm”, “luxury”, “happy”, “beach”…" style="width:100%;margin:6px 0 4px" aria-label="Search soundtracks">
      ${cats.map(c=>`<div class="sndcat" data-scat="${c}"><h4>${c}</h4><div class="sndgrid">${SOUNDTRACKS.filter(t=>t.cat===c).map(t=>`<div class="snd ${ST.music===t.k?'on':''}" data-snd="${t.k}" data-sq="${esc((t.n+' '+t.mood+' '+t.p+' '+t.cat).toLowerCase())}">
@@ -3268,10 +3269,22 @@ function soundtrackHTML(){
    <div id="sndOwn" ${own?'':'hidden'}>
      ${own?`<div class="sndfile">🎧 <b>${esc(ST.audio.name)}</b> <span class="muted">· ${fmtDur(ST.audio.dur)}</span> <button class="xbtn" id="sndListen">▶ Listen</button> <button class="xbtn" id="sndRm">✕ Remove</button></div>
        <label class="fld" style="display:block;margin-top:8px"><span>Start the song at: <b id="sndStartV">${fmtDur(ST.audioStart||0)}</b> (skip a slow intro)</span><input type="range" id="sndStart" min="0" max="${Math.max(0,Math.floor((ST.audio.dur||0)-5))}" step="1" value="${Math.floor(ST.audioStart||0)}"></label>`
-       :`<div class="pickrow"><label class="btn ghost" style="cursor:pointer">⬆️ Upload a song or audio file<input type="file" id="sndUp" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg" hidden></label>${pickBtn('sndPick','audio')}</div><p class="muted" style="font-size:12.5px;margin:4px 0 0">MP3, M4A, WAV or AAC. Songs you upload are also saved in 💾 My Files → 🎵 My Soundtracks so you can reuse them. Only use music you have the rights to (your own, or licensed for commercial use).</p>`}
+       :`<div class="pickrow"><label class="btn ghost" style="cursor:pointer">⬆️ Upload a song or audio file<input type="file" id="sndUp" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg" hidden></label>${pickBtn('sndPick','audio')}</div><p class="muted" style="font-size:12.5px;margin:4px 0 0">MP3, M4A, WAV or AAC. Songs you upload are also saved in 💾 My Files → 🎵 My Soundtracks and appear in the soundtrack list next time. Only use music you have the rights to (your own, or licensed for commercial use).</p>`}
    </div>
    <label class="fld sndvol"><span>🔊 Music volume: <b id="sndVolV">${ST.musicVol??70}%</b></span><input type="range" id="sndVol" min="0" max="100" step="5" value="${ST.musicVol??70}"></label>`;
 }
+function mySndCatHTML(){
+  const A=MYF.filter(x=>x.type==='audio'&&x.url);
+  return `<div class="sndcat" data-scat="mine"><h4>🎧 My Soundtracks <span class="muted" style="font-weight:500;font-size:12px">· your own music</span></h4><div class="sndgrid">
+    ${A.map(x=>{ const on=!!(ST.audio&&SND.src==='file'&&ST.audio.name===(x.name||'')); return `<div class="snd ${on?'on':''}" data-sq="${esc((x.title+' my own music soundtrack').toLowerCase())}"><button class="sndplay" data-myl="${x.id}" aria-label="Listen to ${esc(x.title)}">▶</button><button class="sndpick" data-myp="${x.id}" aria-pressed="${on}"><b>${esc(x.title)}</b><span>${on?'✅ Playing in your video':'My music'+(x.size?' · '+mfSize(x.size):'')}</span></button></div>`; }).join('')}
+    <label class="snd sndadd" style="cursor:pointer;justify-content:center" data-sq="add upload my own music soundtrack"><input type="file" class="mySndUp" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg" hidden><span class="sndpick" style="text-align:center"><b>➕ Add a soundtrack</b><span>Upload your own song</span></span></label>
+  </div></div>`;
+}
+const MYL={el:null,id:null,t:0};
+function myListenStop(){ if(MYL.el) try{ MYL.el.pause(); }catch(e){} clearTimeout(MYL.t); MYL.el=null; MYL.id=null; document.querySelectorAll('[data-myl]').forEach(b=>b.textContent='▶'); }
+function myListen(id,btn){ const was=MYL.id; myListenStop(); if(typeof sndStop==='function') sndStop(); if(was===id) return; const x=MYF.find(y=>y.id===id); if(!x||!x.url) return;
+  MYL.el=new Audio(x.url); MYL.id=id; MYL.el.volume=0.8; MYL.el.play().catch(()=>toast('⚠️ Couldn’t play that song')); btn.textContent='⏸'; MYL.t=setTimeout(myListenStop,15000); }
+async function mySndUpload(f){ if(!f) return null; toast('⏳ Adding “'+f.name+'” to My Soundtracks…'); const it=await mfUploadFile(f,'audio'); if(it){ typeof updateFilesBtn==='function'&&updateFilesBtn(); } return it; }
 function fmtDur(s){ s=Math.max(0,Math.round(s||0)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
 function bindSoundtrack(){
   const box=document.getElementById('sndBox'); if(!box) return; const q=s=>box.querySelector(s), qa=s=>box.querySelectorAll(s);
@@ -3286,6 +3299,10 @@ function bindSoundtrack(){
   if(q('#sndRm')) q('#sndRm').onclick=()=>{ sndClearFile(); redraw(); toast('Removed your audio track'); };
   if(q('#sndListen')) q('#sndListen').onclick=e=>{ if(SND.playing){ sndStop(); e.target.textContent='▶ Listen'; } else { sndStart(); e.target.textContent='⏸ Stop'; } };
   if(q('#sndStart')) q('#sndStart').oninput=e=>{ ST.audioStart=+e.target.value; q('#sndStartV').textContent=fmtDur(ST.audioStart); };
+  qa('[data-myl]').forEach(b=>b.onclick=()=>myListen(b.dataset.myl,b));
+  const useMine=async id=>{ myListenStop(); const f=await mfSndFile(id); if(!f) return; if(await sndSetFile(f,true)){ toast('🎧 Soundtrack: “'+(MYF.find(y=>y.id===id)||{}).title+'”'); redraw(); if(prevPlaying()) sndStart(); } };
+  qa('[data-myp]').forEach(b=>b.onclick=()=>useMine(b.dataset.myp));
+  qa('.mySndUp').forEach(i=>i.onchange=async e=>{ const it=await mySndUpload(e.target.files[0]); e.target.value=''; if(it) await useMine(it.id); });
   q('#sndVol').oninput=e=>{ ST.musicVol=+e.target.value; q('#sndVolV').textContent=ST.musicVol+'%'; sndVol(); };
 }
 async function exportPreviewVideo(){
@@ -3828,12 +3845,12 @@ function veRender(){
      <div class="sndsrc" role="radiogroup" aria-label="Sound"><label><input type="radio" name="veau" value="orig" ${s.audio==='orig'?'checked':''}> Keep the original sound</label><label><input type="radio" name="veau" value="mix" ${s.audio==='mix'?'checked':''}> Original + music</label><label><input type="radio" name="veau" value="music" ${s.audio==='music'?'checked':''}> Music only</label></div>
      <div ${s.audio==='orig'?'hidden':''} id="veMus">
        <div class="sndsrc" role="radiogroup" aria-label="Which music" style="margin-top:8px"><label><input type="radio" name="vemsrc" value="synth" ${s.musicSrc!=='file'?'checked':''}> 🎼 Built-in soundtrack</label><label><input type="radio" name="vemsrc" value="file" ${s.musicSrc==='file'?'checked':''}> 🎧 My own music</label></div>
-       <div class="vegrid" id="veBuilt" ${s.musicSrc==='file'?'hidden':''}><label class="fld"><span>Soundtrack (25 to choose from)</span><select data-vs="music">${[...new Set(SOUNDTRACKS.map(t=>t.cat))].map(c=>`<optgroup label="${c}">${SOUNDTRACKS.filter(t=>t.cat===c).map(t=>`<option value="${t.k}" ${s.music===t.k?'selected':''}>${t.n} · ${t.bpm} BPM</option>`).join('')}</optgroup>`).join('')}</select></label></div>
+       <div class="vegrid" id="veBuilt" ${s.musicSrc==='file'?'hidden':''}><label class="fld"><span>Soundtrack (25 to choose from)</span><select data-vs="music">${MYF.some(x=>x.type==='audio'&&x.url)?`<optgroup label="🎧 My Soundtracks">${MYF.filter(x=>x.type==='audio'&&x.url).map(x=>`<option value="my:${x.id}">${esc(x.title)}</option>`).join('')}</optgroup>`:''}${[...new Set(SOUNDTRACKS.map(t=>t.cat))].map(c=>`<optgroup label="${c}">${SOUNDTRACKS.filter(t=>t.cat===c).map(t=>`<option value="${t.k}" ${s.music===t.k?'selected':''}>${t.n} · ${t.bpm} BPM</option>`).join('')}</optgroup>`).join('')}</select></label></div>
        <div id="veOwn" ${s.musicSrc==='file'?'':'hidden'}>
          ${VE.own?`<div class="sndfile">🎧 <b>${esc(VE.own.name)}</b> <span class="muted">· ${fmtDur(VE.own.dur)}</span> <button class="xbtn" id="veOwnSwap">🔁 Change song</button> <button class="xbtn" id="veOwnRm">✕ Remove</button></div>
            <label class="vesl" style="display:block;margin-top:8px"><span>Start the song at <b id="veV_mStart">${fmtDur(s.mStart)}</b> (skip a slow intro)</span><input type="range" data-ve="mStart" min="0" max="${Math.max(0,Math.floor(VE.own.dur-3))}" step="1" value="${Math.floor(s.mStart||0)}"></label>`:''}
          <div class="pickrow" ${VE.own?'hidden':''} id="veOwnAdd"><label class="btn ghost" style="cursor:pointer">⬆️ Upload a song<input type="file" id="veMusUp" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg" hidden></label>${pickBtn('veMusPick','audio')}</div>
-         <p class="muted" style="font-size:12.5px;margin:4px 0 0">MP3, M4A, WAV or AAC. Songs you upload are also saved in 💾 My Files → 🎵 My Soundtracks so you can reuse them. Only use music you have the rights to (your own, or licensed for commercial use) — social media apps may mute videos with copyrighted songs.</p>
+         <p class="muted" style="font-size:12.5px;margin:4px 0 0">MP3, M4A, WAV or AAC. Songs you upload are also saved in 💾 My Files → 🎵 My Soundtracks and appear in the soundtrack list next time. Only use music you have the rights to (your own, or licensed for commercial use) — social media apps may mute videos with copyrighted songs.</p>
        </div>
        <div class="vegrid"><label class="vesl"><span>🎵 Music volume <b id="veV_musicVol">${s.musicVol}%</b></span><input type="range" data-ve="musicVol" min="0" max="100" step="5" value="${s.musicVol}"></label></div>
      </div>
@@ -3861,7 +3878,8 @@ function veRender(){
     if(k==='trimA'&&v>VE.s.trimB-1){ v=Math.max(0,VE.s.trimB-1); r.value=v; } if(k==='trimB'&&v<VE.s.trimA+1){ v=Math.min(VE.dur,VE.s.trimA+1); r.value=v; }
     VE.s[k]=v; upd(k,v); if(k==='trimA'||k==='trimB'){ VE.el.currentTime=v; } if(k==='musicVol'||k==='origVol') veAudioMix(); });
   document.querySelectorAll('[data-ve=mStart]').forEach(r=>r.onchange=()=>{ if(VE.playing&&veOwnOn()) veMusicStart(); });
-  document.querySelectorAll('[data-vs]').forEach(sl=>sl.onchange=()=>{ const k=sl.dataset.vs; VE.s[k]=k==='speed'?+sl.value:sl.value; if(k==='speed') veAudioMix(); if(k==='music'&&VE.playing) veMusicStart(); });
+  document.querySelectorAll('[data-vs]').forEach(sl=>sl.onchange=async()=>{ const k=sl.dataset.vs;
+    if(k==='music'&&sl.value.startsWith('my:')){ const f=await mfSndFile(sl.value.slice(3)); if(f&&await veSetOwn(f,false)){ toast('🎧 Using your song “'+f.name+'”'); const y=window.scrollY, was=VE.playing; veRender(); window.scrollTo(0,y); if(was) vePlay(true); } else sl.value=VE.s.music; return; } VE.s[k]=k==='speed'?+sl.value:sl.value; if(k==='speed') veAudioMix(); if(k==='music'&&VE.playing) veMusicStart(); });
   document.querySelectorAll('[data-vt]').forEach(i=>i.oninput=()=>{ VE.s[i.dataset.vt]=i.value; });
   document.querySelectorAll('[data-vc]').forEach(c=>c.onchange=()=>{ VE.s[c.dataset.vc]=c.checked; });
   document.querySelectorAll('input[name=veau]').forEach(r=>r.onchange=()=>{ VE.s.audio=r.value; $('#veMus').hidden=r.value==='orig'; $('#veOrig').hidden=r.value==='music'; veAudioMix(); if(VE.playing){ if(r.value==='orig') veMusicStop(true); else veMusicStart(); } });
