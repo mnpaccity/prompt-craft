@@ -2342,16 +2342,16 @@ function drawEditor(){
   if(q('#peUpd')) q('#peUpd').onclick=()=>{ const t=keepT(); PE.stale=false; makePlan(); setTimeout(()=>{ if(PREV) PREV.seek(t); const e=document.getElementById('pedit'); e&&e.scrollIntoView({block:'nearest'}); },60); toast('🔄 Prompts and plan updated'); };
 }
 
-/* ---------- Video text style (Fredoka, like the Home example clips) ---------- */
-const VFONT='Fredoka, "Segoe UI", system-ui, sans-serif';
-try{ if(document.fonts){ document.fonts.load('700 40px Fredoka'); document.fonts.load('600 24px Fredoka'); } }catch(e){}
+/* ---------- Video text style: elegant serif capitals with a soft shadow ---------- */
+const VFONT='Georgia, "Times New Roman", serif';
 function vRR(ctx,x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
 function vWrap(ctx,text,maxW){ const out=[]; String(text).split(' · ').forEach(part=>{ let line=''; part.split(' ').forEach(w=>{ const t=(line+' '+w).trim(); if(ctx.measureText(t).width>maxW&&line){ out.push(line); line=w; } else line=t; }); if(line) out.push(line); }); return out.slice(0,3); }
-function vTitle(ctx,text,cx,cy,fs,maxW,alpha){ if(alpha<=0) return; ctx.save(); ctx.globalAlpha=alpha; ctx.font=`700 ${fs}px ${VFONT}`; ctx.textAlign='center'; ctx.textBaseline='middle';
-  const lines=vWrap(ctx,text,maxW), lh=fs*1.15, y0=cy-(lines.length-1)*lh/2;
-  lines.forEach((l,k)=>{ const y=y0+k*lh; ctx.lineJoin='round'; ctx.lineWidth=Math.max(3,fs*.12); ctx.strokeStyle='rgba(0,0,0,.35)'; ctx.strokeText(l,cx,y); ctx.shadowColor='rgba(0,0,0,.55)'; ctx.shadowBlur=fs*.45; ctx.shadowOffsetY=fs*.06; ctx.fillStyle='#fff'; ctx.fillText(l,cx,y); ctx.shadowBlur=0; ctx.shadowOffsetY=0; });
+function vTitle(ctx,text,cx,cy,fs,maxW,alpha){ if(alpha<=0) return; ctx.save(); ctx.globalAlpha=alpha; ctx.font=`500 ${fs}px ${VFONT}`; ctx.textAlign='center'; ctx.textBaseline='middle';
+  const up=String(text).toUpperCase(), canLS='letterSpacing' in ctx; if(canLS) ctx.letterSpacing=Math.round(fs*0.14)+'px';
+  const spaced=s=>canLS?s:s.split('').join(' '); const lines=vWrap(ctx,spaced(up),maxW), lh=fs*1.3, y0=cy-(lines.length-1)*lh/2;
+  lines.forEach((l,k)=>{ const y=y0+k*lh; ctx.shadowColor='rgba(0,0,0,.6)'; ctx.shadowBlur=fs*.4; ctx.shadowOffsetY=fs*.05; ctx.fillStyle='#fff'; ctx.fillText(l,cx,y); });
   ctx.restore(); }
-function vPill(ctx,text,x,y,fs,maxW,alpha,align='left'){ if(alpha<=0) return; ctx.save(); ctx.globalAlpha=alpha; ctx.font=`600 ${fs}px ${VFONT}`; ctx.textBaseline='middle'; ctx.textAlign='left';
+function vPill(ctx,text,x,y,fs,maxW,alpha,align='left'){ if(alpha<=0) return; ctx.save(); ctx.globalAlpha=alpha; ctx.font=`500 ${fs}px ${VFONT}`; ctx.textBaseline='middle'; ctx.textAlign='left';
   const lines=vWrap(ctx,text,maxW-fs*1.4), lh=fs*1.25, tw=Math.max(...lines.map(l=>ctx.measureText(l).width)), pw=tw+fs*1.4, ph=lines.length*lh+fs*.7, px=align==='center'?x-pw/2:x, py=y-ph;
   ctx.shadowColor='rgba(0,0,0,.35)'; ctx.shadowBlur=fs*.5; ctx.fillStyle='rgba(15,17,23,.62)'; vRR(ctx,px,py,pw,ph,Math.min(ph/2,fs*.8)); ctx.fill(); ctx.shadowBlur=0;
   ctx.fillStyle='#fff'; lines.forEach((l,k)=>ctx.fillText(l,px+fs*.7,py+fs*.35+lh*(k+.5))); ctx.restore(); }
@@ -2394,7 +2394,7 @@ function startPreview(ov){
       const a=d<0.4?d/0.4:d>D-0.4?(D-d)/0.4:1; vPill(ctx,o.text,W*0.05,H*(vertical?0.92:0.9),vertical?28:24,W*0.9,a); });
     ovs.filter(o=>!o.cap).forEach(o=>{ const s=st[o.clip]+0.6, d=t-s; if(d<0||d>2.8) return;
       const a=d<0.5?d/0.5:d>2.3?(2.8-d)/0.5:1; const rise=(1-Math.min(1,d/0.5))*10;
-      vTitle(ctx,o.text,W/2,H*(vertical?0.70:0.70)+rise,vertical?44:40,W*0.86,a); });
+      vTitle(ctx,o.text,W/2,H*(vertical?0.74:0.76)+rise,vertical?34:32,W*0.88,a); });
     const el=$('#ptime'); if(!el){ sndStop(true); return; }
     let ci=0; for(let i=0;i<N;i++) if(st[i]<=t) ci=i;
     el.textContent=`${t.toFixed(1)}s / ${total.toFixed(0)}s · clip ${N?ci+1:0} of ${N}`;
