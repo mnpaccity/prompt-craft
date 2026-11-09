@@ -1989,7 +1989,7 @@ function studioView(){
 const IDB={};
 function idbOpen(){ if(IDB.p) return IDB.p; IDB.p=new Promise((res,rej)=>{ try{ const r=indexedDB.open('pc_db',1); r.onupgradeneeded=()=>{ if(!r.result.objectStoreNames.contains('photos')) r.result.createObjectStore('photos'); }; r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }catch(e){ rej(e); } }).catch(()=>null); return IDB.p; }
 async function idbDo(mode,fn){ const db=await idbOpen(); if(!db) return null; return new Promise(res=>{ try{ const tx=db.transaction('photos',mode); const st=tx.objectStore('photos'); const rq=fn(st); tx.oncomplete=()=>res(rq&&rq.result!==undefined?rq.result:true); tx.onerror=()=>res(null); tx.onabort=()=>res(null); }catch(e){ res(null); } }); }
-const idbPut=(k,v)=>idbDo('readwrite',s=>s.put(v,k)), idbGet=k=>idbDo('readonly',s=>s.get(k)), idbDel=k=>idbDo('readwrite',s=>s.delete(k));
+const idbPut=(k,v)=>idbDo('readwrite',s=>s.put(v,k)), idbGet=async k=>{ const v=await idbDo('readonly',s=>s.get(k)); return v instanceof Blob?v:null; }, idbDel=k=>idbDo('readwrite',s=>s.delete(k));
 let PROJ=(()=>{ try{ const v=JSON.parse(localStorage.getItem('pc_projects')); return Array.isArray(v)?v:[]; }catch(e){ return []; } })();
 const PJ={sig:'',timer:null,savedAt:0,plan:'',uploading:false};
 function saveProjList(){ try{ localStorage.setItem('pc_projects',JSON.stringify(PROJ)); }catch(e){ try{ PROJ.forEach(p=>{ if(p!==projCur()) p.thumb=''; }); localStorage.setItem('pc_projects',JSON.stringify(PROJ)); }catch(_){} } if(typeof cloudMark==='function') cloudMark('projects'); }
@@ -2039,14 +2039,14 @@ async function projOpen(id){
   ST.photos.forEach(x=>{ try{ URL.revokeObjectURL(x.url); }catch(e){} }); ST.photos=[]; let missing=0;
   for(const ph of (p.photos||[])){
     let blob=await idbGet(ph.id);
-    if(!blob&&ph.assetUrl){ try{ const r=await fetch(ph.assetUrl); if(r.ok){ blob=await r.blob(); idbPut(ph.id,blob); } }catch(e){} }
+    if(!blob&&ph.assetUrl){ try{ const r=await fetch(ph.assetUrl); if(r.ok){ const bl=await r.blob(); if(bl&&bl.size){ blob=bl; idbPut(ph.id,blob); } } }catch(e){} }
     if(!blob){ missing++; continue; }
     const url=URL.createObjectURL(blob), img=new Image(); img.src=url;
     ST.photos.push({id:ph.id,len:ph.len||undefined,cap:ph.cap||'',url,img,name:ph.name,room:ph.room,mv:ph.mv||undefined,assetId:ph.assetId,assetUrl:ph.assetUrl});
   }
   ST.projId=id; PJ.plan=p.plan||''; PJ.sig=projSig(); PJ.savedAt=p.updated;
   location.hash='#studio'; studioView();
-  if(ST.photos.length>=2&&p.plan) setTimeout(()=>{ try{ makePlan(); }catch(e){} },300);
+  if(ST.photos.length>=2) setTimeout(()=>{ try{ makePlan(); }catch(e){} setTimeout(()=>{ const ed=document.getElementById('pedit'); if(ed&&ed.innerHTML){ (document.getElementById('prev')||ed).scrollIntoView({behavior:'smooth',block:'start'}); toast('✏️ Opened in the editor — change the text, order, timing or music below the preview'); } },500); },300);
   if(missing) toast(`⚠️ ${missing} photo${missing>1?'s':''} couldn’t be found on this device — add ${missing>1?'them':'it'} again`);
 }
 function projCardsHTML(){
