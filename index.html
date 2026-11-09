@@ -408,6 +408,7 @@
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .pjgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
   .pjcard{display:flex;gap:10px;padding:10px;border-radius:14px;border:2px solid var(--line);background:var(--card)}
+  .savebar{border:2px solid var(--accent,#2f6fed)}.sbrow{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.sbrow .btn{font-family:inherit}
   .mfsnds{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:12px}.mfsnd{border:1px solid var(--line,#ddd);border-radius:12px;padding:10px;background:var(--bg)}.mfsndtop{display:flex;align-items:center;gap:8px;margin-bottom:6px}
   .pjthumb{flex:none;width:84px;height:64px;border-radius:10px;overflow:hidden;background:var(--bg);display:grid;place-items:center;font-size:28px}.pjthumb img{width:100%;height:100%;object-fit:cover}
   .pjbody{min-width:0;flex:1}.pjbody b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1955,11 +1956,12 @@ function studioView(){
       </div>
       <div class="actions"><button class="btn" id="makeplan">🎬 Create my video prompts & plan</button></div>
     </div>
-    <div id="studioOut"></div>`;
+    <div id="studioOut"></div>
+    <div id="saveBar"></div>`;
   function sel(k,l,opts){ const op=o=>`<option value="${o[0]}" ${String(ST[k])===String(o[0])?'selected':''}>${o[1]}</option>`; const std=opts.filter(o=>!o[2]), pro=opts.filter(o=>o[2]);
     return `<label class="fld"><span>${l}</span><select data-k="${k}">${std.map(op).join('')}${pro.length?`<optgroup label="⭐ Professional">${pro.map(op).join('')}</optgroup>`:''}</select></label>`; }
   function inp(k,l,ph){ return `<label class="fld"><span>${l}</span><input data-k="${k}" value="${esc(ST[k])}" placeholder="${ph}"></label>`; }
-  $('#looksSlot').outerHTML=looksPanelHTML(); bindLooks(); drawProjBar(); bindSoundtrack(); sndRestoreFile().then(()=>{ if(ST.audio&&SND.src==='file'){ const b=document.getElementById('sndBox'); if(b){ b.innerHTML=soundtrackHTML(); bindSoundtrack(); } } });
+  $('#looksSlot').outerHTML=looksPanelHTML(); bindLooks(); drawProjBar(); drawSaveBar(); bindSoundtrack(); sndRestoreFile().then(()=>{ if(ST.audio&&SND.src==='file'){ const b=document.getElementById('sndBox'); if(b){ b.innerHTML=soundtrackHTML(); bindSoundtrack(); } } });
   document.querySelectorAll('[data-k]').forEach(el=>el.oninput=el.onchange=()=>{ ST[el.dataset.k]= (el.dataset.k==='len'||el.dataset.k==='amount')? +el.value : el.value; if(el.dataset.k==='motion') renderThumbs(); if(el.tagName==='SELECT'&&(el.dataset.k==='len'||el.dataset.k==='amount')&&window._looksRedraw) window._looksRedraw(); else if(window._looksUpd) window._looksUpd(); });
   document.querySelectorAll('[data-keep]').forEach(c=>c.onchange=()=>{ ST.keep[c.dataset.keep]=c.checked; window._looksUpd&&window._looksUpd(); });
   document.querySelectorAll('[data-preset]').forEach(t=>t.oninput=()=>{ PRESETS[t.dataset.preset].t=t.value; window._looksUpd&&window._looksUpd(); });
@@ -2008,7 +2010,7 @@ async function projSaveNow(){
   if(PJ.plan) p.plan=PJ.plan; p.updated=Date.now();
   if(p.autoName&&ST.area){ p.name=ST.area; }
   const first=ST.photos[0]; if(first&&p.thumbId!==first.id){ p.thumb=await thumbOf(first); p.thumbId=first.id; } if(!first){ p.thumb=''; p.thumbId=''; }
-  saveProjList(); PJ.savedAt=Date.now(); drawProjBar(); projUpload(p);
+  saveProjList(); PJ.savedAt=Date.now(); drawProjBar(); if(!document.activeElement||document.activeElement.id!=='sbName') drawSaveBar(); projUpload(p);
 }
 async function projUpload(p){
   if(PJ.uploading) return; const a=await getAssets(); if(!a) return; PJ.uploading=true;
@@ -2017,6 +2019,27 @@ async function projUpload(p){
   finally{ PJ.uploading=false; }
 }
 setInterval(()=>{ if(!document.getElementById('studioOut')) return; const s=projSig(); if(s!==PJ.sig){ PJ.sig=s; clearTimeout(PJ.timer); PJ.timer=setTimeout(projSaveNow,700); } },1500);
+/* ---- 💾 Save bar at the bottom of the Studio ---- */
+function drawSaveBar(){
+  const b=document.getElementById('saveBar'); if(!b) return; const p=projCur();
+  const t=PJ.savedAt?new Date(PJ.savedAt).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}):'';
+  b.innerHTML=`<div class="card savebar"><h2 style="margin:0 0 4px">💾 Save this project</h2>
+    <p class="muted" style="margin:0 0 10px;font-size:14px">Saves everything exactly as it is now — photos, order, words on each photo, look, music and timing — in 💾 My Files → 📁 Projects.</p>
+    <div class="sbrow"><label class="fld" style="flex:1;min-width:220px;margin:0"><span>Project name</span><input id="sbName" maxlength="80" value="${esc(p?p.name:(ST.area||''))}" placeholder="e.g. 2945 Midvale listing video"></label>
+      <button class="btn" id="sbSave" ${ST.photos.length?'':'disabled'}>💾 Save project</button>
+      <button class="btn ghost" id="sbCopy" ${ST.photos.length?'':'disabled'} title="Keeps this version safe while you keep editing">📄 Save as a new copy</button></div>
+    <p class="muted" id="sbStatus" role="status" style="margin:8px 0 0;font-size:13px">${!ST.photos.length?'Add photos first, then save.':p?`Last saved${t?' at '+t:''} as “${esc(p.name)}”.`:'Not saved yet.'}</p></div>`;
+  const nm=()=>(b.querySelector('#sbName').value||'').trim();
+  b.querySelector('#sbSave').onclick=async()=>{ const want=nm(), bt=b.querySelector('#sbSave'); bt.disabled=true; bt.textContent='⏳ Saving…';
+    await projSaveNow(); const q=projCur(); if(q&&want){ q.name=want; q.autoName=false; } if(q){ q.updated=Date.now(); saveProjList(); }
+    PJ.sig=projSig(); PJ.savedAt=Date.now(); drawProjBar(); drawSaveBar(); toast('✅ Saved “'+(q?q.name:'project')+'” — find it in 💾 My Files → 📁 Projects'); };
+  b.querySelector('#sbCopy').onclick=async()=>{ const want=nm(); await projSaveNow(); const cur=projCur(); if(!cur) return;
+    const c=JSON.parse(JSON.stringify(cur)); c.id='p'+Date.now().toString(36); c.autoName=false; c.created=c.updated=Date.now();
+    c.name=want&&want!==cur.name?want:cur.name+' · saved '+new Date().toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+    c.photos=[]; for(const ph of (cur.photos||[])){ const blob=await idbGet(ph.id); const nid=phId(); if(blob) await idbPut(nid,blob); c.photos.push({...ph,id:nid}); }
+    c.thumbId=c.photos[0]?c.photos[0].id:''; PROJ.splice(PROJ.indexOf(cur)+1,0,c); saveProjList(); drawProjBar(); drawSaveBar();
+    toast('📄 Saved a copy: “'+c.name+'” — you’re still editing “'+cur.name+'”'); };
+}
 function drawProjBar(){
   const b=document.getElementById('projBar'); if(!b) return; const p=projCur();
   const t=PJ.savedAt?new Date(PJ.savedAt).toLocaleTimeString([], {hour:'numeric',minute:'2-digit'}):'';
