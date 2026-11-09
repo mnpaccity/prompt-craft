@@ -408,6 +408,7 @@
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .pjgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
   .pjcard{display:flex;gap:10px;padding:10px;border-radius:14px;border:2px solid var(--line);background:var(--card)}
+  .mfsnds{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:12px}.mfsnd{border:1px solid var(--line,#ddd);border-radius:12px;padding:10px;background:var(--bg)}.mfsndtop{display:flex;align-items:center;gap:8px;margin-bottom:6px}
   .pjthumb{flex:none;width:84px;height:64px;border-radius:10px;overflow:hidden;background:var(--bg);display:grid;place-items:center;font-size:28px}.pjthumb img{width:100%;height:100%;object-fit:cover}
   .pjbody{min-width:0;flex:1}.pjbody b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .pickrow{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:10px 0 4px}
@@ -1769,7 +1770,7 @@ function mfPicker({kind,multi,onPick}){
       ${F.length?`<h3 class="pkh">💾 My Files</h3><div class="pkgrid">${F.map(x=>`<button class="pkitem ${sel.has('f:'+x.id)?'on':''}" data-pk="f:${x.id}" aria-pressed="${sel.has('f:'+x.id)}">
           ${kind==='photo'?`<img src="${esc(x.url)}" alt="">`:kind==='audio'?`<span class="pkaud" aria-hidden="true">🎵</span>`:`<video src="${esc(x.url)}" muted preload="metadata"></video>`}<span>${esc(x.title)}</span></button>`).join('')}</div>`:''}
       ${P.length?`<h3 class="pkh">📁 From my projects</h3><div class="pkgrid" id="pkProj">${P.map(o=>`<button class="pkitem ${sel.has('p:'+o.ph.id)?'on':''}" data-pk="p:${o.ph.id}" data-pp="${o.pid}" aria-pressed="${sel.has('p:'+o.ph.id)}"><img data-ph="${o.ph.id}" data-au="${esc(o.ph.assetUrl||'')}" alt=""><span>${esc(o.pname)} · ${esc(ROOMS[o.ph.room]?ROOMS[o.ph.room].n:o.ph.name)}</span></button>`).join('')}</div>`:''}
-      ${!F.length&&!P.length?`<div class="fb" style="text-align:center;padding:20px">${q?'Nothing matches your search.':`No ${label}s saved yet. Add some in <b>💾 My Files → ${kind==='photo'?'🖼️ Add a photo':kind==='audio'?'🎵 Add music':'🎞️ Add a video'}</b>${kind==='photo'?', or work on a project in the Studio':''}.`}</div>`:''}
+      ${!F.length&&!P.length?`<div class="fb" style="text-align:center;padding:20px">${q?'Nothing matches your search.':`No ${label}s saved yet. Add some in <b>💾 My Files → ${kind==='photo'?'🖼️ Add a photo':kind==='audio'?'🎵 My Soundtracks → ⬆️ Add a soundtrack':'🎞️ Add a video'}</b>${kind==='photo'?', or work on a project in the Studio':''}.`}</div>`:''}
       </div>
       <div class="actions"><button class="btn" id="pkOk" ${sel.size?'':'disabled'}>✅ Use ${sel.size?sel.size+' ':''}selected</button><button class="btn ghost" id="pkNo">Cancel</button>${multi&&(F.length+P.length)>1?`<button class="xbtn" id="pkAll">Select all shown</button>`:''}</div></div>`;
     const qi=m.querySelector('#pkQ'); qi.oninput=()=>{ q=qi.value.toLowerCase().trim(); const pos=qi.selectionStart; draw(); const n=m.querySelector('#pkQ'); n.focus(); try{ n.setSelectionRange(pos,pos); }catch(e){} };
@@ -3267,7 +3268,7 @@ function soundtrackHTML(){
    <div id="sndOwn" ${own?'':'hidden'}>
      ${own?`<div class="sndfile">🎧 <b>${esc(ST.audio.name)}</b> <span class="muted">· ${fmtDur(ST.audio.dur)}</span> <button class="xbtn" id="sndListen">▶ Listen</button> <button class="xbtn" id="sndRm">✕ Remove</button></div>
        <label class="fld" style="display:block;margin-top:8px"><span>Start the song at: <b id="sndStartV">${fmtDur(ST.audioStart||0)}</b> (skip a slow intro)</span><input type="range" id="sndStart" min="0" max="${Math.max(0,Math.floor((ST.audio.dur||0)-5))}" step="1" value="${Math.floor(ST.audioStart||0)}"></label>`
-       :`<div class="pickrow"><label class="btn ghost" style="cursor:pointer">⬆️ Upload a song or audio file<input type="file" id="sndUp" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg" hidden></label>${pickBtn('sndPick','audio')}</div><p class="muted" style="font-size:12.5px;margin:4px 0 0">MP3, M4A, WAV or AAC. Only use music you have the rights to (your own, or licensed for commercial use).</p>`}
+       :`<div class="pickrow"><label class="btn ghost" style="cursor:pointer">⬆️ Upload a song or audio file<input type="file" id="sndUp" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg" hidden></label>${pickBtn('sndPick','audio')}</div><p class="muted" style="font-size:12.5px;margin:4px 0 0">MP3, M4A, WAV or AAC. Songs you upload are also saved in 💾 My Files → 🎵 My Soundtracks so you can reuse them. Only use music you have the rights to (your own, or licensed for commercial use).</p>`}
    </div>
    <label class="fld sndvol"><span>🔊 Music volume: <b id="sndVolV">${ST.musicVol??70}%</b></span><input type="range" id="sndVol" min="0" max="100" step="5" value="${ST.musicVol??70}"></label>`;
 }
@@ -3280,7 +3281,7 @@ function bindSoundtrack(){
   qa('[data-sl]').forEach(b=>b.onclick=()=>{ const k=b.dataset.sl; if(SND.listen===k&&SND.playing){ sndStop(true); SND.listen=null; b.textContent='▶'; return; } const was=SND.src; SND.src='synth'; sndStart(k); SND.src=was; SND.listen=k; qa('[data-sl]').forEach(x=>x.textContent='▶'); b.textContent='⏸'; clearTimeout(SND.lt); SND.lt=setTimeout(()=>{ if(SND.listen===k){ sndStop(true); SND.listen=null; b.textContent='▶'; } },12000); });
   qa('[data-sp]').forEach(b=>b.onclick=()=>{ ST.music=b.dataset.sp; SND.src='synth'; qa('.snd').forEach(s=>{ const on=s.dataset.snd===ST.music; s.classList.toggle('on',on); s.querySelector('[data-sp]').setAttribute('aria-pressed',on); }); window._looksUpd&&window._looksUpd(); if(prevPlaying()) sndStart(ST.music); toast('🎵 Soundtrack: '+SOUNDTRACKS.find(t=>t.k===ST.music).n); });
   if(q('#sndQ')) q('#sndQ').oninput=e=>{ const v=e.target.value.toLowerCase().trim(); qa('.snd').forEach(s=>s.hidden=!!v&&!s.dataset.sq.includes(v)); qa('.sndcat').forEach(c=>c.hidden=![...c.querySelectorAll('.snd')].some(s=>!s.hidden)); };
-  if(q('#sndUp')) q('#sndUp').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; if(await sndSetFile(f)){ toast('🎧 Added “'+f.name+'”'); redraw(); } };
+  if(q('#sndUp')) q('#sndUp').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; if(await sndSetFile(f)){ toast('🎧 Added “'+f.name+'”'); redraw(); if(!MYF.some(x=>x.type==='audio'&&x.name===f.name&&x.size===f.size)) mfUploadFile(f,'audio').then(it=>{ if(it){ toast('💾 “'+f.name+'” also saved to My Files → 🎵 My Soundtracks'); typeof updateFilesBtn==='function'&&updateFilesBtn(); } }); } };
   if(q('#sndPick')) q('#sndPick').onclick=()=>mfPicker({kind:'audio',multi:false,onPick:async fs=>{ if(await sndSetFile(fs[0])){ toast('🎧 Added “'+fs[0].name+'”'); redraw(); } }});
   if(q('#sndRm')) q('#sndRm').onclick=()=>{ sndClearFile(); redraw(); toast('Removed your audio track'); };
   if(q('#sndListen')) q('#sndListen').onclick=e=>{ if(SND.playing){ sndStop(); e.target.textContent='▶ Listen'; } else { sndStart(); e.target.textContent='⏸ Stop'; } };
@@ -3732,8 +3733,26 @@ const VFX_LOOKS={
  film:{n:'Soft film',f:{b:102,c:90,s:88,w:14,v:25,sep:12}},
  bw:{n:'Classic black & white',f:{b:104,c:120,s:0,w:0,v:35}},
 };
-const VFX_DEF={look:'auto',b:104,c:110,s:112,w:4,v:15,sep:0,speed:1,trimA:0,trimB:0,ar:'keep',fadeIn:true,fadeOut:true,title:'',titleAt:'start',caption:'',audio:'orig',origVol:100,musicVol:60,music:'piano',bars:false};
-const VE={file:null,url:'',el:null,dur:0,w:0,h:0,s:{...VFX_DEF},raf:0,playing:false,rec:false};
+const VFX_DEF={look:'auto',b:104,c:110,s:112,w:4,v:15,sep:0,speed:1,trimA:0,trimB:0,ar:'keep',fadeIn:true,fadeOut:true,title:'',titleAt:'start',caption:'',audio:'orig',origVol:100,musicVol:60,music:'piano',musicSrc:'synth',mStart:0,bars:false};
+const VE={file:null,url:'',el:null,dur:0,w:0,h:0,s:{...VFX_DEF},raf:0,playing:false,rec:false,own:null,mEl:null};
+/* --- Video Enhancer: your own music track --- */
+const veOwnOn=()=>VE.s.musicSrc==='file'&&VE.own&&VE.mEl;
+async function veSetOwn(file,saveCopy){
+  const url=URL.createObjectURL(file), a=new Audio(url); a.preload='auto'; a.loop=true;
+  await new Promise(r=>{ a.onloadedmetadata=r; a.onerror=r; setTimeout(r,4000); });
+  const dur=isFinite(a.duration)?a.duration:0;
+  if(!dur){ try{ URL.revokeObjectURL(url); }catch(e){} toast('⚠️ That music file can’t be played in this browser — try an MP3 or M4A'); return false; }
+  veMusicStop(); if(VE.own&&VE.own.url) try{ URL.revokeObjectURL(VE.own.url); }catch(e){}
+  VE.own={name:file.name,dur,url,file}; VE.mEl=a; VE.s.musicSrc='file'; VE.s.mStart=0;
+  if(saveCopy&&!MYF.some(x=>x.type==='audio'&&x.name===file.name&&x.size===file.size)){ mfUploadFile(file,'audio').then(it=>{ if(it){ toast('💾 “'+file.name+'” also saved to My Files → 🎵 My Soundtracks'); updateFilesBtn&&updateFilesBtn(); } }); }
+  return true;
+}
+function veClearOwn(){ veMusicStop(); if(VE.own&&VE.own.url) try{ URL.revokeObjectURL(VE.own.url); }catch(e){} VE.own=null; VE.mEl=null; VE.s.musicSrc='synth'; VE.s.mStart=0; }
+function veMusicStart(){ const s=VE.s; if(s.audio==='orig'||SND.mute) return;
+  if(veOwnOn()){ sndStop(); const m=VE.mEl; m.volume=Math.min(1,s.musicVol/100); try{ m.currentTime=Math.min(s.mStart||0,Math.max(0,VE.own.dur-1)); }catch(e){} m.play().catch(()=>{}); return; }
+  if(VE.mEl) try{ VE.mEl.pause(); }catch(e){}
+  SND.src='synth'; ST.musicVol=s.musicVol; sndStart(s.music); }
+function veMusicStop(fade){ if(VE.mEl) try{ VE.mEl.pause(); }catch(e){} sndStop(fade); }
 let VFXSAVE=(()=>{ try{ const v=JSON.parse(localStorage.getItem('pc_vfx')); return Array.isArray(v)?v:[]; }catch(e){ return []; } })();
 function vfxFilter(s){ return `brightness(${s.b}%) contrast(${s.c}%) saturate(${s.s}%)${s.sep?` sepia(${s.sep}%)`:''}`; }
 function veSize(){ const s=VE.s, W=VE.w||1280, H=VE.h||720; const r={ '16:9':16/9,'9:16':9/16,'1:1':1,'4:5':4/5 }[s.ar]; if(!r) { const k=Math.min(1,1920/Math.max(W,H)); return [Math.round(W*k/2)*2,Math.round(H*k/2)*2]; }
@@ -3757,16 +3776,16 @@ function veLoop(){
   const cv=document.getElementById('veCv'); if(!cv||!VE.el){ veStopAll(); return; }
   const [W,H]=veSize(); if(cv.width!==W||cv.height!==H){ cv.width=W; cv.height=H; }
   const v=VE.el, s=VE.s, B=s.trimB||VE.dur;
-  if(VE.playing&&!VE.rec&&v.currentTime>=B-0.05){ v.currentTime=s.trimA; if(s.audio!=='orig'&&!SND.mute){ sndStart(s.music); } }
+  if(VE.playing&&!VE.rec&&v.currentTime>=B-0.05){ v.currentTime=s.trimA; veMusicStart(); }
   veDraw(cv.getContext('2d'),W,H,v.currentTime);
   const el=document.getElementById('veTime'); if(el) el.textContent=`${fmtDur(v.currentTime-s.trimA)} / ${fmtDur((B-s.trimA)/s.speed)} at ${s.speed}× speed`;
   VE.raf=requestAnimationFrame(veLoop);
 }
-function veAudioMix(){ const v=VE.el, s=VE.s; if(!v) return; v.playbackRate=s.speed; v.muted=s.audio==='music'; v.volume=s.audio==='music'?0:Math.min(1,s.origVol/100); ST.musicVol=s.musicVol; sndVol(); }
+function veAudioMix(){ const v=VE.el, s=VE.s; if(!v) return; v.playbackRate=s.speed; v.muted=s.audio==='music'; v.volume=s.audio==='music'?0:Math.min(1,s.origVol/100); ST.musicVol=s.musicVol; sndVol(); if(VE.mEl) VE.mEl.volume=Math.min(1,s.musicVol/100); }
 function vePlay(on){ const v=VE.el; if(!v) return; VE.playing=on; const b=document.getElementById('vePP'); if(b) b.textContent=on?'⏸ Pause':'▶ Play';
-  if(on){ if(v.currentTime<VE.s.trimA||v.currentTime>=(VE.s.trimB||VE.dur)) v.currentTime=VE.s.trimA; veAudioMix(); v.play().catch(()=>{}); if(VE.s.audio!=='orig'){ SND.src='synth'; ST.musicVol=VE.s.musicVol; sndStart(VE.s.music); } }
-  else { v.pause(); sndStop(true); } }
-function veStopAll(){ cancelAnimationFrame(VE.raf); if(VE.el) try{ VE.el.pause(); }catch(e){} VE.playing=false; sndStop(); }
+  if(on){ if(v.currentTime<VE.s.trimA||v.currentTime>=(VE.s.trimB||VE.dur)) v.currentTime=VE.s.trimA; veAudioMix(); v.play().catch(()=>{}); veMusicStart(); }
+  else { v.pause(); veMusicStop(true); } }
+function veStopAll(){ cancelAnimationFrame(VE.raf); if(VE.el) try{ VE.el.pause(); }catch(e){} VE.playing=false; veMusicStop(); }
 async function veLoad(file){
   veStopAll(); if(VE.url) try{ URL.revokeObjectURL(VE.url); }catch(e){}
   VE.file=file; VE.url=URL.createObjectURL(file); const v=document.createElement('video'); v.src=VE.url; v.playsInline=true; v.preload='auto'; v.crossOrigin='anonymous';
@@ -3807,8 +3826,17 @@ function veRender(){
        <label class="fld"><span>Bottom caption (optional)</span><input data-vt="caption" value="${esc(s.caption)}" maxlength="70" placeholder="e.g. Call Minh · (555) 123-4567"></label></div>
      <h3 style="margin-top:14px">🎵 Sound</h3>
      <div class="sndsrc" role="radiogroup" aria-label="Sound"><label><input type="radio" name="veau" value="orig" ${s.audio==='orig'?'checked':''}> Keep the original sound</label><label><input type="radio" name="veau" value="mix" ${s.audio==='mix'?'checked':''}> Original + music</label><label><input type="radio" name="veau" value="music" ${s.audio==='music'?'checked':''}> Music only</label></div>
-     <div class="vegrid" ${s.audio==='orig'?'hidden':''} id="veMus"><label class="fld"><span>Soundtrack (25 to choose from)</span><select data-vs="music">${[...new Set(SOUNDTRACKS.map(t=>t.cat))].map(c=>`<optgroup label="${c}">${SOUNDTRACKS.filter(t=>t.cat===c).map(t=>`<option value="${t.k}" ${s.music===t.k?'selected':''}>${t.n} · ${t.bpm} BPM</option>`).join('')}</optgroup>`).join('')}</select></label>
-       <label class="vesl"><span>🎵 Music volume <b id="veV_musicVol">${s.musicVol}%</b></span><input type="range" data-ve="musicVol" min="0" max="100" step="5" value="${s.musicVol}"></label></div>
+     <div ${s.audio==='orig'?'hidden':''} id="veMus">
+       <div class="sndsrc" role="radiogroup" aria-label="Which music" style="margin-top:8px"><label><input type="radio" name="vemsrc" value="synth" ${s.musicSrc!=='file'?'checked':''}> 🎼 Built-in soundtrack</label><label><input type="radio" name="vemsrc" value="file" ${s.musicSrc==='file'?'checked':''}> 🎧 My own music</label></div>
+       <div class="vegrid" id="veBuilt" ${s.musicSrc==='file'?'hidden':''}><label class="fld"><span>Soundtrack (25 to choose from)</span><select data-vs="music">${[...new Set(SOUNDTRACKS.map(t=>t.cat))].map(c=>`<optgroup label="${c}">${SOUNDTRACKS.filter(t=>t.cat===c).map(t=>`<option value="${t.k}" ${s.music===t.k?'selected':''}>${t.n} · ${t.bpm} BPM</option>`).join('')}</optgroup>`).join('')}</select></label></div>
+       <div id="veOwn" ${s.musicSrc==='file'?'':'hidden'}>
+         ${VE.own?`<div class="sndfile">🎧 <b>${esc(VE.own.name)}</b> <span class="muted">· ${fmtDur(VE.own.dur)}</span> <button class="xbtn" id="veOwnSwap">🔁 Change song</button> <button class="xbtn" id="veOwnRm">✕ Remove</button></div>
+           <label class="vesl" style="display:block;margin-top:8px"><span>Start the song at <b id="veV_mStart">${fmtDur(s.mStart)}</b> (skip a slow intro)</span><input type="range" data-ve="mStart" min="0" max="${Math.max(0,Math.floor(VE.own.dur-3))}" step="1" value="${Math.floor(s.mStart||0)}"></label>`:''}
+         <div class="pickrow" ${VE.own?'hidden':''} id="veOwnAdd"><label class="btn ghost" style="cursor:pointer">⬆️ Upload a song<input type="file" id="veMusUp" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg" hidden></label>${pickBtn('veMusPick','audio')}</div>
+         <p class="muted" style="font-size:12.5px;margin:4px 0 0">MP3, M4A, WAV or AAC. Songs you upload are also saved in 💾 My Files → 🎵 My Soundtracks so you can reuse them. Only use music you have the rights to (your own, or licensed for commercial use) — social media apps may mute videos with copyrighted songs.</p>
+       </div>
+       <div class="vegrid"><label class="vesl"><span>🎵 Music volume <b id="veV_musicVol">${s.musicVol}%</b></span><input type="range" data-ve="musicVol" min="0" max="100" step="5" value="${s.musicVol}"></label></div>
+     </div>
      <div class="vegrid" ${s.audio==='music'?'hidden':''} id="veOrig"><label class="vesl"><span>🔊 Original sound volume <b id="veV_origVol">${s.origVol}%</b></span><input type="range" data-ve="origVol" min="0" max="100" step="5" value="${s.origVol}"></label></div>
      <h3 style="margin-top:14px">💾 Save these settings</h3>
      <div class="lsave"><input id="veName" placeholder="Name these settings, e.g. “My listing reels”" maxlength="50" aria-label="Name for these enhancer settings"><button class="btn ghost" id="veSv">💾 Save settings</button></div>
@@ -3828,14 +3856,22 @@ function veRender(){
   $('#vePick').onclick=()=>mfPicker({kind:'video',multi:false,onPick:fs=>veLoad(fs[0])});
   try{ history.replaceState(null,'','#enhance-video'); }catch(e){}
   if(!has) return;
-  const upd=(k,v)=>{ const b=document.getElementById('veV_'+k); if(b) b.textContent=(k==='trimA'||k==='trimB')?fmtDur(v):v+({b:'%',c:'%',s:'%',v:'%',musicVol:'%',origVol:'%'}[k]||''); };
+  const upd=(k,v)=>{ const b=document.getElementById('veV_'+k); if(b) b.textContent=(k==='trimA'||k==='trimB'||k==='mStart')?fmtDur(v):v+({b:'%',c:'%',s:'%',v:'%',musicVol:'%',origVol:'%'}[k]||''); };
   document.querySelectorAll('[data-ve]').forEach(r=>r.oninput=()=>{ const k=r.dataset.ve; let v=+r.value;
     if(k==='trimA'&&v>VE.s.trimB-1){ v=Math.max(0,VE.s.trimB-1); r.value=v; } if(k==='trimB'&&v<VE.s.trimA+1){ v=Math.min(VE.dur,VE.s.trimA+1); r.value=v; }
     VE.s[k]=v; upd(k,v); if(k==='trimA'||k==='trimB'){ VE.el.currentTime=v; } if(k==='musicVol'||k==='origVol') veAudioMix(); });
-  document.querySelectorAll('[data-vs]').forEach(sl=>sl.onchange=()=>{ const k=sl.dataset.vs; VE.s[k]=k==='speed'?+sl.value:sl.value; if(k==='speed') veAudioMix(); if(k==='music'&&VE.playing&&VE.s.audio!=='orig') sndStart(VE.s.music); });
+  document.querySelectorAll('[data-ve=mStart]').forEach(r=>r.onchange=()=>{ if(VE.playing&&veOwnOn()) veMusicStart(); });
+  document.querySelectorAll('[data-vs]').forEach(sl=>sl.onchange=()=>{ const k=sl.dataset.vs; VE.s[k]=k==='speed'?+sl.value:sl.value; if(k==='speed') veAudioMix(); if(k==='music'&&VE.playing) veMusicStart(); });
   document.querySelectorAll('[data-vt]').forEach(i=>i.oninput=()=>{ VE.s[i.dataset.vt]=i.value; });
   document.querySelectorAll('[data-vc]').forEach(c=>c.onchange=()=>{ VE.s[c.dataset.vc]=c.checked; });
-  document.querySelectorAll('input[name=veau]').forEach(r=>r.onchange=()=>{ VE.s.audio=r.value; $('#veMus').hidden=r.value==='orig'; $('#veOrig').hidden=r.value==='music'; veAudioMix(); if(VE.playing){ if(r.value==='orig') sndStop(true); else sndStart(VE.s.music); } });
+  document.querySelectorAll('input[name=veau]').forEach(r=>r.onchange=()=>{ VE.s.audio=r.value; $('#veMus').hidden=r.value==='orig'; $('#veOrig').hidden=r.value==='music'; veAudioMix(); if(VE.playing){ if(r.value==='orig') veMusicStop(true); else veMusicStart(); } });
+  const reKeep=()=>{ const y=window.scrollY, was=VE.playing; veRender(); window.scrollTo(0,y); if(was) vePlay(true); };
+  document.querySelectorAll('input[name=vemsrc]').forEach(r=>r.onchange=()=>{ VE.s.musicSrc=r.value; $('#veBuilt').hidden=r.value==='file'; $('#veOwn').hidden=r.value!=='file'; if(VE.playing) veMusicStart(); });
+  const ownPicked=async(f,save)=>{ if(await veSetOwn(f,save)){ toast('🎧 Added “'+f.name+'” — press ▶ Play to hear it'); reKeep(); } };
+  if($('#veMusUp')) $('#veMusUp').onchange=e=>{ const f=e.target.files[0]; if(f) ownPicked(f,true); };
+  if($('#veMusPick')) $('#veMusPick').onclick=()=>mfPicker({kind:'audio',multi:false,onPick:fs=>ownPicked(fs[0],false)});
+  if($('#veOwnSwap')) $('#veOwnSwap').onclick=()=>{ $('#veOwnAdd').hidden=false; $('#veOwnSwap').hidden=true; };
+  if($('#veOwnRm')) $('#veOwnRm').onclick=()=>{ veClearOwn(); VE.s.musicSrc='file'; reKeep(); toast('Removed your song'); };
   document.querySelectorAll('[data-vl]').forEach(b=>b.onclick=()=>{ VE.s.look=b.dataset.vl; Object.assign(VE.s,{sep:0},VFX_LOOKS[VE.s.look].f); const y=window.scrollY, was=VE.playing; veRender(); window.scrollTo(0,y); if(was) vePlay(true); });
   $('#veReset').onclick=()=>{ Object.assign(VE.s,{sep:0},VFX_LOOKS[VE.s.look].f); const y=window.scrollY, was=VE.playing; veRender(); window.scrollTo(0,y); if(was) vePlay(true); };
   $('#vePP').onclick=()=>vePlay(!VE.playing);
@@ -3863,15 +3899,17 @@ async function veExport(){
   if(!VE.srcNode){ try{ VE.srcNode=c.createMediaElementSource(v); VE.gain=c.createGain(); VE.srcNode.connect(VE.gain); VE.gain.connect(c.destination); }catch(e){} }
   if(VE.gain){ VE.gain.gain.value=s.audio==='music'?0:s.origVol/100; try{ VE.gain.connect(dest); }catch(e){} }
   v.muted=false; v.volume=1; v.playbackRate=s.speed; v.currentTime=s.trimA; await new Promise(r=>{ v.onseeked=r; setTimeout(r,800); });
-  if(s.audio!=='orig'){ SND.src='synth'; ST.musicVol=s.musicVol; sndStart(s.music); SND.master.connect(dest); }
+  let recM=null, recMSrc=null, recMG=null;
+  if(s.audio!=='orig'){ if(veOwnOn()){ recM=new Audio(VE.own.url); recM.loop=true; await new Promise(r=>{ recM.onloadedmetadata=r; setTimeout(r,2000); }); try{ recM.currentTime=Math.min(s.mStart||0,Math.max(0,VE.own.dur-1)); }catch(e){} recMSrc=c.createMediaElementSource(recM); recMG=c.createGain(); recMG.gain.value=s.musicVol/100; recMSrc.connect(recMG); recMG.connect(dest); recMG.connect(c.destination); }
+    else { SND.src='synth'; ST.musicVol=s.musicVol; sndStart(s.music); SND.master.connect(dest); } }
   const stream=new MediaStream([...cv.captureStream(30).getVideoTracks(),...dest.stream.getAudioTracks()]);
   const rec=new MediaRecorder(stream,mime?{mimeType:mime,videoBitsPerSecond:8e6}:undefined), chunks=[]; rec.ondataavailable=e=>e.data.size&&chunks.push(e.data);
   const btn=$('#veExp'); btn.disabled=true; VE.rec=true; VE.playing=true; const B=s.trimB||VE.dur, total=(B-s.trimA)/s.speed;
-  rec.start(500); v.play().catch(()=>{}); const t0=performance.now();
+  rec.start(500); v.play().catch(()=>{}); if(recM) recM.play().catch(()=>{}); const t0=performance.now();
   await new Promise(res=>{ const tick=setInterval(()=>{ const pct=Math.min(100,Math.round((v.currentTime-s.trimA)/(B-s.trimA)*100)); btn.textContent=`⏺ Recording… ${pct}%`;
-    if(s.fadeOut&&SND.master&&v.currentTime>B-1.2) SND.master.gain.setTargetAtTime(0,c.currentTime,0.3);
+    if(s.fadeOut&&v.currentTime>B-1.2){ if(SND.master) SND.master.gain.setTargetAtTime(0,c.currentTime,0.3); if(recMG) recMG.gain.setTargetAtTime(0,c.currentTime,0.3); }
     if(v.currentTime>=B-0.03||v.ended||(performance.now()-t0)/1000>total+3){ clearInterval(tick); res(); } },100); });
-  v.pause(); rec.stop(); await new Promise(r=>rec.onstop=r); sndStop(); try{ VE.gain&&VE.gain.disconnect(dest); }catch(e){}
+  v.pause(); rec.stop(); await new Promise(r=>rec.onstop=r); sndStop(); if(recM){ recM.pause(); try{ recMSrc.disconnect(); recMG.disconnect(); }catch(e){} } try{ VE.gain&&VE.gain.disconnect(dest); }catch(e){}
   if(VE.gain) VE.gain.gain.value=1;
   VE.rec=false; VE.playing=false; btn.disabled=false; btn.textContent='⬇️ Download enhanced video'; const pp=$('#vePP'); if(pp) pp.textContent='▶ Play'; veAudioMix();
   const blob=new Blob(chunks,{type:(mime||'video/webm').split(';')[0]}); const base=(VE.file&&VE.file.name||'video').replace(/\.[^.]+$/,''); const name=mfSafeName(base+' - enhanced')+'.'+ext;
@@ -4739,12 +4777,13 @@ function myFilesView(){
         <label class="btn ghost" style="cursor:pointer">🖼️ Add a photo<input type="file" id="mfPhoto" accept="image/*" multiple hidden></label>
         <label class="btn ghost" style="cursor:pointer">📄 Add a document<input type="file" id="mfDoc" accept="${MF_DOC_ACCEPT}" multiple hidden></label>
         <label class="btn ghost" style="cursor:pointer">🎞️ Add a video<input type="file" id="mfVid" accept="video/*" hidden></label>
-        <label class="btn ghost" style="cursor:pointer">🎵 Add music<input type="file" id="mfAud" accept="audio/*,.mp3,.m4a,.wav,.aac" multiple hidden></label>
+        <label class="btn ghost" style="cursor:pointer">🎵 Add a soundtrack<input type="file" id="mfAud" accept="audio/*,.mp3,.m4a,.wav,.aac" multiple hidden></label>
       </div>
     </div>
     <div class="card" id="projSec"><h2 style="margin:0 0 4px">📁 Projects <span class="muted" style="font-size:14px;font-weight:500">· auto-saved</span></h2>
       <p class="muted" style="margin:0 0 10px;font-size:14px">Every home you work on in the Photo-to-Video Studio saves itself here — photos, style, on-screen text and prompts. ${LEVEL==='new'?'Click <b>📂 Open</b> to pick up where you left off.':''}</p>
       ${projCardsHTML()}</div>
+    ${mfSoundtracksHTML()}
     ${MYF.length?`<div class="card dlbox">
       <h2 style="margin:0 0 4px">⬇️ Download for editing &amp; creating</h2>
       <p class="muted" style="margin:0 0 8px;font-size:14px">Put your files on your computer so you can upload them into other apps — like <b>CapCut</b> for editing, or <b>Veo, Kling or Runway</b> for making videos.</p>
@@ -4775,8 +4814,31 @@ function myFilesView(){
   $('#mfAud').onchange=async e=>{ await mfUploadMany(e.target.files,'audio'); e.target.value=''; };
   $('#mfDoc').onchange=async e=>{ await mfUploadMany(e.target.files,'doc'); e.target.value=''; };
   $('#mfVid').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; await mfUploadVideo(f); e.target.value=''; };
-  bindMyFiles(); bindProjCards(myFilesView); if($('#mfProjX')) $('#mfProjX').onclick=()=>{ MFV.proj=null; myFilesView(); };
+  bindMyFiles(); bindProjCards(myFilesView); bindMfSoundtracks(); if($('#mfProjX')) $('#mfProjX').onclick=()=>{ MFV.proj=null; myFilesView(); };
   window.scrollTo(0,0);
+}
+/* ---- 🎵 My Soundtracks: your own music for video creation ---- */
+function mfSoundtracksHTML(){
+  const A=MYF.filter(x=>x.type==='audio');
+  return `<div class="card" id="mfSndSec"><h2 style="margin:0 0 4px">🎵 My Soundtracks <span class="muted" style="font-size:14px;font-weight:500">· your own music for videos</span></h2>
+    <p class="muted" style="margin:0 0 10px;font-size:14px">Add your own songs here once, then use them in any video. ${LEVEL==='new'?'Click <b>⬆️ Add a soundtrack</b>, pick a music file from your computer (MP3 works best), then click <b>🎬 Use in Studio</b> or <b>✨ Use in Video Enhancer</b>.':''}</p>
+    <label class="drop" id="mfSndDrop" style="padding:16px"><input type="file" id="mfSndUp" accept="audio/*,.mp3,.m4a,.wav,.aac,.ogg" multiple hidden><span style="font-size:30px">🎵</span><br><b>⬆️ Add a soundtrack</b> — drag music files here or tap to choose<br><span class="muted" style="font-size:12.5px">MP3, M4A, WAV or AAC · up to 20 MB each · only music you have the rights to use</span></label>
+    ${A.length?`<div class="mfsnds">${A.map(x=>`<div class="mfsnd"><div class="mfsndtop"><span aria-hidden="true" style="font-size:22px">🎧</span><b style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(x.title)}">${esc(x.title)}</b>${x.size?`<span class="muted" style="font-size:12px">${mfSize(x.size)}</span>`:''}</div>
+      ${x.url?`<audio src="${esc(x.url)}" controls preload="none" style="width:100%" aria-label="Listen to ${esc(x.title)}"></audio>`:'<p class="muted">Not available any more — add it again.</p>'}
+      <div class="actions" style="margin-top:6px"><button class="xbtn" data-sndstudio="${x.id}">🎬 Use in Studio</button><button class="xbtn" data-sndve="${x.id}">✨ Use in Video Enhancer</button><button class="xbtn" data-sndopen="${x.id}">✏️ Rename / delete</button></div></div>`).join('')}</div>`
+      :`<p class="muted" style="font-size:13.5px;margin:10px 0 0">No soundtracks yet. Songs you add in the Studio or Video Enhancer also show up here.</p>`}
+  </div>`;
+}
+async function mfSndFile(id){ const x=MYF.find(y=>y.id===id); if(!x||!x.url){ toast('That song isn’t available — add it again'); return null; }
+  try{ const r=await fetch(x.url); const bl=await r.blob(); return new File([bl],x.name||(mfSafeName(x.title)+'.mp3'),{type:bl.type||'audio/mpeg'}); }catch(e){ toast('⚠️ Couldn’t load that song'); return null; } }
+function bindMfSoundtracks(){
+  const up=$('#mfSndUp'), drop=$('#mfSndDrop'); if(!up) return;
+  up.onchange=async e=>{ await mfUploadMany(e.target.files,'audio'); e.target.value=''; };
+  drop.ondragover=e=>{e.preventDefault();drop.classList.add('over');}; drop.ondragleave=()=>drop.classList.remove('over');
+  drop.ondrop=async e=>{ e.preventDefault(); drop.classList.remove('over'); const fs=[...e.dataTransfer.files].filter(f=>f.type.startsWith('audio/')||/\.(mp3|m4a|wav|aac|ogg)$/i.test(f.name)); if(!fs.length){ toast('Please drop a music file (MP3, M4A, WAV)'); return; } await mfUploadMany(fs,'audio'); };
+  document.querySelectorAll('[data-sndstudio]').forEach(b=>b.onclick=async()=>{ const f=await mfSndFile(b.dataset.sndstudio); if(!f) return; studioView(); if(await sndSetFile(f)){ const bx=document.getElementById('sndBox'); if(bx){ bx.innerHTML=soundtrackHTML(); bindSoundtrack(); setTimeout(()=>bx.scrollIntoView({behavior:'smooth',block:'start'}),150); } toast('🎧 “'+f.name+'” is now your Studio soundtrack'); } });
+  document.querySelectorAll('[data-sndve]').forEach(b=>b.onclick=async()=>{ const f=await mfSndFile(b.dataset.sndve); if(!f) return; if(await veSetOwn(f,false)){ if(VE.s.audio==='orig') VE.s.audio='mix'; videoEnhancerView(); toast(VE.el?'🎧 Song added — press ▶ Play to hear it with your video':'🎧 Song ready — now add your video in Step 1'); } });
+  document.querySelectorAll('[data-sndopen]').forEach(b=>b.onclick=()=>{ MFV.type='audio'; MFV.open=b.dataset.sndopen; MFV.q=''; myFilesView(); setTimeout(()=>{ const c=document.querySelector(`[data-mfid="${b.dataset.sndopen}"]`); if(c) c.scrollIntoView({behavior:'smooth',block:'center'}); },100); });
 }
 function mfCard(x){
   const t=MF_TYPES[x.type]||MF_TYPES.prompt, open=MFV.open===x.id;
