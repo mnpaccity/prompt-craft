@@ -408,6 +408,7 @@
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .pjgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
   .pjcard{display:flex;gap:10px;padding:10px;border-radius:14px;border:2px solid var(--line);background:var(--card)}
+  .ptext-box{margin-top:10px;border:2px solid var(--accent,#2f6fed);border-radius:12px;padding:10px 12px;background:var(--card,#fff)}.ptext-box textarea{width:100%;font:inherit;font-size:16px;padding:10px;border-radius:10px;border:1px solid var(--line,#ccc);margin-top:6px;resize:vertical;background:var(--bg);color:inherit}.ptchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.ptchips .xbtn{font-size:12.5px;padding:4px 9px}
   .vtools{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:10px 0 4px}.vtg{border:1px solid var(--line,#ddd);border-radius:12px;padding:8px 10px;background:var(--bg)}.vtl{display:block;font-weight:700;font-size:13px;margin-bottom:6px}.vtb{display:flex;flex-wrap:wrap;gap:6px}.vtb .btn{font-family:inherit;padding:8px 12px;font-size:14px}#ptime{display:block;font-size:12.5px;margin-top:4px}
   .sdopt .btn,.sdopt .xbtn{font-family:inherit}.sdopt{border:1px solid var(--line,#ddd);border-radius:12px;padding:10px 12px;margin:10px 0}.sdopt h3{margin:0 0 4px;font-size:16px}.sdopt p{margin:4px 0 8px;font-size:14px}
   .savebar{border:2px solid var(--accent,#2f6fed)}.sbrow{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.sbrow .btn{font-family:inherit}
@@ -1999,7 +2000,7 @@ const PJ={sig:'',timer:null,savedAt:0,plan:'',uploading:false};
 function saveProjList(){ try{ localStorage.setItem('pc_projects',JSON.stringify(PROJ)); }catch(e){ try{ PROJ.forEach(p=>{ if(p!==projCur()) p.thumb=''; }); localStorage.setItem('pc_projects',JSON.stringify(PROJ)); }catch(_){} } if(typeof cloudMark==='function') cloudMark('projects'); }
 function projCur(){ return PROJ.find(x=>x.id===ST.projId); }
 const PJ_TEXT=['area','price','beds','feature','agent','phone'];
-function projSig(){ return JSON.stringify([lookSnapshot(),ST.lookId,ST.audio&&ST.audio.id,ST.audioStart,ST.musicVol,SND.src,ST.photos.map(p=>[p.id,p.room,p.mv||'',p.cap||'',p.len||0]),PJ_TEXT.map(k=>ST[k]),PJ.plan.length]); }
+function projSig(){ return JSON.stringify([lookSnapshot(),ST.lookId,ST.audio&&ST.audio.id,ST.audioStart,ST.musicVol,SND.src,ST.photos.map(p=>[p.id,p.room,p.mv||'',p.cap||'',p.len||0,p.capPos||'',p.capSize||'',p.capStyle||'']),PJ_TEXT.map(k=>ST[k]),PJ.plan.length]); }
 function phId(){ return 'ph'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 async function thumbOf(ph){ try{ if(!ph.img.complete) await ph.img.decode(); const w=200, h=Math.round(w*ph.img.naturalHeight/ph.img.naturalWidth)||130; const c=document.createElement('canvas'); c.width=w; c.height=Math.min(h,200); c.getContext('2d').drawImage(ph.img,0,0,w,h); return c.toDataURL('image/jpeg',0.6); }catch(e){ return ''; } }
 async function projSaveNow(){
@@ -2008,7 +2009,7 @@ async function projSaveNow(){
   if(!p){ p={id:'p'+Date.now().toString(36),name:ST.area||('Untitled home · '+new Date().toLocaleDateString()),autoName:!ST.area,created:Date.now()}; PROJ.unshift(p); ST.projId=p.id; }
   p.settings=lookSnapshot(); p.lookId=ST.lookId||null; p.text=Object.fromEntries(PJ_TEXT.map(k=>[k,ST[k]||'']));
   p.audio=ST.audio?{...ST.audio,start:ST.audioStart||0,on:SND.src==='file'}:null; p.musicVol=ST.musicVol;
-  p.photos=ST.photos.map(x=>({id:x.id,len:x.len||0,cap:x.cap||'',name:x.name,room:x.room,mv:x.mv||'',assetId:x.assetId||'',assetUrl:x.assetUrl||''}));
+  p.photos=ST.photos.map(x=>({id:x.id,len:x.len||0,cap:x.cap||'',capPos:x.capPos||'',capSize:x.capSize||'',capStyle:x.capStyle||'',name:x.name,room:x.room,mv:x.mv||'',assetId:x.assetId||'',assetUrl:x.assetUrl||''}));
   if(PJ.plan) p.plan=PJ.plan; p.updated=Date.now();
   if(p.autoName&&ST.area){ p.name=ST.area; }
   const first=ST.photos[0]; if(first&&p.thumbId!==first.id){ p.thumb=await thumbOf(first); p.thumbId=first.id; } if(!first){ p.thumb=''; p.thumbId=''; }
@@ -2067,7 +2068,7 @@ async function projOpen(id){
     if(!blob&&ph.assetUrl){ try{ const r=await fetch(ph.assetUrl); if(r.ok){ const bl=await r.blob(); if(bl&&bl.size){ blob=bl; idbPut(ph.id,blob); } } }catch(e){} }
     if(!blob){ missing++; continue; }
     const url=URL.createObjectURL(blob), img=new Image(); img.src=url;
-    ST.photos.push({id:ph.id,len:ph.len||undefined,cap:ph.cap||'',url,img,name:ph.name,room:ph.room,mv:ph.mv||undefined,assetId:ph.assetId,assetUrl:ph.assetUrl});
+    ST.photos.push({id:ph.id,len:ph.len||undefined,cap:ph.cap||'',capPos:ph.capPos||'',capSize:ph.capSize||'',capStyle:ph.capStyle||'',url,img,name:ph.name,room:ph.room,mv:ph.mv||undefined,assetId:ph.assetId,assetUrl:ph.assetUrl});
   }
   ST.projId=id; PJ.plan=p.plan||''; PJ.sig=projSig(); PJ.savedAt=p.updated;
   location.hash='#studio'; studioView();
@@ -2342,8 +2343,15 @@ function drawEditor(){
         <label class="fld"><span>Room</span><select data-pc1="room">${ROOM_ORDER.map(k=>`<option value="${k}" ${p.room===k?'selected':''}>${ROOMS[k].n}</option>`).join('')}</select></label>
         <label class="fld"><span>Camera move</span><select data-pc1="mv">${mvOpts}</select></label>
         ${sel('plen','How long this clip plays',lenOpts,p.len||0).replace('data-pg="plen"','data-pc1="len"')}
-        <label class="fld"><span>Text on this clip (optional)</span><input data-pc1="cap" value="${esc(p.cap||'')}" maxlength="70" placeholder="e.g. Chef’s kitchen"></label>
-      </div></div>
+      </div>
+      <div class="ptext-box"><div class="top"><b>🔤 Text on this clip</b><span class="muted" style="font-size:12.5px">optional · shows while this clip plays</span></div>
+        <textarea data-pc1="cap" rows="2" maxlength="90" aria-label="Text on clip ${PE.sel+1}" placeholder="Type the words to show on this clip — e.g. Chef’s kitchen with quartz island">${esc(p.cap||'')}</textarea>
+        <div class="ptchips">${['Welcome home','Chef’s kitchen','Bright open living','Primary suite','Spa-like bath','Private backyard','Just listed','Call for a private showing'].map(t=>`<button class="xbtn" data-capq="${esc(t)}">${esc(t)}</button>`).join('')}${p.cap?'<button class="xbtn" data-capq="">✕ Clear text</button>':''}</div>
+        <div class="vegrid" style="margin-top:6px">
+          <label class="fld"><span>Text style</span><select data-pc1="capStyle"><option value="" ${!p.capStyle?'selected':''}>Dark box (easy to read)</option><option value="title" ${p.capStyle==='title'?'selected':''}>Big title — tall capitals</option></select></label>
+          <label class="fld"><span>Position</span><select data-pc1="capPos"><option value="" ${!p.capPos?'selected':''}>Bottom</option><option value="middle" ${p.capPos==='middle'?'selected':''}>Middle</option><option value="top" ${p.capPos==='top'?'selected':''}>Top</option></select></label>
+          <label class="fld"><span>Size</span><select data-pc1="capSize"><option value="s" ${p.capSize==='s'?'selected':''}>Small</option><option value="" ${!p.capSize||p.capSize==='m'?'selected':''}>Medium</option><option value="l" ${p.capSize==='l'?'selected':''}>Large</option></select></label>
+        </div></div></div>
     <h4 style="margin:14px 0 4px">🎬 Whole video</h4>
     <div class="vegrid">
       ${sel('look','Look & tone',Object.entries(LOOKS).map(([k,v])=>[k,v.n]),ST.look)}
@@ -2353,7 +2361,7 @@ function drawEditor(){
       ${SND.src==='file'&&ST.audio?`<label class="fld"><span>Soundtrack</span><input value="🎧 ${esc(ST.audio.name)} (change in Step 2)" disabled></label>`:sel('music','Soundtrack',SOUNDTRACKS.map(t=>[t.k,t.n+' · '+t.bpm+' BPM']),ST.music)}
       <label class="vesl"><span>🔊 Music volume <b id="peVol">${ST.musicVol??70}%</b></span><input type="range" data-pgv="musicVol" min="0" max="100" step="5" value="${ST.musicVol??70}"></label>
     </div>
-    <details class="presetbox" style="margin-top:10px"><summary>🔤 On-screen text for the whole video</summary><div class="vegrid">
+    <details class="presetbox" style="margin-top:10px" open><summary>🔤 Text for the whole video — headline, price, agent</summary><div class="vegrid">
       ${inp('area','Headline (first clip)','e.g. Welcome to Laguna Beach')}${inp('beds','Beds · baths · size','e.g. 4 Beds · 3 Baths')}${inp('feature','Star feature','e.g. Ocean views')}${inp('price','Price (last clip)','e.g. Offered at $2,450,000')}${inp('agent','Agent name (last clip)','e.g. Minh Nguyen, Realtor')}${inp('phone','Phone / website (last clip)','e.g. (555) 123-4567')}
     </div></details>
     <div class="lactive chg" id="peStale" ${PE.stale?'':'hidden'} style="margin-top:12px">✏️ You changed the video — the clip prompts below are out of date. <span class="lact"><button class="btn" id="peUpd">🔄 Update clip prompts & plan</button></span></div>
@@ -2362,12 +2370,13 @@ function drawEditor(){
   const keepT=()=>{ const t=PREV?PREV.now():0; return t; };
   qa('[data-pc]').forEach(b=>b.onclick=()=>{ PE.sel=+b.dataset.pc; drawEditor(); peSeekClip(PE.sel); host.querySelector(`[data-pc="${PE.sel}"]`).focus(); });
   qa('[data-pmv]').forEach(b=>b.onclick=()=>{ const i=+b.dataset.pmv, j=i+ +b.dataset.d; if(j<0||j>=N) return; [P[i],P[j]]=[P[j],P[i]]; PE.sel=j; peMark(); drawEditor(); peSeekClip(j); const nb=host.querySelector(`[data-pmv="${j}"][data-d="${b.dataset.d}"]`); (nb&&!nb.disabled?nb:host.querySelector(`[data-pc="${j}"]`)).focus(); });
-  qa('[data-pc1]').forEach(el=>{ const k=el.dataset.pc1; const fn=()=>{ const v=el.value; if(k==='len') p.len=+v||undefined; else if(k==='mv') p.mv=v; else p[k]=v; peMark(); if(k!=='cap') { drawEditor(); peSeekClip(PE.sel); } else { const c=host.querySelector(`[data-pc="${PE.sel}"] .pcs`); if(c) c.textContent=`${clipLen(p)}s${p.cap?' · ✏️':''}`; } };
-    if(el.tagName==='INPUT'){ el.oninput=fn; } else el.onchange=fn; });
+  qa('[data-pc1]').forEach(el=>{ const k=el.dataset.pc1; const fn=()=>{ const v=el.value; if(k==='len') p.len=+v||undefined; else if(k==='mv') p.mv=v; else p[k]=v; peMark(); if(k!=='cap') { drawEditor(); peSeekClip(PE.sel); const f=host.querySelector(`[data-pc1="${k}"]`); f&&f.focus(); } else { const c=host.querySelector(`[data-pc="${PE.sel}"] .pcs`); if(c) c.textContent=`${clipLen(p)}s${p.cap?' · ✏️':''}`; } };
+    if(el.tagName==='INPUT'||el.tagName==='TEXTAREA'){ el.oninput=fn; } else el.onchange=fn; });
   qa('[data-pg]').forEach(el=>el.onchange=()=>{ const k=el.dataset.pg; ST[k]=(k==='len'||k==='amount')?+el.value:el.value; if(k==='music'){ SND.src='synth'; if(PREV&&PREV.playing&&!SND.mute) sndStart(ST.music); const sb=document.getElementById('sndBox'); if(sb){ sb.innerHTML=soundtrackHTML(); bindSoundtrack(); } } peMark(); drawEditor(); });
   qa('[data-pgv]').forEach(el=>el.oninput=()=>{ ST.musicVol=+el.value; q('#peVol').textContent=ST.musicVol+'%'; sndVol(); const s=document.getElementById('sndVol'); if(s){ s.value=ST.musicVol; const v=document.getElementById('sndVolV'); if(v) v.textContent=ST.musicVol+'%'; } });
   qa('[data-pt]').forEach(el=>el.oninput=()=>{ ST[el.dataset.pt]=el.value; peMark(); });
   q('#pePlay').onclick=()=>peSeekClip(PE.sel);
+  qa('[data-capq]').forEach(b=>b.onclick=()=>{ p.cap=b.dataset.capq; peMark(); drawEditor(); peSeekClip(PE.sel); const t=host.querySelector('textarea[data-pc1=cap]'); t&&t.focus(); });
   q('#peDup').onclick=()=>{ const c={...p,id:phId(),seen:true}; idbGet(p.id).then(b=>{ if(b) idbPut(c.id,b); }); P.splice(PE.sel+1,0,c); PE.sel++; peMark(); drawEditor(); peSeekClip(PE.sel); toast('📄 Clip duplicated — try a different camera move or text on it'); };
   q('#peRm').onclick=()=>{ if(N<=2) return; P.splice(PE.sel,1); PE.sel=Math.max(0,PE.sel-1); peMark(); drawEditor(); peSeekClip(PE.sel); toast('🗑️ Clip removed'); };
   if(q('#peUpd')) q('#peUpd').onclick=()=>{ const t=keepT(); PE.stale=false; makePlan(); setTimeout(()=>{ if(PREV) PREV.seek(t); const e=document.getElementById('pedit'); e&&e.scrollIntoView({block:'nearest'}); },60); toast('🔄 Prompts and plan updated'); };
@@ -2422,7 +2431,9 @@ function startPreview(ov){
     if(!vertical){ ctx.fillStyle='#000'; const bh=H*0.06; ctx.fillRect(0,0,W,bh); ctx.fillRect(0,H-bh,W,bh); }
     const ovs=PREV.ov.filter(o=>o.clip<N);
     ovs.filter(o=>o.cap).forEach(o=>{ const s=st[o.clip]+0.8, d=t-s, D=Math.max(1.5,L[o.clip]-1.4); if(d<0||d>D) return;
-      const a=d<0.4?d/0.4:d>D-0.4?(D-d)/0.4:1; vPill(ctx,o.text,W*0.05,H*(vertical?0.92:0.9),vertical?28:24,W*0.9,a); });
+      const a=d<0.4?d/0.4:d>D-0.4?(D-d)/0.4:1; const ph=P[o.clip]||{}, k={s:0.8,m:1,l:1.35}[ph.capSize]||1, pos=ph.capPos||'bottom';
+      if(ph.capStyle==='title'){ const cy=pos==='top'?H*0.2:pos==='middle'?H*0.5:H*0.8; vTitle(ctx,o.text,W/2,cy,Math.round((vertical?34:32)*k),W*0.88,a); }
+      else { const fs=Math.round((vertical?28:24)*k); if(pos==='bottom') vPill(ctx,o.text,W*0.05,H*(vertical?0.92:0.9),fs,W*0.9,a); else vPill(ctx,o.text,W/2,pos==='top'?H*(vertical?0.16:0.2):H*0.56,fs,W*0.9,a,'center'); } });
     ovs.filter(o=>!o.cap).forEach(o=>{ const s=st[o.clip]+0.6, d=t-s; if(d<0||d>2.8) return;
       const a=d<0.5?d/0.5:d>2.3?(2.8-d)/0.5:1; const rise=(1-Math.min(1,d/0.5))*10;
       vTitle(ctx,o.text,W/2,H*(vertical?0.74:0.76)+rise,vertical?34:32,W*0.88,a); });
