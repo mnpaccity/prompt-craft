@@ -408,6 +408,8 @@
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .pjgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
   .pjcard{display:flex;gap:10px;padding:10px;border-radius:14px;border:2px solid var(--line);background:var(--card)}
+  .vtools{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:10px 0 4px}.vtg{border:1px solid var(--line,#ddd);border-radius:12px;padding:8px 10px;background:var(--bg)}.vtl{display:block;font-weight:700;font-size:13px;margin-bottom:6px}.vtb{display:flex;flex-wrap:wrap;gap:6px}.vtb .btn{font-family:inherit;padding:8px 12px;font-size:14px}#ptime{display:block;font-size:12.5px;margin-top:4px}
+  .sdopt .btn,.sdopt .xbtn{font-family:inherit}.sdopt{border:1px solid var(--line,#ddd);border-radius:12px;padding:10px 12px;margin:10px 0}.sdopt h3{margin:0 0 4px;font-size:16px}.sdopt p{margin:4px 0 8px;font-size:14px}
   .savebar{border:2px solid var(--accent,#2f6fed)}.sbrow{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}.sbrow .btn{font-family:inherit}
   .mfsnds{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:12px}.mfsnd{border:1px solid var(--line,#ddd);border-radius:12px;padding:10px;background:var(--bg)}.mfsndtop{display:flex;align-items:center;gap:8px;margin-bottom:6px}
   .pjthumb{flex:none;width:84px;height:64px;border-radius:10px;overflow:hidden;background:var(--bg);display:grid;place-items:center;font-size:28px}.pjthumb img{width:100%;height:100%;object-fit:cover}
@@ -2255,21 +2257,26 @@ Starting prompts:
 
 ${allText}`;
   $('#studioOut').innerHTML = `
+    <div class="card">
+      <h2>▶️ Step 3 · Watch, edit &amp; save your video</h2>
+      <p class="muted" style="font-size:14px">A quick rough cut made from your still photos, so you can check the order, timing, transitions and text. The AI tool will create the real camera movement.</p>
+      <div class="prevwrap"><canvas id="prev"></canvas></div>
+      <div class="vtools" role="toolbar" aria-label="Video tools">
+        <div class="vtg"><span class="vtl">1 · Watch</span><div class="vtb"><button class="btn" id="pp">⏸ Pause</button><button class="btn ghost" id="rs">⟲ Restart</button><button class="btn ghost" id="pmute">${SND.mute?'🔇 Sound off':'🔊 Sound on'}</button></div><span class="muted" id="ptime"></span></div>
+        <div class="vtg"><span class="vtl">2 · Edit</span><div class="vtb"><button class="btn ghost" id="pvEdit">✏️ Edit clips &amp; text</button><button class="btn ghost" id="pvMusic">🎵 Change music</button></div></div>
+        <div class="vtg"><span class="vtl">3 · Save</span><div class="vtb"><button class="btn ghost" id="pvSave">💾 Save project</button><button class="btn ghost" id="pvCopy">📄 Save a copy</button></div></div>
+        <div class="vtg"><span class="vtl">4 · Finish &amp; send</span><div class="vtb"><button class="btn" id="pxp">⬇️ Download video</button><button class="btn ghost" id="pvShare">📤 Send a demo</button></div></div>
+      </div><div id="pxpDone"></div><p class="muted" style="font-size:12.5px;margin:4px 0 0">🎵 Playing: ${ST.audio&&SND.src==='file'?esc(ST.audio.name):esc(SOUNDTRACKS.find(t=>t.k===ST.music).n)} · The download records this preview slideshow (about the same length) with your soundtrack — great for social posts, or as a music guide when you edit the AI clips.</p>
+      <div id="pedit"></div>
+    </div>
     <div class="card pop">
-      <div class="top"><h2 style="margin:0">Step 3 · Your video plan</h2><span class="badge">${N} clips · about ${total} seconds</span></div>
+      <div class="top"><h2 style="margin:0">Step 4 · AI video prompts (optional)</h2><span class="badge">${N} clips · about ${total} seconds</span></div>
       <p class="muted">Every clip uses the same look, speed and lens, so they blend together like one continuous camera move.</p>
       <div class="actions" style="margin-top:6px">
         <button class="btn" id="cpAll">📋 Copy all ${N} clip prompts</button><button class="btn ghost" id="svPlan">💾 Save to My Files</button><button class="btn ghost" id="svLook">🎨 Save this look</button>
         <button class="btn ghost" id="cpMaster">🤖 Copy “improve with Claude” prompt</button>
       </div>
       <p class="muted" style="font-size:13px;margin-top:8px">🤖 Optional: paste the “improve with Claude” prompt into Claude <b>and attach your photos</b>. Claude will look at each photo and add the real details it sees.</p>
-    </div>
-    <div class="card">
-      <h2>▶️ Live preview</h2>
-      <p class="muted" style="font-size:14px">A quick rough cut made from your still photos, so you can check the order, timing, transitions and text. The AI tool will create the real camera movement.</p>
-      <div class="prevwrap"><canvas id="prev"></canvas></div>
-      <div class="actions"><button class="btn" id="pp">⏸ Pause</button><button class="btn ghost" id="rs">⟲ Restart</button><button class="btn ghost" id="pmute">${SND.mute?'🔇 Sound off':'🔊 Sound on'}</button><button class="btn ghost" id="pxp">⬇️ Download video with soundtrack</button><span class="muted" id="ptime" style="align-self:center"></span></div><div id="pxpDone"></div><p class="muted" style="font-size:12.5px;margin:4px 0 0">🎵 Playing: ${ST.audio&&SND.src==='file'?esc(ST.audio.name):esc(SOUNDTRACKS.find(t=>t.k===ST.music).n)} · The download records this preview slideshow (about the same length) with your soundtrack — great for social posts, or as a music guide when you edit the AI clips.</p>
-      <div id="pedit"></div>
     </div>
     <div class="card">
       <h2>🎞️ Clip prompts (one per photo)</h2>
@@ -2315,7 +2322,7 @@ ${allText}`;
 
 /* ---------- ✏️ Edit your video (under the live preview) ---------- */
 const PE={sel:0,stale:false};
-function peMark(){ PE.stale=true; if(PREV) PREV.refresh(); const b=document.getElementById('peStale'); if(b) b.hidden=false; syncStep2(); }
+function peMark(){ PX.last=null; PE.stale=true; if(PREV) PREV.refresh(); const b=document.getElementById('peStale'); if(b) b.hidden=false; syncStep2(); }
 function syncStep2(){ document.querySelectorAll('[data-k]').forEach(el=>{ const k=el.dataset.k; if(el.closest('#pedit')) return; if(ST[k]!=null&&String(el.value)!==String(ST[k])) el.value=ST[k]; }); renderThumbs(); window._looksUpd&&window._looksUpd(); }
 function peSeekClip(i){ if(!PREV) return; const {st}=clipTiming(); PREV.seek(Math.max(0,(st[i]||0)+0.01)); if(!PREV.playing){ PREV.playing=true; PREV.t0=performance.now(); const b=$('#pp'); if(b) b.textContent='⏸ Pause'; if(!SND.mute) sndStart(ST.music); } }
 function drawEditor(){
@@ -2431,7 +2438,12 @@ function startPreview(ov){
   $('#pp').onclick=()=>{ if(PREV.playing){ PREV.offset+=(performance.now()-PREV.t0)/1000; PREV.playing=false; $('#pp').textContent='▶ Play'; music(false); } else { PREV.t0=performance.now(); PREV.playing=true; $('#pp').textContent='⏸ Pause'; music(true); } };
   $('#rs').onclick=()=>{ PREV.offset=0; PREV.t0=performance.now(); PREV.playing=true; $('#pp').textContent='⏸ Pause'; sndStop(); if(!SND.mute) sndStart(ST.music); };
   $('#pmute').onclick=()=>{ SND.mute=!SND.mute; $('#pmute').textContent=SND.mute?'🔇 Sound off':'🔊 Sound on'; if(SND.mute) sndStop(true); else if(PREV.playing) sndStart(ST.music); };
-  $('#pxp').onclick=exportPreviewVideo;
+  $('#pxp').onclick=()=>exportPreviewVideo();
+  $('#pvShare').onclick=()=>{ if(PX.last) shareDemo(PX.last); else exportPreviewVideo({share:true}); };
+  $('#pvEdit').onclick=()=>{ const e=document.getElementById('pedit'); if(e) e.scrollIntoView({behavior:'smooth',block:'start'}); };
+  $('#pvMusic').onclick=()=>{ const e=document.getElementById('sndBox'); if(e) e.scrollIntoView({behavior:'smooth',block:'start'}); else toast('Scroll up to 🎵 Soundtrack'); };
+  $('#pvSave').onclick=()=>{ const b=document.getElementById('sbSave'); if(b) b.click(); };
+  $('#pvCopy').onclick=()=>{ const b=document.getElementById('sbCopy'); if(b) b.click(); };
 }
 const INTRO_SCRIPTS = [
  {t:"Intro script 1 — Professional, warm & friendly", i:"😊", script:true, badge:"Script", secs:[
@@ -3328,7 +3340,8 @@ function bindSoundtrack(){
   qa('.mySndUp').forEach(i=>i.onchange=async e=>{ const it=await mySndUpload(e.target.files[0]); e.target.value=''; if(it) await useMine(it.id); });
   q('#sndVol').oninput=e=>{ ST.musicVol=+e.target.value; q('#sndVolV').textContent=ST.musicVol+'%'; sndVol(); };
 }
-async function exportPreviewVideo(){
+const PX={last:null};
+async function exportPreviewVideo(opt={}){
   const cv=document.getElementById('prev'); if(!cv||!PREV) return; if(!window.MediaRecorder||!cv.captureStream){ toast('⚠️ This browser can’t record video — try Chrome or Edge'); return; }
   const c=sndCtx(); const mime=['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1,mp4a.40.2','video/mp4;codecs=avc1','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'].find(t=>MediaRecorder.isTypeSupported(t))||''; const ext=/mp4/.test(mime)?'mp4':'webm';
   const vs=cv.captureStream(30); const dest=c.createMediaStreamDestination();
@@ -3346,12 +3359,13 @@ async function exportPreviewVideo(){
   const tick=setInterval(()=>{ const s=(performance.now()-t0)/1000; btn.textContent=`⏺ Recording… ${Math.min(100,Math.round(s/total*100))}%`; if(s>total-1.2&&SND.master&&SND.ctx) SND.master.gain.setTargetAtTime(0,SND.ctx.currentTime,0.35); },250);
   await new Promise(r=>setTimeout(r,total*1000+200)); clearInterval(tick); rec.stop(); await new Promise(r=>rec.onstop=r);
   if(recEl){ recEl.pause(); try{ elSrc.disconnect(); }catch(e){} } sndStop();
-  const blob=new Blob(chunks,{type:(mime||'video/webm').split(';')[0]}); btn.disabled=false; btn.textContent='⬇️ Download video with soundtrack';
+  const blob=new Blob(chunks,{type:(mime||'video/webm').split(';')[0]}); btn.disabled=false; btn.textContent='⬇️ Download video';
   const name=mfSafeName(ST.area||'Listing preview')+' - preview.'+ext;
-  const box=document.getElementById('pxpDone'); if(box) box.innerHTML=`<div class="lactive">✅ Your ${fmtDur(total)} video with soundtrack is ready (${(blob.size/1048576).toFixed(1)} MB). <span class="lact"><button class="xbtn" id="pxDl">⬇️ Download</button><button class="xbtn" id="pxSv">💾 Save to My Files</button></span></div>`;
+  const box=document.getElementById('pxpDone'); if(box) box.innerHTML=`<div class="lactive">✅ Your ${fmtDur(total)} video with soundtrack is ready (${(blob.size/1048576).toFixed(1)} MB). <span class="lact"><button class="xbtn lgo" id="pxShare">📤 Send a demo</button><button class="xbtn" id="pxDl">⬇️ Download</button><button class="xbtn" id="pxSv">💾 Save to My Files</button></span></div>`;
   const file=new File([blob],name,{type:blob.type});
-  if(box){ box.querySelector('#pxDl').onclick=()=>mfSave(name,blob); box.querySelector('#pxSv').onclick=async()=>{ const it=await mfUploadVideo(file,{title:(ST.area||'Listing')+' preview video',src:'Real Estate · Photo-to-video'}); if(it&&ST.projId){ it.proj=ST.projId; saveMyFiles(); } }; }
-  mfSave(name,blob);
+  if(box){ box.querySelector('#pxShare').onclick=()=>shareDemo({blob,name,title:ST.area||'Listing video tour',agent:ST.agent,phone:ST.phone}); box.querySelector('#pxDl').onclick=()=>mfSave(name,blob); box.querySelector('#pxSv').onclick=async()=>{ const it=await mfUploadVideo(file,{title:(ST.area||'Listing')+' preview video',src:'Real Estate · Photo-to-video'}); if(it&&ST.projId){ it.proj=ST.projId; saveMyFiles(); } }; }
+  PX.last={blob,name,title:ST.area||'Listing video tour',agent:ST.agent,phone:ST.phone};
+  if(opt.share) shareDemo(PX.last); else mfSave(name,blob);
 }
 
 function playMusicLoop(clip){
@@ -3954,8 +3968,8 @@ async function veExport(){
   if(VE.gain) VE.gain.gain.value=1;
   VE.rec=false; VE.playing=false; btn.disabled=false; btn.textContent='⬇️ Download enhanced video'; const pp=$('#vePP'); if(pp) pp.textContent='▶ Play'; veAudioMix();
   const blob=new Blob(chunks,{type:(mime||'video/webm').split(';')[0]}); const base=(VE.file&&VE.file.name||'video').replace(/\.[^.]+$/,''); const name=mfSafeName(base+' - enhanced')+'.'+ext;
-  const box=$('#veDone'); box.innerHTML=`<div class="lactive">✅ Your enhanced video is ready (${fmtDur(total)}, ${(blob.size/1048576).toFixed(1)} MB). <span class="lact"><button class="xbtn" id="veDl">⬇️ Download again</button><button class="xbtn" id="veSave">💾 Save to My Files</button></span></div>`;
-  $('#veDl').onclick=()=>mfSave(name,blob); $('#veSave').onclick=()=>mfUploadVideo(new File([blob],name,{type:blob.type}),{title:base+' (enhanced)',src:'Video Enhancer'});
+  const box=$('#veDone'); box.innerHTML=`<div class="lactive">✅ Your enhanced video is ready (${fmtDur(total)}, ${(blob.size/1048576).toFixed(1)} MB). <span class="lact"><button class="xbtn lgo" id="veShare">📤 Send a demo</button><button class="xbtn" id="veDl">⬇️ Download again</button><button class="xbtn" id="veSave">💾 Save to My Files</button></span></div>`;
+  $('#veShare').onclick=()=>shareDemo({blob,name,title:base}); $('#veDl').onclick=()=>mfSave(name,blob); $('#veSave').onclick=()=>mfUploadVideo(new File([blob],name,{type:blob.type}),{title:base+' (enhanced)',src:'Video Enhancer'});
   mfSave(name,blob);
 }
 function videoEnhancerView(){ veRender(); }
@@ -4392,6 +4406,44 @@ function openHelp(it, tab){
   window._helpRedraw=draw; draw();
   const close=()=>{ m.remove(); window._helpRedraw=null; };
   m.querySelector('#hClose').onclick=close; m.onclick=e=>{ if(e.target===m) close(); };
+}
+/* ---------- 📤 Send an easily playable demo ---------- */
+function shareDemo({blob,name,title,agent,phone}){
+  const file=new File([blob],name,{type:blob.type||'video/mp4'}), mp4=/mp4/i.test(file.type)||/\.mp4$/i.test(name);
+  const canShare=!!(navigator.canShare&&(()=>{ try{ return navigator.canShare({files:[file]}); }catch(e){ return false; } })());
+  const mb=(blob.size/1048576).toFixed(1), url=URL.createObjectURL(blob);
+  const msg0=`Hi! Here’s a quick video tour${title?` of ${title}`:''} 🏡\nJust tap the link to play it on your phone or computer — nothing to download:\n[PASTE YOUR LINK HERE]\n\nWant to see it in person? Reply here and I’ll set up a private showing.${agent||phone?`\n— ${[agent,phone].filter(Boolean).join(' · ')}`:''}`;
+  const m=document.createElement('div'); m.className='modal'; m.setAttribute('role','dialog'); m.setAttribute('aria-label','Send a demo');
+  m.innerHTML=`<div class="card pop helpcard"><div class="top"><h2 style="margin:0">📤 Send a demo anyone can play</h2><button class="xbtn" id="sdClose">✕ Close</button></div>
+    <video src="${url}" controls playsinline style="width:100%;max-height:260px;background:#000;border-radius:12px;margin:8px 0" aria-label="Your video"></video>
+    <p class="muted" style="margin:0 0 10px;font-size:13.5px">${esc(name)} · ${mb} MB · ${mp4?'✅ MP4 — plays on iPhone, Android, Windows and Mac':'⚠️ WebM — iPhones can’t play this type. Use Chrome or Edge to make an MP4, or convert it free at <a href="https://cloudconvert.com/webm-to-mp4" target="_blank" rel="noopener">CloudConvert ↗</a> before sending.'}</p>
+    <div class="sdopt"><h3>1️⃣ Fastest: send the video itself</h3>
+      ${canShare?`<p>Opens your device’s share menu — pick Messages, WhatsApp, Mail, AirDrop and more. The video arrives ready to tap and play.</p><button class="btn" id="sdShare">📤 Share video now</button>`
+       :`<p>Your browser can’t open a share menu here, so: click <b>⬇️ Download video</b>, then attach the file in a text or email (paperclip 📎 button). ${blob.size>25*1048576?'<b>Note:</b> it’s over 25 MB — most email won’t accept it, so use option 2 (a link).':'It’s small enough for most email and texts.'}</p><button class="btn" id="sdDl">⬇️ Download video</button>`}</div>
+    <div class="sdopt"><h3>2️⃣ Best for anyone: send a link</h3>
+      <p>A link opens and plays right away on any phone or computer — great for big files and many people.</p>
+      <ol class="helpsteps" style="margin:6px 0">
+        <li>Click <b>⬇️ Download video</b> below (skip if you already have it).</li>
+        <li>Click <b>Open Google Drive</b>, then drag the video file into the Drive window.</li>
+        <li>Right-click the video in Drive → <b>Share</b> → <b>Share</b>. Under “General access” pick <b>Anyone with the link</b>.</li>
+        <li>Click <b>Copy link</b>, then paste it into the message below where it says [PASTE YOUR LINK HERE].</li></ol>
+      <div class="actions"><button class="xbtn" id="sdDl2">⬇️ Download video</button><a class="xbtn" href="https://drive.google.com/drive/my-drive" target="_blank" rel="noopener">📁 Open Google Drive ↗</a><a class="xbtn" href="https://www.youtube.com/upload" target="_blank" rel="noopener">▶️ Or YouTube (choose “Unlisted”) ↗</a></div></div>
+    <div class="sdopt"><h3>3️⃣ Your message, ready to send</h3>
+      <label class="fld"><span>Edit it if you like, then copy it into a text or email</span><textarea id="sdMsg" rows="6" style="width:100%">${esc(msg0)}</textarea></label>
+      <div class="actions"><button class="xbtn" id="sdCopy">📋 Copy message</button><a class="xbtn" id="sdGmail" target="_blank" rel="noopener">📧 Open in Gmail ↗</a><a class="xbtn" id="sdSms">💬 Open in Messages</a></div>
+      <p class="muted" style="font-size:12.5px;margin:6px 0 0">Tip: check the link first by opening it in a private/incognito window — if it plays there, it will play for them.</p></div>
+  </div>`;
+  document.body.appendChild(m);
+  const close=()=>{ m.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000); };
+  m.querySelector('#sdClose').onclick=close; m.onclick=e=>{ if(e.target===m) close(); };
+  m.addEventListener('keydown',e=>{ if(e.key==='Escape') close(); });
+  const dl=()=>mfSave(name,blob); ['#sdDl','#sdDl2'].forEach(k=>{ const b=m.querySelector(k); if(b) b.onclick=dl; });
+  const sh=m.querySelector('#sdShare'); if(sh) sh.onclick=async()=>{ try{ await navigator.share({files:[file],title:title||'Video tour',text:m.querySelector('#sdMsg').value.replace('[PASTE YOUR LINK HERE]','').replace(/\n{3,}/g,'\n\n')}); toast('✅ Sent!'); }catch(e){ if(e&&e.name!=='AbortError') toast('⚠️ Sharing didn’t work — use Download instead'); } };
+  const ta=m.querySelector('#sdMsg'), gm=m.querySelector('#sdGmail'), sm=m.querySelector('#sdSms');
+  const upd=()=>{ const t=ta.value, su='Video tour'+(title?' – '+title:''); gm.href='https://mail.google.com/mail/?view=cm&fs=1&su='+encodeURIComponent(su)+'&body='+encodeURIComponent(t); sm.href='sms:?&body='+encodeURIComponent(t); };
+  ta.oninput=upd; upd();
+  m.querySelector('#sdCopy').onclick=async()=>{ const t=ta.value; if(/\[PASTE YOUR LINK HERE\]/.test(t)) toast('Reminder: paste your video link where it says [PASTE YOUR LINK HERE]'); (await copyText(t))?toast('✅ Message copied'):showCopyBox(t); };
+  setTimeout(()=>m.querySelector('#sdClose').focus(),50);
 }
 function openStudioHelp(){
   const S={
@@ -4930,6 +4982,15 @@ function mfSafeName(s){ return (s||'file').replace(/[\\/:*?"<>|\u0000-\u001f]+/g
 function mfTxt(x){ const t=MF_TYPES[x.type]||MF_TYPES.prompt; return `${x.title}\r\n${t[1]}${x.src?' · From: '+x.src:''} · Saved ${mfDate(x.updated||x.created)} with Prompt CRAFT\r\n${'-'.repeat(40)}\r\n\r\n${(x.text||'').replace(/\r?\n/g,'\r\n')}\r\n`; }
 function mfVidExt(x,type){ const m=((x.name||'').match(/\.([a-z0-9]+)$/i)||[])[1]; const e=(m||'').toLowerCase(); if(['mp4','webm','mov'].includes(e)) return e; if(/webm/.test(type||'')) return 'webm'; if(/quicktime/.test(type||'')) return 'mov'; return 'mp4'; }
 async function mfSave(filename,data){
+  // 📂 Ask where to save (Chrome / Edge on Windows & Mac) — lets you pick the folder and name
+  if(window.showSaveFilePicker&&(!navigator.userActivation||navigator.userActivation.isActive)){
+    try{ const ext=(filename.match(/\.([a-z0-9]+)$/i)||[])[1];
+      const h=await window.showSaveFilePicker({suggestedName:filename,...(ext?{types:[{description:ext.toUpperCase()+' file',accept:{[(data&&data.type)||'application/octet-stream']:['.'+ext]}}]}:{})});
+      const w=await h.createWritable(); await w.write(data instanceof Blob?data:new Blob([data])); await w.close();
+      toast('✅ Saved “'+h.name+'” in the folder you chose'); return true;
+    }catch(e){ if(e&&e.name==='AbortError'){ toast('Save cancelled'); return false; } /* not allowed here — use a normal download */ }
+  }
+  if(!localStorage.getItem('pc_dltip')){ try{ localStorage.setItem('pc_dltip','1'); }catch(e){} setTimeout(()=>toast('💡 To choose the folder every time: in Chrome click ⋮ → Settings → Downloads → turn on “Ask where to save each file before downloading”'),2600); }
   const dl=await getDownloads();
   if(dl){ try{ await dl.save({filename,data}); toast('✅ Downloaded — look in your Downloads folder'); return true; }
     catch(e){ const c=e&&e.code;
