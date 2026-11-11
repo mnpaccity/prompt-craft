@@ -408,7 +408,8 @@
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .pjgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
   .pjcard{display:flex;gap:10px;padding:10px;border-radius:14px;border:2px solid var(--line);background:var(--card)}
-  button.btn,button.xbtn,.modal .btn{font-family:inherit}.namebox .xbtn{font-family:inherit}.tourbox{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--bg);border:1px dashed var(--line,#ccc)}.tourtog{display:flex;gap:6px;align-items:center;cursor:pointer}.tourtog input{width:18px;height:18px}
+  button.btn,button.xbtn,.modal .btn{font-family:inherit}.namebox .xbtn{font-family:inherit}.mpws{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:14px;align-items:start}@media(max-width:760px){.mpws{grid-template-columns:1fr}}.mplist{display:flex;flex-direction:column;gap:6px;max-height:60vh;overflow:auto}.mprecent{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}.mpitem{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line,#ddd);border-radius:10px;padding:8px 10px;cursor:pointer;width:100%}.mpitem.on{border:2px solid var(--accent,#2f6fed)}.mpitem b{font-size:14.5px}.mpitem span{font-size:12.5px;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}.mpitem small{font-size:11.5px;opacity:.75}.mptext{width:100%;font:inherit;font-size:15.5px;line-height:1.55;padding:12px;border-radius:10px;border:1px solid var(--line,#ccc);background:var(--bg);color:inherit;resize:vertical;min-height:300px}.mpmeta{display:flex;justify-content:space-between;font-size:13px;margin-top:6px}
+  .tourbox{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--bg);border:1px dashed var(--line,#ccc)}.tourtog{display:flex;gap:6px;align-items:center;cursor:pointer}.tourtog input{width:18px;height:18px}
   .nmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}.nmcard{border:1px solid var(--line,#ddd);border-radius:12px;padding:8px;background:var(--card,#fff)}.nmcard.sel{border:2px solid var(--accent,#2f6fed)}.nmimg{display:block;position:relative;width:100%;padding:0;border:0;background:#000;border-radius:8px;overflow:hidden;cursor:pointer}.nmimg img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}.nmimg .pcn{position:absolute;top:6px;left:6px}.nmcard select,.nmcard input{width:100%}.nmfile{font-size:11.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .ptext-box{margin-top:10px;border:2px solid var(--accent,#2f6fed);border-radius:12px;padding:10px 12px;background:var(--card,#fff)}.ptext-box textarea{width:100%;font:inherit;font-size:16px;padding:10px;border-radius:10px;border:1px solid var(--line,#ccc);margin-top:6px;resize:vertical;background:var(--bg);color:inherit}.ptchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.ptchips .xbtn{font-size:12.5px;padding:4px 9px}
   .vtools{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:10px 0 4px}.vtg{border:1px solid var(--line,#ddd);border-radius:12px;padding:8px 10px;background:var(--bg)}.vtl{display:block;font-weight:700;font-size:13px;margin-bottom:6px}.vtb{display:flex;flex-wrap:wrap;gap:6px}.vtb .btn{font-family:inherit;padding:8px 12px;font-size:14px}#ptime{display:block;font-size:12.5px;margin-top:4px}
@@ -4970,6 +4971,7 @@ function myFilesView(){
         <label class="btn ghost" style="cursor:pointer">🎵 Add a soundtrack<input type="file" id="mfAud" accept="audio/*,.mp3,.m4a,.wav,.aac" multiple hidden></label>
       </div>
     </div>
+    ${myPromptsCardHTML()}
     <div class="card" id="projSec"><h2 style="margin:0 0 4px">📁 Projects <span class="muted" style="font-size:14px;font-weight:500">· auto-saved</span></h2>
       <p class="muted" style="margin:0 0 10px;font-size:14px">Every home you work on in the Photo-to-Video Studio saves itself here — photos, style, on-screen text and prompts. ${LEVEL==='new'?'Click <b>📂 Open</b> to pick up where you left off.':''}</p>
       ${projCardsHTML()}</div>
@@ -5004,10 +5006,66 @@ function myFilesView(){
   $('#mfAud').onchange=async e=>{ await mfUploadMany(e.target.files,'audio'); e.target.value=''; };
   $('#mfDoc').onchange=async e=>{ await mfUploadMany(e.target.files,'doc'); e.target.value=''; };
   $('#mfVid').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; await mfUploadVideo(f); e.target.value=''; };
-  bindMyFiles(); bindProjCards(myFilesView); bindMfSoundtracks(); if($('#mfProjX')) $('#mfProjX').onclick=()=>{ MFV.proj=null; myFilesView(); };
+  bindMyFiles(); bindProjCards(myFilesView); bindMfSoundtracks(); bindMyPromptsCard(); if($('#mfProjX')) $('#mfProjX').onclick=()=>{ MFV.proj=null; myFilesView(); };
   window.scrollTo(0,0);
 }
 /* ---- 🎵 My Soundtracks: your own music for video creation ---- */
+/* ================= ✍️ MY PROMPTS — a workspace that saves as you type ================= */
+const MP={open:null,q:'',t:0,snap:null};
+const mpList=()=>MYF.filter(x=>x.type==='prompt'||x.type==='note').sort((a,b)=>(b.updated||0)-(a.updated||0));
+const mpAgo=t=>{ const d=(Date.now()-t)/1000; if(d<60) return 'just now'; if(d<3600) return Math.round(d/60)+' min ago'; if(d<86400) return Math.round(d/3600)+' hr ago'; return new Date(t).toLocaleDateString([], {month:'short',day:'numeric'}); };
+const CRAFT_TPL="Context: [Who I am, the situation, and any background facts the AI needs]\n\nRole: Act as a [expert role with years of experience].\n\nAction: [Exactly what you want done — step by step if needed]\n\nFormat: [How the answer should look — bullets, table, email, word count]\n\nTone: [How it should sound — friendly, professional, confident…]";
+function myPromptsCardHTML(){ const L=mpList();
+  return `<div class="card mpcard"><div class="top"><h2 style="margin:0">✍️ My Prompts <span class="muted" style="font-size:14px;font-weight:500">· saves as you type</span></h2><button class="btn" id="mpOpenWs">✍️ Open My Prompts</button></div>
+    <p class="muted" style="margin:6px 0 8px;font-size:14px">Your workspace for prompts you’re working on. Write, edit and come back any time — every change is saved automatically to your Claude account.</p>
+    ${L.length?`<div class="mprecent">${L.slice(0,4).map(x=>`<button class="mpitem" data-mpgo="${x.id}"><b>${esc(x.title)}</b><span>${esc((x.text||'').slice(0,70))||'Empty — click to write'}</span><small>Edited ${mpAgo(x.updated||x.created)}</small></button>`).join('')}</div>`:'<p class="muted" style="font-size:13.5px;margin:0">No prompts yet — click <b>✍️ Open My Prompts</b> to write your first one.</p>'}
+  </div>`; }
+function bindMyPromptsCard(){ const b=$('#mpOpenWs'); if(b) b.onclick=()=>myPromptsView(); document.querySelectorAll('[data-mpgo]').forEach(x=>x.onclick=()=>myPromptsView(x.dataset.mpgo)); }
+function mpFlush(){ clearTimeout(MP.t); const x=MYF.find(y=>y.id===MP.open); if(!x) return; const ti=$('#mpTitle'), ta=$('#mpText'); if(!ti||!ta) return;
+  const nt=(ti.value.trim()||'Untitled prompt').slice(0,120); if(nt===x.title&&ta.value===x.text) return;
+  x.title=nt; x.text=ta.value; x.updated=Date.now(); saveMyFiles();
+  const st=$('#mpStatus'); if(st) st.textContent='✅ Saved '+new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit',second:'2-digit'});
+  const li=document.querySelector(`[data-mpsel="${x.id}"]`); if(li){ li.querySelector('b').textContent=x.title; li.querySelector('small').textContent='Edited just now'; } }
+function myPromptsView(openId){
+  setNav('files'); try{ history.replaceState(null,'','#prompts'); }catch(e){}
+  let L=mpList(); if(openId) MP.open=openId; if(!L.some(x=>x.id===MP.open)) MP.open=L[0]?L[0].id:null;
+  const x=MYF.find(y=>y.id===MP.open); MP.snap=x?{title:x.title,text:x.text}:null;
+  const q=MP.q.toLowerCase(), shown=L.filter(y=>!q||(y.title+' '+y.text).toLowerCase().includes(q));
+  const words=t=>(t.trim().match(/\S+/g)||[]).length;
+  $('#app').innerHTML=`<div class="card pop"><div class="top"><h1 style="margin:0">✍️ My Prompts</h1><button class="xbtn" id="mpBack">← Back to My Files</button></div>
+      <p class="muted" style="margin:6px 0 0">Write and polish your prompts here. <b>Everything saves automatically as you type</b> — no save button needed. ${LEVEL==='new'?'Click <b>➕ New prompt</b> to start, or <b>🧱 New from CRAFT template</b> for fill-in-the-blanks help.':''}</p></div>
+    <div class="mpws">
+      <div class="card mpside"><div class="actions" style="margin-top:0"><button class="btn" id="mpNew">➕ New prompt</button><button class="btn ghost" id="mpTpl">🧱 New from CRAFT template</button></div>
+        <input class="search" id="mpQ" placeholder="🔍 Search your prompts" value="${esc(MP.q)}" aria-label="Search your prompts" style="width:100%;margin:10px 0 8px">
+        <div class="mplist" role="list">${shown.length?shown.map(y=>`<button role="listitem" class="mpitem ${y.id===MP.open?'on':''}" data-mpsel="${y.id}" aria-current="${y.id===MP.open}"><b>${esc(y.title)}</b><span>${esc((y.text||'').slice(0,60))||'Empty'}</span><small>Edited ${mpAgo(y.updated||y.created)}</small></button>`).join(''):`<p class="muted" style="font-size:13.5px">${L.length?'Nothing matches that search.':'No prompts yet.'}</p>`}</div></div>
+      <div class="card mpmain">${x?`
+        <label class="fld" style="margin:0"><span>Prompt name</span><input id="mpTitle" maxlength="120" value="${esc(x.title)}" style="font-size:18px;font-weight:700"></label>
+        <label class="fld" style="margin-top:10px"><span>Your prompt</span><textarea id="mpText" rows="16" class="mptext" placeholder="Start typing your prompt here…">${esc(x.text||'')}</textarea></label>
+        <div class="mpmeta"><span id="mpStatus" role="status" class="muted">✅ All changes saved</span><span class="muted" id="mpCount">${words(x.text||'')} words</span></div>
+        <div class="actions"><button class="btn" id="mpCopy">📋 Copy prompt</button><button class="btn ghost" id="mpImprove">✨ Improve it with the Prompt Enhancer</button><button class="btn ghost" id="mpDup">📄 Duplicate</button><button class="btn ghost" id="mpDl">⬇️ Download</button><button class="btn ghost" id="mpUndo">↩️ Undo today’s changes</button><button class="btn ghost" id="mpDel">🗑️ Delete</button></div>
+        <div id="mpAsk"></div>
+        ${x.src?`<p class="muted" style="font-size:12.5px;margin:8px 0 0">From: ${esc(x.src)}</p>`:''}`
+      :`<div style="text-align:center;padding:40px 10px"><div style="font-size:48px">✍️</div><h2>Start your first prompt</h2><p class="muted">Click <b>➕ New prompt</b> on the left. Your work saves itself as you type.</p></div>`}</div>
+    </div>`;
+  const make=(text,title)=>{ mpFlush(); const it=mfAdd({type:'prompt',title,text,src:'Written by me'}); updateFilesBtn(); MP.q=''; myPromptsView(it.id); setTimeout(()=>{ const t=$('#mpTitle'); if(t){ t.focus(); t.select(); } },50); };
+  $('#mpBack').onclick=()=>{ mpFlush(); myFilesView(); };
+  $('#mpNew').onclick=()=>make('','My new prompt');
+  $('#mpTpl').onclick=()=>make(CRAFT_TPL,'My CRAFT prompt');
+  $('#mpQ').oninput=e=>{ MP.q=e.target.value; mpFlush(); const pos=e.target.selectionStart; myPromptsView(); const n=$('#mpQ'); n.focus(); n.setSelectionRange(pos,pos); };
+  document.querySelectorAll('[data-mpsel]').forEach(b=>b.onclick=()=>{ mpFlush(); myPromptsView(b.dataset.mpsel); });
+  if(!x) return;
+  const ti=$('#mpTitle'), ta=$('#mpText'), st=$('#mpStatus');
+  const changed=()=>{ st.textContent='✏️ Saving…'; $('#mpCount').textContent=words(ta.value)+' words'; clearTimeout(MP.t); MP.t=setTimeout(mpFlush,700); };
+  ti.oninput=changed; ta.oninput=changed; ti.onblur=mpFlush; ta.onblur=mpFlush;
+  $('#mpCopy').onclick=async()=>{ mpFlush(); (await copyText(ta.value))?toast('✅ Copied — paste it into Claude'):showCopyBox(ta.value); };
+  $('#mpImprove').onclick=()=>{ mpFlush(); enhancerView(); const i=$('#enhIn'); if(i){ i.value=ta.value; i.oninput(); i.scrollIntoView({behavior:'smooth',block:'center'}); } toast('✨ Your prompt is in the Enhancer — click the improve button'); };
+  $('#mpDup').onclick=()=>make(ta.value,(ti.value||'Prompt')+' (copy)');
+  $('#mpDl').onclick=()=>{ mpFlush(); mfSave(mfSafeName(x.title)+'.txt',new Blob([x.text],{type:'text/plain'})); };
+  $('#mpUndo').onclick=()=>{ if(!MP.snap) return; ti.value=MP.snap.title; ta.value=MP.snap.text; mpFlush(); $('#mpCount').textContent=words(ta.value)+' words'; toast('↩️ Back to how it was when you opened it'); };
+  $('#mpDel').onclick=()=>{ const box=$('#mpAsk'); box.innerHTML=`<div class="askrow">Delete “${esc(x.title)}” for good? <button class="xbtn danger" id="mpYes">Delete</button><button class="xbtn" id="mpNo">Cancel</button></div>`;
+    $('#mpNo').onclick=()=>box.innerHTML=''; $('#mpYes').onclick=()=>{ clearTimeout(MP.t); MYF=MYF.filter(o=>o!==x); saveMyFiles(); updateFilesBtn(); MP.open=null; myPromptsView(); toast('🗑️ Deleted'); }; };
+}
+window.addEventListener('beforeunload',()=>{ try{ mpFlush(); }catch(e){} });
 function mfSoundtracksHTML(){
   const A=MYF.filter(x=>x.type==='audio');
   return `<div class="card" id="mfSndSec"><h2 style="margin:0 0 4px">🎵 My Soundtracks <span class="muted" style="font-size:14px;font-weight:500">· your own music for videos</span></h2>
@@ -5259,7 +5317,7 @@ document.getElementById('footBox').innerHTML=footerHTML();
 a11yInit();
 setTimeout(firstRunDisclaimer,400);
 if('serviceWorker' in navigator && location.protocol==='https:' && window.top===window && !/claude\.ai|claudeusercontent/.test(location.hostname)){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
-if(location.hash==='#enhance-video') videoEnhancerView(); else if(/^#legal-/.test(location.hash)) legalView(location.hash.slice(7)); else if(location.hash==='#missions'){ gamesView(); } else if(location.hash==='#claudecode'){ home(); openClaudeCode(); } else if(location.hash==='#files') myFilesView(); else if(location.hash==='#enhancer') enhancerView(); else if(location.hash==='#detective') videoDetectiveView(); else if(location.hash==='#tools') toolsView(); else if(location.hash==='#planner') plannerView(); else if(location.hash==='#studio'||location.hash==='#realestate') studioView(); else if(location.hash==='#library') libraryView(); else if(location.hash==='#games') gamesView(); else home();
+if(location.hash==='#enhance-video') videoEnhancerView(); else if(location.hash==='#prompts') myPromptsView(); else if(/^#legal-/.test(location.hash)) legalView(location.hash.slice(7)); else if(location.hash==='#missions'){ gamesView(); } else if(location.hash==='#claudecode'){ home(); openClaudeCode(); } else if(location.hash==='#files') myFilesView(); else if(location.hash==='#enhancer') enhancerView(); else if(location.hash==='#detective') videoDetectiveView(); else if(location.hash==='#tools') toolsView(); else if(location.hash==='#planner') plannerView(); else if(location.hash==='#studio'||location.hash==='#realestate') studioView(); else if(location.hash==='#library') libraryView(); else if(location.hash==='#games') gamesView(); else home();
 </script>
 </body>
 </html>
