@@ -408,7 +408,7 @@
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .pjgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
   .pjcard{display:flex;gap:10px;padding:10px;border-radius:14px;border:2px solid var(--line);background:var(--card)}
-  .namebox .xbtn{font-family:inherit}.nmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}.nmcard{border:1px solid var(--line,#ddd);border-radius:12px;padding:8px;background:var(--card,#fff)}.nmcard.sel{border:2px solid var(--accent,#2f6fed)}.nmimg{display:block;position:relative;width:100%;padding:0;border:0;background:#000;border-radius:8px;overflow:hidden;cursor:pointer}.nmimg img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}.nmimg .pcn{position:absolute;top:6px;left:6px}.nmcard select,.nmcard input{width:100%}.nmfile{font-size:11.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  button.btn,button.xbtn,.modal .btn{font-family:inherit}.namebox .xbtn{font-family:inherit}.nmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}.nmcard{border:1px solid var(--line,#ddd);border-radius:12px;padding:8px;background:var(--card,#fff)}.nmcard.sel{border:2px solid var(--accent,#2f6fed)}.nmimg{display:block;position:relative;width:100%;padding:0;border:0;background:#000;border-radius:8px;overflow:hidden;cursor:pointer}.nmimg img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}.nmimg .pcn{position:absolute;top:6px;left:6px}.nmcard select,.nmcard input{width:100%}.nmfile{font-size:11.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .ptext-box{margin-top:10px;border:2px solid var(--accent,#2f6fed);border-radius:12px;padding:10px 12px;background:var(--card,#fff)}.ptext-box textarea{width:100%;font:inherit;font-size:16px;padding:10px;border-radius:10px;border:1px solid var(--line,#ccc);margin-top:6px;resize:vertical;background:var(--bg);color:inherit}.ptchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.ptchips .xbtn{font-size:12.5px;padding:4px 9px}
   .vtools{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:10px 0 4px}.vtg{border:1px solid var(--line,#ddd);border-radius:12px;padding:8px 10px;background:var(--bg)}.vtl{display:block;font-weight:700;font-size:13px;margin-bottom:6px}.vtb{display:flex;flex-wrap:wrap;gap:6px}.vtb .btn{font-family:inherit;padding:8px 12px;font-size:14px}#ptime{display:block;font-size:12.5px;margin-top:4px}
   .sdopt .btn,.sdopt .xbtn{font-family:inherit}.sdopt{border:1px solid var(--line,#ddd);border-radius:12px;padding:10px 12px;margin:10px 0}.sdopt h3{margin:0 0 4px;font-size:16px}.sdopt p{margin:4px 0 8px;font-size:14px}
@@ -1908,7 +1908,7 @@ function studioView(){
         <input type="file" id="files" accept="image/*,.zip,application/zip" multiple hidden>
         <span style="font-size:40px">📷</span><br><b>Drag & drop listing photos — or a .ZIP of photos — here</b><br><span class="muted">or tap to choose · you can also paste a copied photo with Ctrl + V · your photos stay on your device</span>
       </label>
-      <div class="pickrow">${pickBtn('stPick','photo')}<span class="muted" style="font-size:13px">Search photos you saved in My Files or used in earlier projects</span></div>
+      <div class="pickrow">${pickBtn('stPick','photo')}<button class="btn ghost" id="stLink" type="button">🔗 Add from a listing link</button><span class="muted" style="font-size:13px">Use photos from My Files, earlier projects, or a Zillow / Redfin / MLS listing</span></div>
       <div class="folder" id="folder">
         <div class="folder-tab">📁 My uploaded photos <span class="fcount" id="fcount">0</span></div>
         <div id="thumbs"></div>
@@ -1993,6 +1993,7 @@ function studioView(){
     const href=ok?(/^https?:/i.test(v)?v:'https://'+v):'#';
     lo.href=href; lo.style.pointerEvents=ok?'auto':'none'; lo.style.opacity=ok?1:.45; $('#lstSteps').innerHTML=ok?listingSteps(v):''; };
   $('#pasteZone').onclick=()=>$('#pasteZone').focus();
+  if($('#stLink')) $('#stLink').onclick=()=>openListingLink();
   document.onpaste=e=>{ if(!$('#drop')){ document.onpaste=null; return; }
     if(e.target&&/INPUT|TEXTAREA/.test(e.target.tagName)&&e.target.id!=='pasteZone') return;
     const items=[...(e.clipboardData&&e.clipboardData.items||[])].filter(i=>i.kind==='file'&&i.type.startsWith('image/'));
@@ -4480,6 +4481,36 @@ function shareDemo({blob,name,title,agent,phone}){
   ta.oninput=upd; upd();
   m.querySelector('#sdCopy').onclick=async()=>{ const t=ta.value; if(/\[PASTE YOUR LINK HERE\]/.test(t)) toast('Reminder: paste your video link where it says [PASTE YOUR LINK HERE]'); (await copyText(t))?toast('✅ Message copied'):showCopyBox(t); };
   setTimeout(()=>m.querySelector('#sdClose').focus(),50);
+}
+/* ---------- 🔗 Add photos from a listing link ---------- */
+function openListingLink(){
+  const m=document.createElement('div'); m.className='modal'; m.setAttribute('role','dialog'); m.setAttribute('aria-label','Add photos from a listing link');
+  m.innerHTML=`<div class="card pop helpcard"><div class="top"><h2 style="margin:0">🔗 Add photos from a listing link</h2><button class="xbtn" id="llClose">✕ Close</button></div>
+    <label class="fld" style="margin-top:8px"><span>1. Paste the listing link (Zillow, Redfin, Realtor.com, Compass, your MLS…)</span><input id="llUrl" type="url" placeholder="https://www.zillow.com/homedetails/…" style="width:100%"></label>
+    <div class="actions"><button class="btn" id="llOpen" disabled>↗️ Open the listing in a new tab</button><span class="muted" id="llSite" style="align-self:center;font-size:13px"></span></div>
+    <p class="muted" style="font-size:13px;margin:6px 0 0">Websites don’t let other apps pull their photos automatically, so pick one of these easy ways to bring them in:</p>
+    <div class="sdopt"><h3>⚡ Way 1 — Copy &amp; paste (easiest, a few photos)</h3><ol class="helpsteps" style="margin:4px 0">
+      <li>In the listing tab, open the photos and click the one you want so it shows large.</li>
+      <li><b>Right-click</b> the photo → click <b>Copy image</b>.</li>
+      <li>Come back to this Studio tab and press <b>Ctrl + V</b> (hold Ctrl, tap V). The photo is added. 🎉</li>
+      <li>Repeat for each photo. Then name each one in <b>🏷️ Name your photos</b>.</li></ol></div>
+    <div class="sdopt"><h3>📦 Way 2 — Your own listing: all photos at once (best quality)</h3><ol class="helpsteps" style="margin:4px 0">
+      <li>Sign in to your MLS (or ask your photographer for the photo link).</li>
+      <li>Open the listing and click <b>Download photos</b> / <b>Download all</b> — you’ll get a <b>.ZIP</b> file.</li>
+      <li>Drag that ZIP file straight onto the 📷 box in Step 1 (or click it and choose the ZIP). Every photo is added in order.</li></ol></div>
+    <div class="sdopt"><h3>🧩 Way 3 — Save many from the web page</h3><ol class="helpsteps" style="margin:4px 0">
+      <li>In Chrome, add a free “image downloader” extension: <a href="https://chromewebstore.google.com/search/image%20downloader" target="_blank" rel="noopener">open the Chrome Web Store ↗</a> → pick one with good reviews → <b>Add to Chrome</b>.</li>
+      <li>On the listing’s photo page, click the extension’s icon (top right of Chrome), tick the large house photos, and click <b>Download</b>.</li>
+      <li>Open your <b>Downloads</b> folder, select the photos (click one, then press <b>Ctrl + A</b>), and drag them onto the 📷 box.</li></ol></div>
+    <p class="muted" style="font-size:12.5px;margin:8px 0 0">⚖️ Only use photos you have permission to use — usually your own listings. Listing photos belong to the photographer or listing brokerage, and MLS rules often limit reuse. Ask first when it isn’t your listing.</p>
+  </div>`;
+  document.body.appendChild(m);
+  const close=()=>m.remove(); m.querySelector('#llClose').onclick=close; m.onclick=e=>{ if(e.target===m) close(); }; m.addEventListener('keydown',e=>{ if(e.key==='Escape') close(); });
+  const u=m.querySelector('#llUrl'), o=m.querySelector('#llOpen'), si=m.querySelector('#llSite');
+  const SITES=[[/zillow\./i,'Zillow — click the big photo to open the gallery, then right-click each photo.'],[/redfin\./i,'Redfin — click “See all photos”, then right-click each photo.'],[/realtor\.com/i,'Realtor.com — click the main photo to open the gallery.'],[/compass\.com/i,'Compass — click the main photo to open the gallery.'],[/trulia\./i,'Trulia — click the main photo to open the gallery.'],[/homes\.com/i,'Homes.com — click the main photo to open the gallery.']];
+  u.oninput=()=>{ const v=u.value.trim(), ok=/^https?:\/\/\S+\.\S+/i.test(v); o.disabled=!ok; const hit=SITES.find(x=>x[0].test(v)); si.textContent=ok?(hit?'✅ '+hit[1]:'✅ Link looks good'):(v?'⚠️ Paste the full link starting with https://':''); };
+  o.onclick=()=>{ const v=u.value.trim(); window.open(v,'_blank','noopener'); toast('📋 Right-click a photo → Copy image, then come back here and press Ctrl + V'); };
+  setTimeout(()=>u.focus(),50);
 }
 function openStudioHelp(){
   const S={
