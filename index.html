@@ -408,7 +408,8 @@
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .pjgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
   .pjcard{display:flex;gap:10px;padding:10px;border-radius:14px;border:2px solid var(--line);background:var(--card)}
-  button.btn,button.xbtn,.modal .btn{font-family:inherit}.namebox .xbtn{font-family:inherit}.nmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}.nmcard{border:1px solid var(--line,#ddd);border-radius:12px;padding:8px;background:var(--card,#fff)}.nmcard.sel{border:2px solid var(--accent,#2f6fed)}.nmimg{display:block;position:relative;width:100%;padding:0;border:0;background:#000;border-radius:8px;overflow:hidden;cursor:pointer}.nmimg img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}.nmimg .pcn{position:absolute;top:6px;left:6px}.nmcard select,.nmcard input{width:100%}.nmfile{font-size:11.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  button.btn,button.xbtn,.modal .btn{font-family:inherit}.namebox .xbtn{font-family:inherit}.tourbox{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;margin-top:10px;padding:8px 10px;border-radius:10px;background:var(--bg);border:1px dashed var(--line,#ccc)}.tourtog{display:flex;gap:6px;align-items:center;cursor:pointer}.tourtog input{width:18px;height:18px}
+  .nmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}.nmcard{border:1px solid var(--line,#ddd);border-radius:12px;padding:8px;background:var(--card,#fff)}.nmcard.sel{border:2px solid var(--accent,#2f6fed)}.nmimg{display:block;position:relative;width:100%;padding:0;border:0;background:#000;border-radius:8px;overflow:hidden;cursor:pointer}.nmimg img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}.nmimg .pcn{position:absolute;top:6px;left:6px}.nmcard select,.nmcard input{width:100%}.nmfile{font-size:11.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .ptext-box{margin-top:10px;border:2px solid var(--accent,#2f6fed);border-radius:12px;padding:10px 12px;background:var(--card,#fff)}.ptext-box textarea{width:100%;font:inherit;font-size:16px;padding:10px;border-radius:10px;border:1px solid var(--line,#ccc);margin-top:6px;resize:vertical;background:var(--bg);color:inherit}.ptchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.ptchips .xbtn{font-size:12.5px;padding:4px 9px}
   .vtools{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:10px 0 4px}.vtg{border:1px solid var(--line,#ddd);border-radius:12px;padding:8px 10px;background:var(--bg)}.vtl{display:block;font-weight:700;font-size:13px;margin-bottom:6px}.vtb{display:flex;flex-wrap:wrap;gap:6px}.vtb .btn{font-family:inherit;padding:8px 12px;font-size:14px}#ptime{display:block;font-size:12.5px;margin-top:4px}
   .sdopt .btn,.sdopt .xbtn{font-family:inherit}.sdopt{border:1px solid var(--line,#ddd);border-radius:12px;padding:10px 12px;margin:10px 0}.sdopt h3{margin:0 0 4px;font-size:16px}.sdopt p{margin:4px 0 8px;font-size:14px}
@@ -1668,6 +1669,13 @@ const ROOMS = {
 };
 function effMv(p){ return (p.mv&&p.mv!=='default')?p.mv:(ST.motion==='auto'?ROOM_MV[p.room]:ST.motion==='presets'?ROOM_PRESET[p.room]:ST.motion); }
 const ROOM_ORDER = Object.keys(ROOMS);
+/* The order a buyer walks the home — used to arrange clips for a seamless tour */
+const TOUR_ORDER=['aerial','front','entry','hallway','living','open','family','dining','kitchen','office','primary','closet','bath','bedroom','guest','kids','theater','gym','laundry','other','garage','balcony','backyard','pool','view','amenity','twilight'];
+function tourRank(r){ const i=TOUR_ORDER.indexOf(r); return i<0?TOUR_ORDER.length:i; }
+function tourSort(){ const P=ST.photos, cur=P[PE.sel]; const before=P.map(x=>x.id).join(); P.sort((a,b)=>tourRank(a.room)-tourRank(b.room)); if(cur) PE.sel=Math.max(0,P.indexOf(cur)); return before!==P.map(x=>x.id).join(); }
+function tourAuto(){ return ST.autoOrder!==false; }
+function manualMoved(){ if(tourAuto()){ ST.autoOrder=false; toast('↕️ You moved a clip yourself, so automatic tour order is now off. Turn it back on in 🏷️ Name your photos.'); } }
+function asIndUpdate(){ const e=document.getElementById('asInd'); if(e&&PJ.savedAt) e.textContent='✅ Auto-saved '+new Date(PJ.savedAt).toLocaleTimeString([], {hour:'numeric',minute:'2-digit',second:'2-digit'}); }
 const ROOM_WORDS = {family:['family room','den'],hallway:['hall','stair'],guest:['guest'],kids:['kid','nursery','child'],closet:['closet','wardrobe'],laundry:['laundry','utility'],gym:['gym','fitness'],theater:['theater','theatre','media'],garage:['garage'],balcony:['balcony','terrace'],amenity:['amenit','clubhouse','community','lobby'],aerial:['aerial','drone','overhead'],front:['front','exterior','facade','outside','curb'],entry:['entry','foyer','hall','door'],open:['open','plan','great room'],living:['living','family','lounge','great'],kitchen:['kitchen','island'],dining:['dining'],office:['office','study','den','bonus'],primary:['primary','master','suite'],bedroom:['bed'],bath:['bath','shower','tub','powder'],backyard:['back','yard','patio','deck','garden'],pool:['pool','spa'],view:['view','ocean','city','lake'],twilight:['twilight','dusk','night','evening']};
 const LOOKS = {
   warm:{n:'Warm & dramatic luxury', grade:'Warm golden-hour glow, soft contrast, rich creamy highlights, gentle film-like softness', tone:'Warm, dramatic and inviting luxury — like a high-end movie trailer', fx:'rgba(255,150,60,0.30)'},
@@ -2022,11 +2030,11 @@ async function projSaveNow(){
   if(!p){ p={id:'p'+Date.now().toString(36),name:ST.area||('Untitled home · '+new Date().toLocaleDateString()),autoName:!ST.area,created:Date.now()}; PROJ.unshift(p); ST.projId=p.id; }
   p.settings=lookSnapshot(); p.lookId=ST.lookId||null; p.text=Object.fromEntries(PJ_TEXT.map(k=>[k,ST[k]||'']));
   p.audio=ST.audio?{...ST.audio,start:ST.audioStart||0,on:SND.src==='file'}:null; p.musicVol=ST.musicVol;
-  p.photos=ST.photos.map(x=>({id:x.id,len:x.len||0,cap:x.cap||'',label:x.label||'',capPos:x.capPos||'',capSize:x.capSize||'',capStyle:x.capStyle||'',name:x.name,room:x.room,mv:x.mv||'',assetId:x.assetId||'',assetUrl:x.assetUrl||''}));
+  p.autoOrder=ST.autoOrder!==false; p.photos=ST.photos.map(x=>({id:x.id,len:x.len||0,cap:x.cap||'',label:x.label||'',capPos:x.capPos||'',capSize:x.capSize||'',capStyle:x.capStyle||'',name:x.name,room:x.room,mv:x.mv||'',assetId:x.assetId||'',assetUrl:x.assetUrl||''}));
   if(PJ.plan) p.plan=PJ.plan; p.updated=Date.now();
   if(p.autoName&&ST.area){ p.name=ST.area; }
   const first=ST.photos[0]; if(first&&p.thumbId!==first.id){ p.thumb=await thumbOf(first); p.thumbId=first.id; } if(!first){ p.thumb=''; p.thumbId=''; }
-  saveProjList(); PJ.savedAt=Date.now(); drawProjBar(); if(!document.activeElement||document.activeElement.id!=='sbName') drawSaveBar(); projUpload(p);
+  saveProjList(); PJ.savedAt=Date.now(); drawProjBar(); asIndUpdate(); if(!document.activeElement||document.activeElement.id!=='sbName') drawSaveBar(); projUpload(p);
 }
 async function projUpload(p){
   if(PJ.uploading) return; const a=await getAssets(); if(!a) return; PJ.uploading=true;
@@ -2048,7 +2056,7 @@ function drawSaveBar(){
   const nm=()=>(b.querySelector('#sbName').value||'').trim();
   b.querySelector('#sbSave').onclick=async()=>{ const want=nm(), bt=b.querySelector('#sbSave'); bt.disabled=true; bt.textContent='⏳ Saving…';
     await projSaveNow(); const q=projCur(); if(q&&want){ q.name=want; q.autoName=false; } if(q){ q.updated=Date.now(); saveProjList(); }
-    PJ.sig=projSig(); PJ.savedAt=Date.now(); drawProjBar(); drawSaveBar(); toast('✅ Saved “'+(q?q.name:'project')+'” — find it in 💾 My Files → 📁 Projects'); };
+    PJ.sig=projSig(); PJ.savedAt=Date.now(); drawProjBar(); drawSaveBar(); asIndUpdate(); toast('✅ Saved “'+(q?q.name:'project')+'” — find it in 💾 My Files → 📁 Projects'); };
   b.querySelector('#sbCopy').onclick=async()=>{ const want=nm(); await projSaveNow(); const cur=projCur(); if(!cur) return;
     const c=JSON.parse(JSON.stringify(cur)); c.id='p'+Date.now().toString(36); c.autoName=false; c.created=c.updated=Date.now();
     c.name=want&&want!==cur.name?want:cur.name+' · saved '+new Date().toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
@@ -2075,7 +2083,7 @@ async function projOpen(id){
   const S=p.settings||{}; LOOK_KEYS.forEach(k=>{ if(S.s&&S.s[k]!=null) ST[k]=S.s[k]; }); if(S.keep) Object.assign(ST.keep,S.keep); ST.style=S.style||'';
   Object.keys(PRESETS).forEach(k=>PRESETS[k].t=(S.presets&&S.presets[k])||PRESET_ORIG[k]);
   PJ_TEXT.forEach(k=>ST[k]=(p.text&&p.text[k])||''); ST.lookId=p.lookId||null; ST.musicVol=p.musicVol??70; sndClearFile(); if(p.audio){ ST.audio={id:p.audio.id,name:p.audio.name,size:p.audio.size,dur:p.audio.dur}; ST.audioStart=p.audio.start||0; if(p.audio.on) await sndRestoreFile(); if(!p.audio.on) SND.src='synth'; }
-  ST.photos.forEach(x=>{ try{ URL.revokeObjectURL(x.url); }catch(e){} }); ST.photos=[]; let missing=0;
+  ST.photos.forEach(x=>{ try{ URL.revokeObjectURL(x.url); }catch(e){} }); ST.photos=[]; ST.autoOrder=p.autoOrder!==false; let missing=0;
   for(const ph of (p.photos||[])){
     let blob=await idbGet(ph.id);
     if(!blob&&ph.assetUrl){ try{ const r=await fetch(ph.assetUrl); if(r.ok){ const bl=await r.blob(); if(bl&&bl.size){ blob=bl; idbPut(ph.id,blob); } } }catch(e){} }
@@ -2085,7 +2093,7 @@ async function projOpen(id){
   }
   ST.projId=id; PJ.plan=p.plan||''; PJ.sig=projSig(); PJ.savedAt=p.updated;
   location.hash='#studio'; studioView();
-  if(ST.photos.length>=2) setTimeout(()=>{ try{ makePlan(); }catch(e){} setTimeout(()=>{ const ed=document.getElementById('pedit'); if(ed&&ed.innerHTML){ (document.getElementById('prev')||ed).scrollIntoView({behavior:'smooth',block:'start'}); toast('✏️ Opened in the editor — change the text, order, timing or music below the preview'); } },500); },300);
+  if(ST.photos.length>=2) setTimeout(async()=>{ try{ await removeDupPhotos(true); }catch(e){} try{ makePlan(); }catch(e){} setTimeout(()=>{ const ed=document.getElementById('pedit'); if(ed&&ed.innerHTML){ (document.getElementById('prev')||ed).scrollIntoView({behavior:'smooth',block:'start'}); toast('✏️ Opened in the editor — change the text, order, timing or music below the preview'); } },500); },300);
   if(missing) toast(`⚠️ ${missing} photo${missing>1?'s':''} couldn’t be found on this device — add ${missing>1?'them':'it'} again`);
 }
 function projCardsHTML(){
@@ -2125,12 +2133,28 @@ async function projDownload(id){
   const blob=await z.generateAsync({type:'blob'}); await mfSave(base+'.zip',blob);
 }
 
-function addImageFile(f){ const url=URL.createObjectURL(f); const img=new Image(); img.src=url; const id=phId(); idbPut(id,f); ST.photos.push({id,url,img,name:f.name||('photo-'+(ST.photos.length+1)+'.jpg'),room:guessRoom(f.name||'',ST.photos.length)}); }
+/* ---- Duplicate finder: compares what the picture LOOKS like, not the file name ---- */
+async function imgHash(src){ // tiny 16×16 grayscale fingerprint + shape — the same picture matches even if renamed, resized or re-saved
+  try{ const bm=src instanceof Blob?await createImageBitmap(src):src; const c=document.createElement('canvas'); c.width=16; c.height=16; const x=c.getContext('2d',{willReadFrequently:true}); x.imageSmoothingQuality='high'; x.drawImage(bm,0,0,16,16);
+    const d=x.getImageData(0,0,16,16).data, g=new Array(256); let m=0; for(let i=0;i<256;i++){ g[i]=d[i*4]*.299+d[i*4+1]*.587+d[i*4+2]*.114; m+=g[i]; } m/=256;
+    const w=(src instanceof Blob)?bm.width:(src.naturalWidth||src.width), h=(src instanceof Blob)?bm.height:(src.naturalHeight||src.height);
+    return {g:g.map(v=>v-m),m,ar:w/h}; }catch(e){ return null; } }
+function sameImg(a,b){ if(!a||!b||!a.g||!b.g) return false; if(Math.abs(a.ar-b.ar)>0.04||Math.abs(a.m-b.m)>12) return false;
+  let t=0; for(let i=0;i<256;i++) t+=Math.abs(a.g[i]-b.g[i]); return t/256<5; }
+async function addImageFile(f){ const hash=await imgHash(f);
+  if(hash&&ST.photos.some(x=>sameImg(x.hash,hash))) return false;
+  const url=URL.createObjectURL(f); const img=new Image(); img.src=url; const id=phId(); idbPut(id,f); ST.photos.push({id,url,img,hash,name:f.name||('photo-'+(ST.photos.length+1)+'.jpg'),room:guessRoom(f.name||'',ST.photos.length)}); return true; }
+async function removeDupPhotos(quiet){ const P=ST.photos; for(const x of P){ if(!x.hash){ if(!x.img.complete) await new Promise(r=>{ x.img.onload=r; x.img.onerror=r; setTimeout(r,3000); }); x.hash=await imgHash(x.img); } }
+  const keep=[], gone=[]; P.forEach(x=>{ (keep.some(k=>sameImg(k.hash,x.hash))?gone:keep).push(x); });
+  if(!gone.length){ if(!quiet) toast('✅ No duplicate photos found'); return 0; }
+  gone.forEach(x=>{ try{ URL.revokeObjectURL(x.url); }catch(e){} }); ST.photos=keep; PE.sel=Math.min(PE.sel||0,keep.length-1);
+  toast(`🧹 Removed ${gone.length} duplicate photo${gone.length>1?'s':''} (same picture, even with a different name)`);
+  renderThumbs(); if(document.getElementById('pedit')&&document.getElementById('pedit').innerHTML){ peMark(); drawEditor(); } return gone.length; }
 let _jszipP=null;
 function loadJSZip(){ if(window.JSZip) return Promise.resolve(window.JSZip); if(_jszipP) return _jszipP;
   _jszipP=new Promise((res,rej)=>{ const s=document.createElement('script'); s.src='jszip.min.js'; s.onload=()=>res(window.JSZip); s.onerror=()=>{ _jszipP=null; rej(); }; document.head.appendChild(s); }); return _jszipP; }
 async function addFiles(list){
-  const files=[...list]; let added=0, skipped=0;
+  const files=[...list]; let added=0, skipped=0, dups=0; if(files.length>1) toast('⏳ Adding '+files.length+' photos and checking for duplicates…');
   for(const f of files){
     const isZip=/\.zip$/i.test(f.name)||/zip/.test(f.type);
     if(isZip){
@@ -2138,15 +2162,16 @@ async function addFiles(list){
       try{ const JSZip=await loadJSZip(); const zip=await JSZip.loadAsync(f);
         const entries=Object.values(zip.files).filter(e=>!e.dir&&/\.(jpe?g|png|webp|gif)$/i.test(e.name)&&!/(^|\/)(__MACOSX|\.)/.test(e.name)).sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));
         for(const e of entries){ const blob=await e.async('blob'); const ext=e.name.split('.').pop().toLowerCase(); const type=ext==='png'?'image/png':ext==='webp'?'image/webp':ext==='gif'?'image/gif':'image/jpeg';
-          addImageFile(new File([blob],e.name.split('/').pop(),{type})); added++; }
+          if(await addImageFile(new File([blob],e.name.split('/').pop(),{type}))) added++; else dups++; }
         if(!entries.length) toast('⚠️ No JPG or PNG photos were found in that ZIP');
       }catch(err){ toast('⚠️ Couldn’t open that ZIP. Unzip it first (right-click → Extract All), then drag the photos in.'); }
     } else if(f.type.startsWith('image/')){
       if(/heic|heif/i.test(f.type)||/\.hei[cf]$/i.test(f.name)){ skipped++; continue; }
-      addImageFile(f); added++;
+      if(await addImageFile(f)) added++; else dups++;
     }
   }
   if(skipped) toast(`⚠️ ${skipped} iPhone HEIC photo${skipped>1?'s':''} skipped — save them as JPG first`);
+  else if(dups) toast(`✅ Added ${added} photo${added===1?'':'s'} · 🧹 skipped ${dups} duplicate${dups>1?'s':''} (same picture, even with a different name)`);
   else if(added>1) toast(`✅ Added ${added} photos`);
   renderThumbs();
 }
@@ -2185,10 +2210,10 @@ function renderThumbs(){
     <p class="muted" style="font-size:13px;margin-top:8px">Tip: start with an aerial or front exterior, walk through the inside, go out to the yard/pool, and finish on a twilight exterior.</p>`;
   t.querySelectorAll('[data-view]').forEach(im=>im.onclick=()=>viewPhoto(+im.dataset.view));
   if(fresh.size){ const last=t.querySelector('.th.fresh:last-of-type')||t.querySelector('.th.fresh'); const f=$('#folder'); if(f){ f.classList.add('pulse'); setTimeout(()=>f.classList.remove('pulse'),900); } if(last&&last.scrollIntoView) last.scrollIntoView({behavior:'smooth',block:'nearest'}); }
-  t.querySelectorAll('.roomsel[data-i]').forEach(s=>s.onchange=()=>{ST.photos[+s.dataset.i].room=s.value; renderThumbs();});
+  t.querySelectorAll('.roomsel[data-i]').forEach(s=>s.onchange=()=>{ST.photos[+s.dataset.i].room=s.value; const moved=tourAuto()&&tourSort(); renderThumbs(); if(moved){ toast('🎬 Moved into tour order'); if(document.getElementById('pedit')&&document.getElementById('pedit').innerHTML){ peMark(); drawEditor(); } } });
   t.querySelectorAll('[data-pm]').forEach(s=>s.onchange=()=>{ST.photos[+s.dataset.pm].mv=s.value;});
   t.querySelectorAll('[data-cap]').forEach(c=>c.oninput=()=>{ ST.photos[+c.dataset.cap].cap=c.value; });
-  t.querySelectorAll('[data-mv]').forEach(b=>b.onclick=()=>{const i=+b.dataset.mv,j=i+ +b.dataset.d; if(j<0||j>=ST.photos.length) return; [ST.photos[i],ST.photos[j]]=[ST.photos[j],ST.photos[i]]; renderThumbs();});
+  t.querySelectorAll('[data-mv]').forEach(b=>b.onclick=()=>{const i=+b.dataset.mv,j=i+ +b.dataset.d; if(j<0||j>=ST.photos.length) return; manualMoved(); [ST.photos[i],ST.photos[j]]=[ST.photos[j],ST.photos[i]]; renderThumbs();});
   t.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{ST.photos.splice(+b.dataset.rm,1); renderThumbs();});
   $('#smart').onclick=()=>{ ST.photos.sort((a,b)=>ROOM_ORDER.indexOf(a.room)-ROOM_ORDER.indexOf(b.room)); renderThumbs(); toast('✨ Sorted into a natural tour order'); };
   $('#clearall').onclick=()=>{ ST.photos=[]; renderThumbs(); $('#studioOut').innerHTML=''; };
@@ -2278,7 +2303,7 @@ ${allText}`;
       <div class="vtools" role="toolbar" aria-label="Video tools">
         <div class="vtg"><span class="vtl">1 · Watch</span><div class="vtb"><button class="btn" id="pp">⏸ Pause</button><button class="btn ghost" id="rs">⟲ Restart</button><button class="btn ghost" id="pmute">${SND.mute?'🔇 Sound off':'🔊 Sound on'}</button></div><span class="muted" id="ptime"></span></div>
         <div class="vtg"><span class="vtl">2 · Edit</span><div class="vtb"><button class="btn ghost" id="pvEdit">✏️ Edit clips &amp; text</button><button class="btn ghost" id="pvMusic">🎵 Change music</button></div></div>
-        <div class="vtg"><span class="vtl">3 · Save</span><div class="vtb"><button class="btn ghost" id="pvSave">💾 Save project</button><button class="btn ghost" id="pvCopy">📄 Save a copy</button></div></div>
+        <div class="vtg"><span class="vtl">3 · Save</span><div class="vtb"><button class="btn ghost" id="pvSave">💾 Save project</button><button class="btn ghost" id="pvCopy">📄 Save a copy</button></div><span class="muted" id="asInd" role="status" style="display:block;font-size:12.5px;margin-top:4px">🔄 Auto-save is on — every change is saved for you</span></div>
         <div class="vtg"><span class="vtl">4 · Finish &amp; send</span><div class="vtb"><button class="btn" id="pxp">⬇️ Download video</button><button class="btn ghost" id="pvShare">📤 Send a demo</button></div></div>
       </div><div id="pxpDone"></div><p class="muted" style="font-size:12.5px;margin:4px 0 0">🎵 Playing: ${ST.audio&&SND.src==='file'?esc(ST.audio.name):esc(SOUNDTRACKS.find(t=>t.k===ST.music).n)} · The download records this preview slideshow (about the same length) with your soundtrack — great for social posts, or as a music guide when you edit the AI clips.</p>
       <div id="pedit"></div>
@@ -2355,7 +2380,9 @@ function drawEditor(){
         <label class="fld" style="margin:6px 0 0"><span>Photo ${i+1} is the…</span><select data-nmroom="${i}">${ROOM_ORDER.map(k=>`<option value="${k}" ${x.room===k?'selected':''}>${ROOMS[k].n}</option>`).join('')}</select></label>
         <label class="fld" style="margin:6px 0 0"><span>Your name (optional)</span><input data-nmlabel="${i}" maxlength="40" value="${esc(x.label||'')}" placeholder="${esc(ROOMS[x.room].n)}"></label>
         ${x.name?`<div class="muted nmfile" title="${esc(x.name)}">📄 ${esc(x.name)}</div>`:''}</div>`).join('')}</div>
-      <div class="actions" style="margin-top:8px"><button class="xbtn" id="nmSort">↕️ Put photos in tour order (outside → inside → backyard)</button></div>
+      <div class="tourbox"><label class="tourtog"><input type="checkbox" id="nmAuto" ${tourAuto()?'checked':''}> <b>🎬 Keep photos in tour order automatically</b></label>
+        <span class="muted" style="font-size:12.5px">${tourAuto()?'On — as you label each photo it moves to its spot: outside → entry → living → kitchen → bedrooms → baths → backyard → finale.':'Off — you’re arranging clips yourself with ◀ ▶.'}</span>
+        <button class="xbtn" id="nmSort">↕️ Sort into tour order now</button><button class="xbtn" id="nmDup">🧹 Remove duplicate photos</button></div>
     </details>
     <div class="ptl" role="list" aria-label="Clips in your video">${P.map((x,i)=>`<div class="pclipw" role="listitem"><button class="pclip ${i===PE.sel?'sel':''}" data-pc="${i}" aria-pressed="${i===PE.sel}"><img src="${x.url}" alt=""><span class="pcn">${i+1}</span><span class="pcl">${esc(x.label||ROOMS[x.room].n)}</span><span class="pcs">${clipLen(x)}s${x.cap?' · ✏️':''}</span></button>
       <div class="pcb"><button class="xbtn" data-pmv="${i}" data-d="-1" aria-label="Move clip ${i+1} earlier" ${i===0?'disabled':''}>◀</button><button class="xbtn" data-pmv="${i}" data-d="1" aria-label="Move clip ${i+1} later" ${i===N-1?'disabled':''}>▶</button></div></div>`).join('')}</div>
@@ -2390,8 +2417,8 @@ function drawEditor(){
   const q=s=>host.querySelector(s), qa=s=>host.querySelectorAll(s);
   const keepT=()=>{ const t=PREV?PREV.now():0; return t; };
   qa('[data-pc]').forEach(b=>b.onclick=()=>{ PE.sel=+b.dataset.pc; drawEditor(); peSeekClip(PE.sel); host.querySelector(`[data-pc="${PE.sel}"]`).focus(); });
-  qa('[data-pmv]').forEach(b=>b.onclick=()=>{ const i=+b.dataset.pmv, j=i+ +b.dataset.d; if(j<0||j>=N) return; [P[i],P[j]]=[P[j],P[i]]; PE.sel=j; peMark(); drawEditor(); peSeekClip(j); const nb=host.querySelector(`[data-pmv="${j}"][data-d="${b.dataset.d}"]`); (nb&&!nb.disabled?nb:host.querySelector(`[data-pc="${j}"]`)).focus(); });
-  qa('[data-pc1]').forEach(el=>{ const k=el.dataset.pc1; const fn=()=>{ const v=el.value; if(k==='len') p.len=+v||undefined; else if(k==='mv') p.mv=v; else p[k]=v; peMark(); if(k!=='cap') { drawEditor(); peSeekClip(PE.sel); const f=host.querySelector(`[data-pc1="${k}"]`); f&&f.focus(); } else { const c=host.querySelector(`[data-pc="${PE.sel}"] .pcs`); if(c) c.textContent=`${clipLen(p)}s${p.cap?' · ✏️':''}`; } };
+  qa('[data-pmv]').forEach(b=>b.onclick=()=>{ const i=+b.dataset.pmv, j=i+ +b.dataset.d; if(j<0||j>=N) return; manualMoved(); [P[i],P[j]]=[P[j],P[i]]; PE.sel=j; peMark(); drawEditor(); peSeekClip(j); const nb=host.querySelector(`[data-pmv="${j}"][data-d="${b.dataset.d}"]`); (nb&&!nb.disabled?nb:host.querySelector(`[data-pc="${j}"]`)).focus(); });
+  qa('[data-pc1]').forEach(el=>{ const k=el.dataset.pc1; const fn=()=>{ const v=el.value; if(k==='len') p.len=+v||undefined; else if(k==='mv') p.mv=v; else p[k]=v; if(k==='room'&&tourAuto()&&tourSort()){ peMark(); typeof renderThumbs==='function'&&renderThumbs(); drawEditor(); peSeekClip(PE.sel); toast('🏷️ Moved to clip '+(PE.sel+1)+' in the tour'); return; } peMark(); if(k!=='cap') { drawEditor(); peSeekClip(PE.sel); const f=host.querySelector(`[data-pc1="${k}"]`); f&&f.focus(); } else { const c=host.querySelector(`[data-pc="${PE.sel}"] .pcs`); if(c) c.textContent=`${clipLen(p)}s${p.cap?' · ✏️':''}`; } };
     if(el.tagName==='INPUT'||el.tagName==='TEXTAREA'){ el.oninput=fn; } else el.onchange=fn; });
   qa('[data-pg]').forEach(el=>el.onchange=()=>{ const k=el.dataset.pg; ST[k]=(k==='len'||k==='amount')?+el.value:el.value; if(k==='music'){ SND.src='synth'; if(PREV&&PREV.playing&&!SND.mute) sndStart(ST.music); const sb=document.getElementById('sndBox'); if(sb){ sb.innerHTML=soundtrackHTML(); bindSoundtrack(); } } peMark(); drawEditor(); });
   qa('[data-pgv]').forEach(el=>el.oninput=()=>{ ST.musicVol=+el.value; q('#peVol').textContent=ST.musicVol+'%'; sndVol(); const s=document.getElementById('sndVol'); if(s){ s.value=ST.musicVol; const v=document.getElementById('sndVolV'); if(v) v.textContent=ST.musicVol+'%'; } });
@@ -2399,9 +2426,12 @@ function drawEditor(){
   q('#pePlay').onclick=()=>peSeekClip(PE.sel);
   const nb=q('#peNames'); if(nb) nb.ontoggle=()=>{ PE.nameOpen=nb.open; };
   qa('[data-nmsel]').forEach(b=>b.onclick=()=>{ PE.sel=+b.dataset.nmsel; drawEditor(); peSeekClip(PE.sel); });
-  qa('[data-nmroom]').forEach(el=>el.onchange=()=>{ const i=+el.dataset.nmroom; P[i].room=el.value; peMark(); typeof renderThumbs==='function'&&renderThumbs(); drawEditor(); const f=host.querySelector(`[data-nmroom="${i}"]`); f&&f.focus(); toast('🏷️ Photo '+(i+1)+' = '+ROOMS[el.value].n); });
+  qa('[data-nmroom]').forEach(el=>el.onchange=()=>{ const i=+el.dataset.nmroom, ph=P[i]; ph.room=el.value; let moved=false; if(tourAuto()) moved=tourSort(); const ni=P.indexOf(ph); if(moved) PE.sel=ni; peMark(); typeof renderThumbs==='function'&&renderThumbs(); drawEditor(); if(moved) peSeekClip(ni);
+    const f=host.querySelector(`[data-nmroom="${ni}"]`); f&&f.focus(); toast('🏷️ '+ROOMS[el.value].n+(moved?' — moved to clip '+(ni+1)+' in the tour':'')); });
+  if(q('#nmAuto')) q('#nmAuto').onchange=e=>{ ST.autoOrder=e.target.checked; if(ST.autoOrder&&tourSort()){ toast('🎬 Photos arranged in tour order'); } peMark(); typeof renderThumbs==='function'&&renderThumbs(); drawEditor(); peSeekClip(PE.sel); const t=host.querySelector('#nmAuto'); t&&t.focus(); };
   qa('[data-nmlabel]').forEach(el=>el.oninput=()=>{ const i=+el.dataset.nmlabel; P[i].label=el.value.trim(); peMark(); const c=host.querySelector(`[data-pc="${i}"] .pcl`); if(c) c.textContent=P[i].label||ROOMS[P[i].room].n; });
-  if(q('#nmSort')) q('#nmSort').onclick=()=>{ const cur=P[PE.sel]; P.sort((a,b)=>ROOM_ORDER.indexOf(a.room)-ROOM_ORDER.indexOf(b.room)); PE.sel=Math.max(0,P.indexOf(cur)); peMark(); typeof renderThumbs==='function'&&renderThumbs(); drawEditor(); peSeekClip(PE.sel); toast('↕️ Photos sorted in tour order'); };
+  if(q('#nmDup')) q('#nmDup').onclick=()=>removeDupPhotos(false);
+  if(q('#nmSort')) q('#nmSort').onclick=()=>{ tourSort(); peMark(); typeof renderThumbs==='function'&&renderThumbs(); drawEditor(); peSeekClip(PE.sel); toast('↕️ Photos sorted in tour order'); };
   qa('[data-capq]').forEach(b=>b.onclick=()=>{ p.cap=b.dataset.capq; peMark(); drawEditor(); peSeekClip(PE.sel); const t=host.querySelector('textarea[data-pc1=cap]'); t&&t.focus(); });
   q('#peDup').onclick=()=>{ const c={...p,id:phId(),seen:true}; idbGet(p.id).then(b=>{ if(b) idbPut(c.id,b); }); P.splice(PE.sel+1,0,c); PE.sel++; peMark(); drawEditor(); peSeekClip(PE.sel); toast('📄 Clip duplicated — try a different camera move or text on it'); };
   q('#peRm').onclick=()=>{ if(N<=2) return; P.splice(PE.sel,1); PE.sel=Math.max(0,PE.sel-1); peMark(); drawEditor(); peSeekClip(PE.sel); toast('🗑️ Clip removed'); };
