@@ -148,7 +148,7 @@
   .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:12px}
   .dow{text-align:center;font-size:12px;font-weight:600;color:var(--muted);padding:4px 0}
   .day{font:inherit;aspect-ratio:1/1;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:4px 2px;gap:2px;position:relative;min-height:44px}
-  .day.out{opacity:1;background:var(--bg)}.day.out .dn{color:var(--muted)}.day.today{border-color:var(--A)}.day.today .dn{color:var(--A);font-weight:700}
+  .day.out{opacity:1;background:var(--bg)}.day.out .dn{color:var(--muted)}.day.today{border-color:var(--A)}.day.today .dn{color:#fff;background:#b43b1b;font-weight:700;border-radius:999px;padding:0 6px;display:inline-block}
   .day.sel{background:var(--ink);color:var(--bg);border-color:var(--ink)}
   .day .dn{font-family:Fredoka;font-size:15px}
   .day .dots{display:flex;gap:2px;flex-wrap:wrap;justify-content:center}.day .dots i{width:6px;height:6px;border-radius:50%;display:block}
@@ -408,6 +408,7 @@
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .pjgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
   .pjcard{display:flex;gap:10px;padding:10px;border-radius:14px;border:2px solid var(--line);background:var(--card)}
+  .namebox .xbtn{font-family:inherit}.nmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}.nmcard{border:1px solid var(--line,#ddd);border-radius:12px;padding:8px;background:var(--card,#fff)}.nmcard.sel{border:2px solid var(--accent,#2f6fed)}.nmimg{display:block;position:relative;width:100%;padding:0;border:0;background:#000;border-radius:8px;overflow:hidden;cursor:pointer}.nmimg img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}.nmimg .pcn{position:absolute;top:6px;left:6px}.nmcard select,.nmcard input{width:100%}.nmfile{font-size:11.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .ptext-box{margin-top:10px;border:2px solid var(--accent,#2f6fed);border-radius:12px;padding:10px 12px;background:var(--card,#fff)}.ptext-box textarea{width:100%;font:inherit;font-size:16px;padding:10px;border-radius:10px;border:1px solid var(--line,#ccc);margin-top:6px;resize:vertical;background:var(--bg);color:inherit}.ptchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.ptchips .xbtn{font-size:12.5px;padding:4px 9px}
   .vtools{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:10px 0 4px}.vtg{border:1px solid var(--line,#ddd);border-radius:12px;padding:8px 10px;background:var(--bg)}.vtl{display:block;font-weight:700;font-size:13px;margin-bottom:6px}.vtb{display:flex;flex-wrap:wrap;gap:6px}.vtb .btn{font-family:inherit;padding:8px 12px;font-size:14px}#ptime{display:block;font-size:12.5px;margin-top:4px}
   .sdopt .btn,.sdopt .xbtn{font-family:inherit}.sdopt{border:1px solid var(--line,#ddd);border-radius:12px;padding:10px 12px;margin:10px 0}.sdopt h3{margin:0 0 4px;font-size:16px}.sdopt p{margin:4px 0 8px;font-size:14px}
@@ -1644,10 +1645,21 @@ const ROOMS = {
   kitchen: {n:'Kitchen', cam:'Camera slider', angle:'Eye level, slightly low to show the island', size:'Medium-wide', move:'Slow slide from left to right across the island', anim:'right'},
   open:    {n:'Open-plan living & dining', cam:'Indoor FPV drone or gimbal', angle:'Eye level', size:'Wide', move:'Continuous flowing sweep through the space', anim:'push'},
   dining:  {n:'Dining room', cam:'Gimbal', angle:'Eye level', size:'Medium-wide', move:'Slow push-in toward the center of the table', anim:'push'},
+  family:  {n:'Family room / den', cam:'Gimbal with a wide 24mm lens', angle:'Eye level', size:'Wide', move:'Slow lateral glide', anim:'truckR'},
+  hallway: {n:'Hallway / staircase', cam:'Gimbal', angle:'Eye level', size:'Wide', move:'Slow walk-through push-in', anim:'push'},
   office:  {n:'Office / bonus room', cam:'Gimbal', angle:'Eye level', size:'Wide', move:'Slow push-in toward the window', anim:'push'},
   primary: {n:'Primary bedroom', cam:'Gimbal', angle:'Eye level', size:'Wide', move:'Slow push-in toward the bed and windows', anim:'push'},
   bedroom: {n:'Bedroom', cam:'Camera slider', angle:'Eye level', size:'Wide', move:'Gentle slide from left to right', anim:'right'},
+  guest:   {n:'Guest bedroom', cam:'Camera slider', angle:'Eye level', size:'Wide', move:'Gentle lateral slide', anim:'truckR'},
+  kids:    {n:'Kids’ room / nursery', cam:'Camera slider', angle:'Eye level', size:'Wide', move:'Gentle lateral slide', anim:'truckR'},
+  closet:  {n:'Walk-in closet', cam:'Gimbal', angle:'Eye level', size:'Medium', move:'Slow push-in', anim:'push'},
   bath:    {n:'Bathroom', cam:'Gimbal', angle:'Eye level', size:'Medium', move:'Slow push-in toward the vanity and tub', anim:'push'},
+  laundry: {n:'Laundry room', cam:'Gimbal', angle:'Eye level', size:'Medium', move:'Slow push-in', anim:'push'},
+  gym:     {n:'Home gym', cam:'Gimbal', angle:'Eye level', size:'Wide', move:'Slow push-in', anim:'push'},
+  theater: {n:'Media / theater room', cam:'Gimbal', angle:'Eye level', size:'Wide', move:'Slow push-in', anim:'push'},
+  garage:  {n:'Garage', cam:'Gimbal', angle:'Eye level', size:'Wide', move:'Slow push-in', anim:'push'},
+  balcony: {n:'Balcony / deck', cam:'Gimbal', angle:'Eye level', size:'Wide', move:'Slow lateral glide', anim:'truckR'},
+  amenity: {n:'Community / amenities', cam:'Gimbal', angle:'Eye level', size:'Wide', move:'Slow lateral glide', anim:'truckR'},
   other:   {n:'Other room', cam:'Gimbal', angle:'Eye level', size:'Wide', move:'Slow push-in', anim:'push'},
   backyard:{n:'Backyard / patio', cam:'Gimbal', angle:'Eye level', size:'Wide', move:'Slow sideways glide from left to right', anim:'right'},
   pool:    {n:'Pool', cam:'Drone at very low altitude', angle:'Low angle, just above the water', size:'Wide', move:'Slow glide along the edge of the pool from left to right', anim:'right'},
@@ -1656,7 +1668,7 @@ const ROOMS = {
 };
 function effMv(p){ return (p.mv&&p.mv!=='default')?p.mv:(ST.motion==='auto'?ROOM_MV[p.room]:ST.motion==='presets'?ROOM_PRESET[p.room]:ST.motion); }
 const ROOM_ORDER = Object.keys(ROOMS);
-const ROOM_WORDS = {aerial:['aerial','drone','overhead'],front:['front','exterior','facade','outside','curb'],entry:['entry','foyer','hall','door'],open:['open','plan','great room'],living:['living','family','lounge','great'],kitchen:['kitchen','island'],dining:['dining'],office:['office','study','den','bonus'],primary:['primary','master','suite'],bedroom:['bed'],bath:['bath','shower','tub','powder'],backyard:['back','yard','patio','deck','garden'],pool:['pool','spa'],view:['view','ocean','city','lake'],twilight:['twilight','dusk','night','evening']};
+const ROOM_WORDS = {family:['family room','den'],hallway:['hall','stair'],guest:['guest'],kids:['kid','nursery','child'],closet:['closet','wardrobe'],laundry:['laundry','utility'],gym:['gym','fitness'],theater:['theater','theatre','media'],garage:['garage'],balcony:['balcony','terrace'],amenity:['amenit','clubhouse','community','lobby'],aerial:['aerial','drone','overhead'],front:['front','exterior','facade','outside','curb'],entry:['entry','foyer','hall','door'],open:['open','plan','great room'],living:['living','family','lounge','great'],kitchen:['kitchen','island'],dining:['dining'],office:['office','study','den','bonus'],primary:['primary','master','suite'],bedroom:['bed'],bath:['bath','shower','tub','powder'],backyard:['back','yard','patio','deck','garden'],pool:['pool','spa'],view:['view','ocean','city','lake'],twilight:['twilight','dusk','night','evening']};
 const LOOKS = {
   warm:{n:'Warm & dramatic luxury', grade:'Warm golden-hour glow, soft contrast, rich creamy highlights, gentle film-like softness', tone:'Warm, dramatic and inviting luxury — like a high-end movie trailer', fx:'rgba(255,150,60,0.30)'},
   bright:{n:'Bright & airy', grade:'Bright, airy natural daylight, clean whites, soft shadows, true-to-life colors', tone:'Fresh, elegant and welcoming', fx:'rgba(255,255,255,0.10)'},
@@ -1684,8 +1696,8 @@ const PRESETS = {
 };
 Object.entries(PRESETS).forEach(([k,v])=>{ MOTIONS[k]={n:v.n, anim:v.anim, preset:true, p:()=>v.t}; });
 const PRESET_ORIG = Object.fromEntries(Object.entries(PRESETS).map(([k,v])=>[k,v.t]));
-const ROOM_PRESET = {aerial:'pExterior',front:'pExterior',twilight:'pExterior',entry:'pEntry',living:'pLiving',open:'pOpen',dining:'pOpen',office:'pOpen',other:'pOpen',kitchen:'pKitchen',primary:'pBedroom',bedroom:'pBedroom',bath:'pBath',backyard:'pBackyard',pool:'pBackyard',view:'pExterior'};
-const ROOM_MV = {open:'push',aerial:'push',front:'rise',entry:'push',living:'truckR',kitchen:'truckR',dining:'push',office:'push',primary:'push',bedroom:'truckR',bath:'push',other:'push',backyard:'truckR',pool:'truckR',view:'panR',twilight:'pull'};
+const ROOM_PRESET = {family:'pLiving',hallway:'pEntry',guest:'pBedroom',kids:'pBedroom',closet:'pOpen',laundry:'pOpen',gym:'pOpen',theater:'pOpen',garage:'pOpen',balcony:'pBackyard',amenity:'pBackyard',aerial:'pExterior',front:'pExterior',twilight:'pExterior',entry:'pEntry',living:'pLiving',open:'pOpen',dining:'pOpen',office:'pOpen',other:'pOpen',kitchen:'pKitchen',primary:'pBedroom',bedroom:'pBedroom',bath:'pBath',backyard:'pBackyard',pool:'pBackyard',view:'pExterior'};
+const ROOM_MV = {family:'truckR',hallway:'push',guest:'truckR',kids:'truckR',closet:'push',laundry:'push',gym:'push',theater:'push',garage:'push',balcony:'truckR',amenity:'truckR',open:'push',aerial:'push',front:'rise',entry:'push',living:'truckR',kitchen:'truckR',dining:'push',office:'push',primary:'push',bedroom:'truckR',bath:'push',other:'push',backyard:'truckR',pool:'truckR',view:'panR',twilight:'pull'};
 const ENERGY = {
   calm:{n:'Gentle, calm walkthrough energy', s:'gentle, calm walkthrough energy — very slow, steady, constant speed with soft ease-in and ease-out'},
   elegant:{n:'Smooth, elegant gliding energy', s:'smooth, elegant gliding energy — slow, steady and graceful, like a camera on rails'},
@@ -1702,7 +1714,7 @@ const LIGHTS = {
   clouds:{n:'Clouds drifting slowly', p:'clouds drifting slowly across the sky with light changing gently'},
   none:{n:'None — perfectly still lighting', p:null},
 };
-const ROOM_LIGHT = {open:'soft',aerial:'sun',front:'sun',entry:'soft',living:'soft',kitchen:'soft',dining:'glow',office:'soft',primary:'soft',bedroom:'soft',bath:'glow',other:'soft',backyard:'sun',pool:'shimmer',view:'clouds',twilight:'dusk'};
+const ROOM_LIGHT = {family:'soft',hallway:'soft',guest:'soft',kids:'soft',closet:'soft',laundry:'soft',gym:'soft',theater:'glow',garage:'soft',balcony:'sun',amenity:'sun',open:'soft',aerial:'sun',front:'sun',entry:'soft',living:'soft',kitchen:'soft',dining:'glow',office:'soft',primary:'soft',bedroom:'soft',bath:'glow',other:'soft',backyard:'sun',pool:'shimmer',view:'clouds',twilight:'dusk'};
 const KEEP = [
   ['exact','Keep the room exactly as photographed','changed room layout'],
   ['vertical','Keep vertical lines straight','bending or tilted lines, fisheye distortion'],
@@ -2000,7 +2012,7 @@ const PJ={sig:'',timer:null,savedAt:0,plan:'',uploading:false};
 function saveProjList(){ try{ localStorage.setItem('pc_projects',JSON.stringify(PROJ)); }catch(e){ try{ PROJ.forEach(p=>{ if(p!==projCur()) p.thumb=''; }); localStorage.setItem('pc_projects',JSON.stringify(PROJ)); }catch(_){} } if(typeof cloudMark==='function') cloudMark('projects'); }
 function projCur(){ return PROJ.find(x=>x.id===ST.projId); }
 const PJ_TEXT=['area','price','beds','feature','agent','phone'];
-function projSig(){ return JSON.stringify([lookSnapshot(),ST.lookId,ST.audio&&ST.audio.id,ST.audioStart,ST.musicVol,SND.src,ST.photos.map(p=>[p.id,p.room,p.mv||'',p.cap||'',p.len||0,p.capPos||'',p.capSize||'',p.capStyle||'']),PJ_TEXT.map(k=>ST[k]),PJ.plan.length]); }
+function projSig(){ return JSON.stringify([lookSnapshot(),ST.lookId,ST.audio&&ST.audio.id,ST.audioStart,ST.musicVol,SND.src,ST.photos.map(p=>[p.id,p.room,p.mv||'',p.cap||'',p.len||0,p.label||'',p.capPos||'',p.capSize||'',p.capStyle||'']),PJ_TEXT.map(k=>ST[k]),PJ.plan.length]); }
 function phId(){ return 'ph'+Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 async function thumbOf(ph){ try{ if(!ph.img.complete) await ph.img.decode(); const w=200, h=Math.round(w*ph.img.naturalHeight/ph.img.naturalWidth)||130; const c=document.createElement('canvas'); c.width=w; c.height=Math.min(h,200); c.getContext('2d').drawImage(ph.img,0,0,w,h); return c.toDataURL('image/jpeg',0.6); }catch(e){ return ''; } }
 async function projSaveNow(){
@@ -2009,7 +2021,7 @@ async function projSaveNow(){
   if(!p){ p={id:'p'+Date.now().toString(36),name:ST.area||('Untitled home · '+new Date().toLocaleDateString()),autoName:!ST.area,created:Date.now()}; PROJ.unshift(p); ST.projId=p.id; }
   p.settings=lookSnapshot(); p.lookId=ST.lookId||null; p.text=Object.fromEntries(PJ_TEXT.map(k=>[k,ST[k]||'']));
   p.audio=ST.audio?{...ST.audio,start:ST.audioStart||0,on:SND.src==='file'}:null; p.musicVol=ST.musicVol;
-  p.photos=ST.photos.map(x=>({id:x.id,len:x.len||0,cap:x.cap||'',capPos:x.capPos||'',capSize:x.capSize||'',capStyle:x.capStyle||'',name:x.name,room:x.room,mv:x.mv||'',assetId:x.assetId||'',assetUrl:x.assetUrl||''}));
+  p.photos=ST.photos.map(x=>({id:x.id,len:x.len||0,cap:x.cap||'',label:x.label||'',capPos:x.capPos||'',capSize:x.capSize||'',capStyle:x.capStyle||'',name:x.name,room:x.room,mv:x.mv||'',assetId:x.assetId||'',assetUrl:x.assetUrl||''}));
   if(PJ.plan) p.plan=PJ.plan; p.updated=Date.now();
   if(p.autoName&&ST.area){ p.name=ST.area; }
   const first=ST.photos[0]; if(first&&p.thumbId!==first.id){ p.thumb=await thumbOf(first); p.thumbId=first.id; } if(!first){ p.thumb=''; p.thumbId=''; }
@@ -2068,7 +2080,7 @@ async function projOpen(id){
     if(!blob&&ph.assetUrl){ try{ const r=await fetch(ph.assetUrl); if(r.ok){ const bl=await r.blob(); if(bl&&bl.size){ blob=bl; idbPut(ph.id,blob); } } }catch(e){} }
     if(!blob){ missing++; continue; }
     const url=URL.createObjectURL(blob), img=new Image(); img.src=url;
-    ST.photos.push({id:ph.id,len:ph.len||undefined,cap:ph.cap||'',capPos:ph.capPos||'',capSize:ph.capSize||'',capStyle:ph.capStyle||'',url,img,name:ph.name,room:ph.room,mv:ph.mv||undefined,assetId:ph.assetId,assetUrl:ph.assetUrl});
+    ST.photos.push({id:ph.id,len:ph.len||undefined,cap:ph.cap||'',label:ph.label||'',capPos:ph.capPos||'',capSize:ph.capSize||'',capStyle:ph.capStyle||'',url,img,name:ph.name,room:ph.room,mv:ph.mv||undefined,assetId:ph.assetId,assetUrl:ph.assetUrl});
   }
   ST.projId=id; PJ.plan=p.plan||''; PJ.sig=projSig(); PJ.savedAt=p.updated;
   location.hash='#studio'; studioView();
@@ -2208,7 +2220,7 @@ function clipPrompt(p,i,N){
   const role = i===0?'Opening shot':i===N-1?'Final shot':`Shot ${i+1}`;
   const keeps=KEEP.filter(k=>ST.keep[k[0]]);
   const neg=[...(M.preset?['fast motion','jerky motion','zoom blur']:['fast motion','multiple camera moves','direction changes','zoom blur']),...keeps.map(k=>k[2])].join(', ');
-  return `CLIP ${i+1} OF ${N} — ${r.n.toUpperCase()} (${role})
+  return `CLIP ${i+1} OF ${N} — ${r.n.toUpperCase()}${p.label?' · '+p.label:''} (${role})
 Use the attached photo as the first frame. Create ${clipLen(p)===8?'an':'a'} ${clipLen(p)}-second cinematic real estate video clip.
 Camera type: ${r.cam}
 Camera angle: ${r.angle} — keep the photo's original angle
@@ -2336,7 +2348,15 @@ function drawEditor(){
   host.innerHTML=`<div class="pedit">
     <div class="top"><h3 style="margin:0">✏️ Edit your video</h3><span class="muted" style="font-size:13px">Changes show in the preview right away</span></div>
     ${LEVEL==='new'?'<p class="muted" style="font-size:13.5px;margin:4px 0 8px">Click a clip below to edit it. Use ◀ ▶ to move it earlier or later. Change the look, speed, music or text for the whole video further down.</p>':''}
-    <div class="ptl" role="list" aria-label="Clips in your video">${P.map((x,i)=>`<div class="pclipw" role="listitem"><button class="pclip ${i===PE.sel?'sel':''}" data-pc="${i}" aria-pressed="${i===PE.sel}"><img src="${x.url}" alt=""><span class="pcn">${i+1}</span><span class="pcl">${esc(ROOMS[x.room].n)}</span><span class="pcs">${clipLen(x)}s${x.cap?' · ✏️':''}</span></button>
+    <details class="presetbox namebox" ${PE.nameOpen!==false?'open':''} id="peNames"><summary>🏷️ Name your photos <span class="muted" style="font-weight:500;font-size:13px">· pick what each photo shows</span></summary>
+      <p class="muted" style="font-size:13.5px;margin:6px 0 8px">Look at each photo and choose the room from its drop-down menu. Add your own name too if you like (for example “Upstairs guest room”). Click a photo to see it bigger in the preview.</p>
+      <div class="nmgrid">${P.map((x,i)=>`<div class="nmcard ${i===PE.sel?'sel':''}"><button class="nmimg" data-nmsel="${i}" aria-label="Show photo ${i+1} in the preview"><img src="${x.url}" alt="Photo ${i+1}${x.name?' · '+esc(x.name):''}"><span class="pcn">${i+1}</span></button>
+        <label class="fld" style="margin:6px 0 0"><span>Photo ${i+1} is the…</span><select data-nmroom="${i}">${ROOM_ORDER.map(k=>`<option value="${k}" ${x.room===k?'selected':''}>${ROOMS[k].n}</option>`).join('')}</select></label>
+        <label class="fld" style="margin:6px 0 0"><span>Your name (optional)</span><input data-nmlabel="${i}" maxlength="40" value="${esc(x.label||'')}" placeholder="${esc(ROOMS[x.room].n)}"></label>
+        ${x.name?`<div class="muted nmfile" title="${esc(x.name)}">📄 ${esc(x.name)}</div>`:''}</div>`).join('')}</div>
+      <div class="actions" style="margin-top:8px"><button class="xbtn" id="nmSort">↕️ Put photos in tour order (outside → inside → backyard)</button></div>
+    </details>
+    <div class="ptl" role="list" aria-label="Clips in your video">${P.map((x,i)=>`<div class="pclipw" role="listitem"><button class="pclip ${i===PE.sel?'sel':''}" data-pc="${i}" aria-pressed="${i===PE.sel}"><img src="${x.url}" alt=""><span class="pcn">${i+1}</span><span class="pcl">${esc(x.label||ROOMS[x.room].n)}</span><span class="pcs">${clipLen(x)}s${x.cap?' · ✏️':''}</span></button>
       <div class="pcb"><button class="xbtn" data-pmv="${i}" data-d="-1" aria-label="Move clip ${i+1} earlier" ${i===0?'disabled':''}>◀</button><button class="xbtn" data-pmv="${i}" data-d="1" aria-label="Move clip ${i+1} later" ${i===N-1?'disabled':''}>▶</button></div></div>`).join('')}</div>
     <div class="psel"><div class="top"><b>Clip ${PE.sel+1} of ${N} · starts at ${st[PE.sel].toFixed(1)}s</b><span class="lact"><button class="xbtn" id="pePlay">▶ Play from here</button><button class="xbtn" id="peDup">📄 Duplicate</button><button class="xbtn" id="peRm" ${N<=2?'disabled title="A video needs at least 2 clips"':''}>🗑️ Remove clip</button></span></div>
       <div class="vegrid">
@@ -2376,6 +2396,11 @@ function drawEditor(){
   qa('[data-pgv]').forEach(el=>el.oninput=()=>{ ST.musicVol=+el.value; q('#peVol').textContent=ST.musicVol+'%'; sndVol(); const s=document.getElementById('sndVol'); if(s){ s.value=ST.musicVol; const v=document.getElementById('sndVolV'); if(v) v.textContent=ST.musicVol+'%'; } });
   qa('[data-pt]').forEach(el=>el.oninput=()=>{ ST[el.dataset.pt]=el.value; peMark(); });
   q('#pePlay').onclick=()=>peSeekClip(PE.sel);
+  const nb=q('#peNames'); if(nb) nb.ontoggle=()=>{ PE.nameOpen=nb.open; };
+  qa('[data-nmsel]').forEach(b=>b.onclick=()=>{ PE.sel=+b.dataset.nmsel; drawEditor(); peSeekClip(PE.sel); });
+  qa('[data-nmroom]').forEach(el=>el.onchange=()=>{ const i=+el.dataset.nmroom; P[i].room=el.value; peMark(); typeof renderThumbs==='function'&&renderThumbs(); drawEditor(); const f=host.querySelector(`[data-nmroom="${i}"]`); f&&f.focus(); toast('🏷️ Photo '+(i+1)+' = '+ROOMS[el.value].n); });
+  qa('[data-nmlabel]').forEach(el=>el.oninput=()=>{ const i=+el.dataset.nmlabel; P[i].label=el.value.trim(); peMark(); const c=host.querySelector(`[data-pc="${i}"] .pcl`); if(c) c.textContent=P[i].label||ROOMS[P[i].room].n; });
+  if(q('#nmSort')) q('#nmSort').onclick=()=>{ const cur=P[PE.sel]; P.sort((a,b)=>ROOM_ORDER.indexOf(a.room)-ROOM_ORDER.indexOf(b.room)); PE.sel=Math.max(0,P.indexOf(cur)); peMark(); typeof renderThumbs==='function'&&renderThumbs(); drawEditor(); peSeekClip(PE.sel); toast('↕️ Photos sorted in tour order'); };
   qa('[data-capq]').forEach(b=>b.onclick=()=>{ p.cap=b.dataset.capq; peMark(); drawEditor(); peSeekClip(PE.sel); const t=host.querySelector('textarea[data-pc1=cap]'); t&&t.focus(); });
   q('#peDup').onclick=()=>{ const c={...p,id:phId(),seen:true}; idbGet(p.id).then(b=>{ if(b) idbPut(c.id,b); }); P.splice(PE.sel+1,0,c); PE.sel++; peMark(); drawEditor(); peSeekClip(PE.sel); toast('📄 Clip duplicated — try a different camera move or text on it'); };
   q('#peRm').onclick=()=>{ if(N<=2) return; P.splice(PE.sel,1); PE.sel=Math.max(0,PE.sel-1); peMark(); drawEditor(); peSeekClip(PE.sel); toast('🗑️ Clip removed'); };
