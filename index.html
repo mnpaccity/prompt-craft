@@ -435,7 +435,7 @@
   .sndvol{display:block;margin-top:10px;max-width:360px}.sndvol input,#sndStart{width:100%;accent-color:var(--C)}
   .pkaud{display:grid;place-items:center;height:96px;border-radius:8px;background:var(--bg);font-size:40px}
   .capin{width:100%;box-sizing:border-box;margin-top:4px;font:inherit;font-size:12.5px;padding:5px 7px;border-radius:8px;border:1.5px solid var(--line);background:var(--card);color:var(--ink)}
-  .vewrap{background:#000;border-radius:14px;overflow:hidden;display:flex;justify-content:center}.vewrap canvas{max-width:100%;max-height:520px;display:block}
+  .vewrap{background:#000;border-radius:14px;overflow:hidden;display:flex;justify-content:center}.vemode{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}.vemode .xbtn{font-family:inherit}.vesbs.on{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:640px){.vesbs.on{grid-template-columns:1fr}}.vepane{margin:0;min-width:0}.vepane figcaption{font-weight:700;font-size:13.5px;margin:0 0 4px}.vesbs.on .vewrap canvas{max-height:360px;width:100%;object-fit:contain}.vewrap canvas{max-width:100%;max-height:520px;display:block}
   .velooks{display:flex;flex-wrap:wrap;gap:6px}.velooks .xbtn.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
   .vegrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px 16px;margin-top:8px}
   .vesl{display:flex;flex-direction:column;gap:4px;font-size:14px}.vesl input{width:100%;accent-color:var(--C)}
@@ -3900,6 +3900,7 @@ function veLoop(){
   const v=VE.el, s=VE.s, B=s.trimB||VE.dur;
   if(VE.playing&&!VE.rec&&v.currentTime>=B-0.05){ v.currentTime=s.trimA; veMusicStart(); }
   veDraw(cv.getContext('2d'),W,H,v.currentTime);
+  if(VE.view==='side'){ const oc=document.getElementById('veOrig'); if(oc&&v.videoWidth){ const ow=Math.min(960,v.videoWidth), oh=Math.round(ow*v.videoHeight/v.videoWidth); if(oc.width!==ow||oc.height!==oh){ oc.width=ow; oc.height=oh; } try{ oc.getContext('2d').drawImage(v,0,0,ow,oh); }catch(e){} } }
   const el=document.getElementById('veTime'); if(el) el.textContent=`${fmtDur(v.currentTime-s.trimA)} / ${fmtDur((B-s.trimA)/s.speed)} at ${s.speed}× speed`;
   VE.raf=requestAnimationFrame(veLoop);
 }
@@ -3930,8 +3931,12 @@ function veRender(){
      <div id="veMsg"></div>
    </div>
    ${has?`<div class="card"><h2>Step 2 · Enhance it</h2>
-     <div class="vewrap"><canvas id="veCv" role="img" aria-label="Preview of your enhanced video"></canvas></div>
-     <div class="actions"><button class="btn" id="vePP">▶ Play</button><button class="btn ghost" id="veCmp">👀 Hold to compare with original</button><span class="muted" id="veTime" style="align-self:center"></span></div>
+     <div class="vemode" role="group" aria-label="How to show the preview"><button class="xbtn ${VE.view!=='side'?'on':''}" data-vview="edited" aria-pressed="${VE.view!=='side'}">🎬 Edited video only</button><button class="xbtn ${VE.view==='side'?'on':''}" data-vview="side" aria-pressed="${VE.view==='side'}">↔️ Original &amp; edited side by side</button></div>
+     <div class="vesbs ${VE.view==='side'?'on':''}">
+       <figure class="vepane" ${VE.view==='side'?'':'hidden'}><figcaption>Original</figcaption><div class="vewrap"><canvas id="veOrig" role="img" aria-label="Your original video"></canvas></div></figure>
+       <figure class="vepane"><figcaption ${VE.view==='side'?'':'hidden'}>Edited ✨</figcaption><div class="vewrap"><canvas id="veCv" role="img" aria-label="Preview of your enhanced video"></canvas></div></figure>
+     </div>
+     <div class="actions"><button class="btn" id="vePP">▶ Play</button>${VE.view==='side'?'':'<button class="btn ghost" id="veCmp">👀 Hold to compare with original</button>'}<span class="muted" id="veTime" style="align-self:center"></span></div>
      <h3 style="margin-top:14px">🎨 Look</h3><div class="velooks">${Object.entries(VFX_LOOKS).map(([k,o])=>`<button class="xbtn ${s.look===k?'on':''}" data-vl="${k}" aria-pressed="${s.look===k}">${o.n}</button>`).join('')}</div>
      <details class="presetbox" ${LEVEL==='new'?'':'open'}><summary>🎚️ Fine-tune (brightness, contrast, color, warmth, vignette)</summary><div class="vegrid">${veSliders()}</div><div class="actions"><button class="xbtn" id="veReset">↺ Reset to the look</button></div></details>
      <h3 style="margin-top:14px">✂️ Trim, speed & shape</h3>
@@ -3998,7 +4003,8 @@ function veRender(){
   document.querySelectorAll('[data-vl]').forEach(b=>b.onclick=()=>{ VE.s.look=b.dataset.vl; Object.assign(VE.s,{sep:0},VFX_LOOKS[VE.s.look].f); const y=window.scrollY, was=VE.playing; veRender(); window.scrollTo(0,y); if(was) vePlay(true); });
   $('#veReset').onclick=()=>{ Object.assign(VE.s,{sep:0},VFX_LOOKS[VE.s.look].f); const y=window.scrollY, was=VE.playing; veRender(); window.scrollTo(0,y); if(was) vePlay(true); };
   $('#vePP').onclick=()=>vePlay(!VE.playing);
-  const cmp=$('#veCmp'), saved={}; const down=()=>{ Object.assign(saved,VE.s); Object.assign(VE.s,{b:100,c:100,s:100,w:0,v:0,sep:0}); cmp.textContent='👀 Showing original'; }, up=()=>{ if(!('b' in saved)) return; ['b','c','s','w','v','sep'].forEach(k=>VE.s[k]=saved[k]); for(const k in saved) delete saved[k]; cmp.textContent='👀 Hold to compare with original'; };
+  document.querySelectorAll('[data-vview]').forEach(b=>b.onclick=()=>{ VE.view=b.dataset.vview; const y=window.scrollY, was=VE.playing; veRender(); window.scrollTo(0,y); if(was) vePlay(true); });
+  const cmp=$('#veCmp')||document.createElement('button'), saved={}; const down=()=>{ Object.assign(saved,VE.s); Object.assign(VE.s,{b:100,c:100,s:100,w:0,v:0,sep:0}); cmp.textContent='👀 Showing original'; }, up=()=>{ if(!('b' in saved)) return; ['b','c','s','w','v','sep'].forEach(k=>VE.s[k]=saved[k]); for(const k in saved) delete saved[k]; cmp.textContent='👀 Hold to compare with original'; };
   cmp.onpointerdown=down; cmp.onpointerup=up; cmp.onpointerleave=up; cmp.onkeydown=e=>{ if(e.key===' '||e.key==='Enter'){ e.preventDefault(); down(); } }; cmp.onkeyup=up;
   $('#veSv').onclick=()=>{ const n=$('#veName').value.trim(); if(!n){ $('#veName').focus(); toast('Type a name first'); return; } const {trimA,trimB,...keep}=VE.s; VFXSAVE.unshift({name:n,s:keep}); try{ localStorage.setItem('pc_vfx',JSON.stringify(VFXSAVE)); }catch(e){} if(typeof cloudMark==='function') cloudMark('vfx'); const y=window.scrollY; veRender(); window.scrollTo(0,y); toast('💾 Settings saved — use them on your next video'); };
   document.querySelectorAll('[data-vsl]').forEach(b=>b.onclick=()=>{ Object.assign(VE.s,VFXSAVE[+b.dataset.vsl].s); const y=window.scrollY; veRender(); window.scrollTo(0,y); toast('✅ Applied “'+VFXSAVE[+b.dataset.vsl].name+'” — adjust anything'); });
