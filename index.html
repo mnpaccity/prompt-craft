@@ -3977,9 +3977,9 @@ function veRender(){
      ${discHTML('ai')}
    </div>`:''}`;
   const drop=$('#veDrop'), f=$('#veFile');
-  f.onchange=()=>f.files[0]&&veLoad(f.files[0]);
+  f.onchange=()=>{ const x=f.files[0]; if(!x) return; veLoad(x).then(()=>{ if(VE.el&&VE.file===x) mfAutoSaveVideo(x,'Video Enhancer'); }); f.value=''; };
   drop.ondragover=e=>{e.preventDefault();drop.classList.add('over');}; drop.ondragleave=()=>drop.classList.remove('over');
-  drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over'); const x=[...e.dataTransfer.files].find(z=>z.type.startsWith('video/')||VD_BAD_EXT.test(z.name)); if(x) veLoad(x); else toast('Please drop a video file (MP4 works best)'); };
+  drop.ondrop=e=>{e.preventDefault();drop.classList.remove('over'); const x=[...e.dataTransfer.files].find(z=>z.type.startsWith('video/')||VD_BAD_EXT.test(z.name)); if(x) veLoad(x).then(()=>{ if(VE.el&&VE.file===x) mfAutoSaveVideo(x,'Video Enhancer'); }); else toast('Please drop a video file (MP4 works best)'); };
   $('#vePick').onclick=()=>mfPicker({kind:'video',multi:false,onPick:fs=>veLoad(fs[0])});
   try{ history.replaceState(null,'','#enhance-video'); }catch(e){}
   if(!has) return;
@@ -4145,6 +4145,7 @@ function vdLoad(file){
   if(VD.url) URL.revokeObjectURL(VD.url); VD.frames.forEach(fr=>URL.revokeObjectURL(fr.url));
   Object.assign(VD,{file, url:URL.createObjectURL(file), frames:[], blobs:[], local:null, result:null});
   vdShowPreview();
+  if(!file._fromFiles) mfAutoSaveVideo(file,'Video Detective');
 }
 function vdShowPreview(){
   $('#vdPrev').innerHTML=`<div class="vdgrid"><video id="vdVideo" src="${VD.url}" controls playsinline muted preload="auto"></video>
@@ -5204,9 +5205,13 @@ async function mfUploadMany(files,kind){
   if(ok) toast(`✅ ${ok} ${kind==='photo'?'photo':kind==='audio'?'music file':'document'}${ok>1?'s':''} saved to My Files`);
   updateFilesBtn(); if(document.getElementById('nav-files')&&document.getElementById('nav-files').classList.contains('on')) myFilesView();
 }
+/* Save any video you add (Enhancer, Video Detective) to My Files once — skips repeats */
+function mfAutoSaveVideo(f,where){ if(!f||!f.type||!f.type.startsWith('video/')) return;
+  if(MYF.some(x=>x.type==='video'&&x.name===f.name&&(!x.size||x.size===f.size))) return;
+  mfUploadVideo(f,{src:'Added in '+where}); }
 async function mfUploadVideo(f,extra){
   if(!f.type.startsWith('video/')){ toast('Please choose a video file'); return null; }
-  const base={type:'video',title:(extra&&extra.title)||f.name.replace(/\.[^.]+$/,''),src:(extra&&extra.src)||'Uploaded by me',name:f.name,text:(extra&&extra.text)||''};
+  const base={type:'video',title:(extra&&extra.title)||f.name.replace(/\.[^.]+$/,''),src:(extra&&extra.src)||'Uploaded by me',name:f.name,size:f.size,text:(extra&&extra.text)||''};
   const a=await getAssets(); let it;
   if(a&&f.size<=20*1048576){ toast('⏳ Saving your video…'); try{ const r=await a.upload(f); it=mfAdd({...base,url:r.url||('/_blob/'+r.id),assetId:r.id}); toast('✅ Video saved to My Files'); }catch(e){ it=mfAdd({...base,url:URL.createObjectURL(f)}); toast('⚠️ Couldn’t save to your account — kept for this visit only'); } }
   else { it=mfAdd({...base,url:URL.createObjectURL(f)}); toast(f.size>20*1048576?'⚠️ Over 20 MB — kept for this visit only. Export a smaller version to save it.':'Kept for this visit (saving videos needs the Claude app)'); }
